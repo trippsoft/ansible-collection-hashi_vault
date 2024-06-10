@@ -1,0 +1,19 @@
+---
+namespace: trippsc2
+name: hashi_vault
+version: 1.0.0
+readme: README.md
+authors:
+  - Jim Tarpley
+description: This collection extends the community.hashi_vault collection with additional functionality.
+
+license_file: 'LICENSE'
+
+tags: []
+
+dependencies:
+  community.hashi_vault: '>=6.2.0'
+
+repository: https://github.com/trippsc2/ansible-collection-hashi_vault.git
+
+build_ignore: []

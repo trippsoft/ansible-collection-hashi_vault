@@ -1,0 +1,24 @@
+---
+- name: Verify
+  hosts:
+    - localhost
+  gather_facts: false
+  tasks:
+    - name: Create existing Database secret engine to be replaced
+      trippsc2.hashi_vault.vault_database_secret_engine:
+        token: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
+        url: http://127.0.0.1:8200
+        engine_mount_point: existing_kv1_2
+        state: present
+      register: _result
+      ignore_errors: true
+      tags:
+        - always
+        - skip_ansible_lint
+    
+    - name: Assert
+      ansible.builtin.assert:
+        that:
+          - _result is failed
+        fail_msg: The Database secret engine should not be created
+        success_msg: The Database secret engine was not created, as expected
