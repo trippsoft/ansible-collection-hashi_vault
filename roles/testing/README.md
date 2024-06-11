@@ -1,7 +1,7 @@
 <!-- BEGIN_ANSIBLE_DOCS -->
 
 # Ansible Role: trippsc2.hashi_vault.testing
-Version: 1.1.0
+Version: 1.1.2
 
 This role configures Hashicorp Vault in development mode for use in Molecule testing.
 
@@ -9,9 +9,9 @@ This role configures Hashicorp Vault in development mode for use in Molecule tes
 
 | Platform | Versions |
 | -------- | -------- |
-| Debian | bullseye, bookworm |
-| EL | 8, 9 |
-| Ubuntu | focal, jammy, noble |
+| Debian | <ul><li>bullseye</li><li>bookworm</li></ul> |
+| EL | <ul><li>8</li><li>9</li></ul> |
+| Ubuntu | <ul><li>focal</li><li>jammy</li><li>noble</li></ul> |
 
 ## Dependencies
 
