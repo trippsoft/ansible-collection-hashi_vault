@@ -1,0 +1,70 @@
+---
+- name: Gathering Facts
+  when:
+    - ansible_os_family is not defined or
+      ansible_distribution is not defined
+  ansible.builtin.setup:
+    gather_subset:
+      - '!all'
+      - '!min'
+      - os_family
+      - distribution
+
+- name: Validate
+  ansible.builtin.import_tasks: validate.yml
+
+- name: Include OS variables
+  ansible.builtin.include_vars: "{{ ansible_os_family }}.yml"
+
+- name: Include OS tasks
+  ansible.builtin.include_tasks: "{{ ansible_os_family }}.yml"
+
+- name: Install Hashicorp Vault
+  become: true
+  ansible.builtin.package:
+    name:
+      - vault
+    state: present
+
+- name: Configure firewalld to allow Vault traffic
+  when:
+    - vault_configure_firewalld
+  become: true
+  ansible.posix.firewalld:
+    port: 8200/tcp
+    permanent: true
+    immediate: true
+    state: enabled
+
+- name: Configure ufw to allow Vault traffic
+  when:
+    - vault_configure_ufw
+  become: true
+  community.general.ufw:
+    rule: allow
+    port: 8200
+    proto: tcp
+    state: enabled
+
+- name: Copy script to start Vault
+  become: true
+  ansible.builtin.template:
+    src: vault.sh.j2
+    dest: /usr/bin/start_vault.sh
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Run Vault server in development mode
+  become: true
+  ansible.builtin.command: /usr/bin/start_vault.sh
+  changed_when: true
+  tags:
+    - always
+    - molecule-idempotence-notest
+
+- name: Wait for Vault to start
+  delegate_to: localhost
+  ansible.builtin.wait_for:
+    host: "{{ vault_listen_address }}"
+    port: "{{ vault_listen_port }}"

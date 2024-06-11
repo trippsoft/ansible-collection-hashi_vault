@@ -1,0 +1,21 @@
+---
+- name: Install GPG package
+  become: true
+  ansible.builtin.package:
+    name:
+      - gnupg2
+    state: present
+
+- name: Add Hashicorp GPG key
+  become: true
+  ansible.builtin.apt_key:
+    url: https://apt.releases.hashicorp.com/gpg
+    state: present
+
+- name: Add Hashicorp APT repository
+  become: true
+  ansible.builtin.apt_repository:
+    repo: deb https://apt.releases.hashicorp.com {{ ansible_distribution_release }} main
+    state: present
+    update_cache: true
+    filename: hashicorp

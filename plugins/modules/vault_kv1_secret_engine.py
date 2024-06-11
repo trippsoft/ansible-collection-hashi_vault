@@ -8,7 +8,7 @@ DOCUMENTATION = r"""
 module: vault_kv1_secret_engine
 version_added: 1.0.0
 author:
-  - Jim Tarpley (jtarpley@ismro.com)
+  - Jim Tarpley
 short_description: Configures a KV version 1 secret engine in HashiCorp Vault.
 requirements:
   - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html))
@@ -22,11 +22,10 @@ attributes:
     details:
       - This module supports check mode.
 extends_documentation_fragment:
-  - community.hashi_vault.attributes
-  - community.hashi_vault.attributes.action_group
-  - community.hashi_vault.connection
-  - community.hashi_vault.auth
-  - community.hashi_vault.engine_mount
+  - trippsc2.hashi_vault.attributes
+  - trippsc2.hashi_vault.connection
+  - trippsc2.hashi_vault.auth
+  - trippsc2.hashi_vault.engine_mount
   - trippsc2.hashi_vault.secret_engine
 """
 
@@ -51,7 +50,8 @@ EXAMPLES = r"""
     state: absent
 """
 
-RETURN = r""""""
+RETURN = r"""
+"""
 
 import traceback
 

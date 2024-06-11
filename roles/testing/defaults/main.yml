@@ -1,0 +1,8 @@
+---
+vault_listen_address: "{{ vault_ip_address }}"
+vault_listen_port: 8200
+
+vault_configure_firewalld: "{{ _vault_configure_firewalld_default | default(false) }}"
+vault_configure_ufw: "{{ _vault_configure_ufw_default | default(false) }}"
+
+vault_ip_address: "{{ ansible_host }}"

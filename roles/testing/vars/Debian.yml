@@ -1,0 +1,3 @@
+---
+_vault_configure_firewalld_default: "{{ ansible_distribution == 'Debian' }}"
+_vault_configure_ufw_default: "{{ ansible_distribution != 'Debian' }}"

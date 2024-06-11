@@ -1,0 +1,6 @@
+#!/bin/bash
+
+set -e
+
+/usr/bin/vault server -dev -dev-root-token-id={{ vault_token }} -dev-listen-address=0.0.0.0:{{ vault_listen_port }} -log-file=/var/log/vault.log > /dev/null 2>&1 &
+sleep 1
