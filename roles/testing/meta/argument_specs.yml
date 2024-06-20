@@ -4,45 +4,44 @@ argument_specs:
     short_description: Create Testing Hashicorp Vault
     description:
       - This role configures Hashicorp Vault in development mode for use in Molecule testing.
-      - Works with Rocky 8 Vagrant box.  All other platforms are untested.
     author: Jim Tarpley
     options:
       vault_token:
-        description:
-          - The token to use for authenticating to Vault.
         type: str
         required: true
-      vault_listen_address:
         description:
-          - The address on which Vault will listen.
+          - The token to use for authenticating to Vault.
+      vault_listen_address:
         type: str
         required: false
         default: "{{ vault_ip_address }}"
-      vault_listen_port:
         description:
-          - The port on which Vault will listen.
+          - The address on which Vault will listen.
+      vault_listen_port:
         type: int
         required: false
         default: 8200
+        description:
+          - The port on which Vault will listen.
       vault_configure_firewalld:
+        type: bool
+        required: false
+        default: OS specific
         description:
           - Whether to configure firewalld.
           - If Debian-based, this will default to false.
           - If Red Hat-based, this will default to true.
+      vault_configure_ufw:
         type: bool
         required: false
         default: OS specific
-      vault_configure_ufw:
         description:
           - Whether to configure ufw.
           - If Debian-based, this will default to true.
           - If Red Hat-based, this will default to false.
-        type: bool
-        required: false
-        default: OS specific
       vault_ip_address:
-        description:
-          - The IP address of the host on which Vault is running.
         type: str
         required: false
         default: "{{ ansible_host }}"
+        description:
+          - The IP address of the host on which Vault is running.
