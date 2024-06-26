@@ -1,0 +1,91 @@
+---
+- name: Converge
+  hosts:
+    - localhost
+  gather_facts: false
+  tasks:
+    - name: Check if PKI Root CA Certificate is created
+      check_mode: true
+      trippsc2.hashi_vault.vault_pki_root_ca_certificate:
+        token: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
+        url: http://127.0.0.1:8200
+        engine_mount_point: pki1
+        common_name: RootCA
+        state: present
+
+    - name: Create PKI Root CA Certificate
+      trippsc2.hashi_vault.vault_pki_root_ca_certificate:
+        token: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
+        url: http://127.0.0.1:8200
+        engine_mount_point: pki1
+        common_name: RootCA
+        state: present
+
+    - name: Create PKI Root CA Certificate with custom options
+      trippsc2.hashi_vault.vault_pki_root_ca_certificate:
+        token: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
+        url: http://127.0.0.1:8200
+        engine_mount_point: pki2
+        common_name: RootCA
+        state: present
+        export_private_key: true
+        alt_names:
+          - test1.test.loc
+          - test2.test.loc
+        ip_sans:
+          - '192.0.2.1'
+          - '192.0.2.2'
+        uri_sans:
+          - 'http://test1.test.loc'
+          - 'http://test2.test.loc'
+        other_sans:
+          - oid: '1.3.6.1.4.1.311.20.2.3'
+            value: test1@test.loc
+          - oid: '1.3.6.1.4.1.311.20.2.3'
+            value: test2@test.loc
+        ttl: 30d
+        format: pem_bundle
+        private_key_format: der
+        key_type: rsa
+        key_bits: 4096
+        max_path_length: 2
+        exclude_cn_from_sans: true
+        permitted_dns_domains:
+          - test.loc
+        ou:
+          - Test
+          - Test2
+        organization:
+          - Test
+          - Test2
+        country:
+          - US
+          - CA
+        locality:
+          - Los Angeles
+          - Toronto
+        province:
+          - California
+          - Ontario
+        street_address:
+          - '1234 Test St'
+          - '5678 Test St'
+        postal_code:
+          - '90001'
+          - 'M1A 1A1'
+        serial_number: '1'
+
+    - name: Check if PKI Root CA Certificate is removed
+      check_mode: true
+      trippsc2.hashi_vault.vault_pki_root_ca_certificate:
+        token: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
+        url: http://127.0.0.1:8200
+        engine_mount_point: pki3
+        state: absent
+
+    - name: Remove PKI Root CA Certificate
+      trippsc2.hashi_vault.vault_pki_root_ca_certificate:
+        token: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
+        url: http://127.0.0.1:8200
+        engine_mount_point: pki3
+        state: absent

@@ -33,16 +33,28 @@ def duration_str_to_seconds(duration:str, default:int=0) -> int:
         return int(math.floor(float(duration)))
     except ValueError:
         pass
+    
 
+    days_regex = re.compile(r'(\d+\.?\d*)d')
     hours_regex = re.compile(r'(\d+\.?\d*)h')
     minutes_regex = re.compile(r'(\d+\.?\d*)m')
     seconds_regex = re.compile(r'(\d+\.?\d*)s')
 
+    days_match = days_regex.search(duration)
     hours_match = hours_regex.search(duration)
     minutes_match = minutes_regex.search(duration)
     seconds_match = seconds_regex.search(duration)
 
     total_seconds = 0
+
+    if days_match is not None:
+        try:
+            total_seconds += int(int(days_match.group(1)) * SECONDS_PER_DAY)
+        except ValueError:
+            try:
+                total_seconds += int(math.floor(float(days_match.group(1))) * SECONDS_PER_DAY)
+            except ValueError:
+                pass
 
     if hours_match is not None:
         try:

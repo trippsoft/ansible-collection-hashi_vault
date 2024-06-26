@@ -1,0 +1,35 @@
+- name: Prepare
+  hosts:
+    - localhost
+  gather_facts: false
+  tasks:
+    - name: Create PKI secret engine
+      trippsc2.hashi_vault.vault_pki_secret_engine:
+        token: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
+        url: http://127.0.0.1:8200
+        engine_mount_point: pki1
+        max_lease_ttl: 157680000
+        state: present
+
+    - name: Create PKI secret engine
+      trippsc2.hashi_vault.vault_pki_secret_engine:
+        token: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
+        url: http://127.0.0.1:8200
+        engine_mount_point: pki2
+        max_lease_ttl: 157680000
+        state: present
+
+    - name: Create PKI secret engine
+      trippsc2.hashi_vault.vault_pki_secret_engine:
+        token: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
+        url: http://127.0.0.1:8200
+        engine_mount_point: pki3
+        max_lease_ttl: 157680000
+        state: present
+
+    - name: Create PKI Root CA Certificate to be removed
+      trippsc2.hashi_vault.vault_pki_root_ca_certificate:
+        token: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
+        url: http://127.0.0.1:8200
+        engine_mount_point: pki3
+        common_name: ToBeRemoved
