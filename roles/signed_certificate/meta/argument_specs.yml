@@ -1,0 +1,78 @@
+---
+argument_specs:
+  main:
+    short_description: Self-Signed Certificate
+    description:
+      - This role generates a self-signed TLS certificate.
+    author:
+      - Jim Tarpley
+    options:
+      cert_certificate_owner:
+        type: str
+        required: false
+        default: root
+        description:
+          - The owner of the certificate on Linux systems.
+      cert_certificate_group:
+        type: str
+        required: false
+        default: root
+        description:
+          - The group of the certificate on Linux systems.
+      cert_certificate_mode:
+        type: str
+        required: false
+        default: '0644'
+        description:
+          - The mode of the certificate on Linux systems.
+      cert_vault_mount_point:
+        type: str
+        required: false
+        default: pki
+        description:
+          - The mount point for the PKI secrets engine in Vault.
+      cert_vault_role:
+        type: str
+        required: false
+        default: verbatim
+        description:
+          - The role to use for signing the certificate in Vault.
+      cert_copy_ca_chain:
+        type: bool
+        required: false
+        default: false
+        description:
+          - Whether to copy the CA chain to the expected path.
+      cert_ca_chain_path:
+        type: str
+        required: false
+        default: OS specific
+        description:
+          - The path to copy the CA chain.
+          - On Debian-based systems, this is defaults /usr/local/share/ca-certificates/ca_chain.crt.
+          - On Red Hat-based systems, this is defaults /etc/pki/ca-trust/source/anchors/ca_chain.crt.
+          - On Windows systems, this is defaults C:\Windows\Temp\ca_chain.crt.
+      cert_ca_chain_owner:
+        type: str
+        required: false
+        default: root
+        description:
+          - The owner of the CA chain on Linux systems.
+      cert_ca_chain_group:
+        type: str
+        required: false
+        default: root
+        description:
+          - The group of the CA chain on Linux systems.
+      cert_ca_chain_mode:
+        type: str
+        required: false
+        default: '0644'
+        description:
+          - The mode of the CA chain on Linux systems.
+      cert_update_ca_trust:
+        type: bool
+        required: false
+        default: true
+        description:
+          - Whether to run the command to update the CA trust on Linux systems, if the CA chain is copied.

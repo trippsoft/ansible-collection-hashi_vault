@@ -51,6 +51,100 @@ EXAMPLES = r"""
 """
 
 RETURN = r"""
+config:
+  type: dict
+  returned:
+    - success
+    - state is C(present)
+  description:
+    - The configuration of the secret engine.
+  sample:
+    description: 'The PKI secret engine.'
+    default_lease_ttl: 2678400
+    max_lease_ttl: 2678400
+    audit_non_hmac_request_keys: []
+    audit_non_hmac_response_keys: []
+    listing_visibility: unauth
+    passthrough_request_headers: []
+  contains:
+    description:
+      type: str
+      description:
+        - The description of the secret engine.
+    default_lease_ttl:
+      type: int
+      description:
+        - The default lease TTL of the secret engine in seconds.
+    max_lease_ttl:
+      type: int
+      description:
+        - The maximum lease TTL of the secret engine in seconds.
+    audit_non_hmac_request_keys:
+      type: list
+      elements: str
+      description:
+        - The list of non-HMAC request keys to audit.
+    audit_non_hmac_response_keys:
+      type: list
+      elements: str
+      description:
+        - The list of non-HMAC response keys to audit.
+    listing_visibility:
+      type: str
+      description:
+        - The listing visibility of the secret engine.
+    passthrough_request_headers:
+      type: list
+      elements: str
+      description:
+        - The list of request headers to pass through.
+prev_config:
+  description:
+    - The previous configuration of the secret engine.
+  type: dict
+  returned:
+    - success
+    - changed
+  sample:
+    description: 'The PKI secret engine.'
+    default_lease_ttl: 2678400
+    max_lease_ttl: 2678400
+    audit_non_hmac_request_keys: []
+    audit_non_hmac_response_keys: []
+    listing_visibility: unauth
+    passthrough_request_headers: []
+  contains:
+    description:
+      type: str
+      description:
+        - The description of the secret engine.
+    default_lease_ttl:
+      type: int
+      description:
+        - The default lease TTL of the secret engine in seconds.
+    max_lease_ttl:
+      type: int
+      description:
+        - The maximum lease TTL of the secret engine in seconds.
+    audit_non_hmac_request_keys:
+      type: list
+      elements: str
+      description:
+        - The list of non-HMAC request keys to audit.
+    audit_non_hmac_response_keys:
+      type: list
+      elements: str
+      description:
+        - The list of non-HMAC response keys to audit.
+    listing_visibility:
+      type: str
+      description:
+        - The listing visibility of the secret engine.
+    passthrough_request_headers:
+      type: list
+      elements: str
+      description:
+        - The list of request headers to pass through.
 """
 
 from ..module_utils._vault_secret_engine_module import VaultSecretEngineModule

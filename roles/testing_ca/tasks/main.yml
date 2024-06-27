@@ -1,0 +1,37 @@
+---
+- name: Configure PKI secret engine
+  delegate_to: localhost
+  trippsc2.hashi_vault.vault_pki_secret_engine:
+    token: "{{ vault_token }}"
+    url: "{{ vault_url }}"
+    engine_mount_point: pki
+    max_lease_ttl: 157680000
+    state: present
+
+- name: Generate Root CA Certificate
+  delegate_to: localhost
+  trippsc2.hashi_vault.vault_pki_root_ca_certificate:
+    token: "{{ vault_token }}"
+    url: "{{ vault_url }}"
+    engine_mount_point: pki
+    common_name: RootCA
+    ttl: 157680000
+    state: present
+
+- name: Create PKI Role
+  delegate_to: localhost
+  trippsc2.hashi_vault.vault_pki_role:
+    token: "{{ vault_token }}"
+    url: "{{ vault_url }}"
+    engine_mount_point: pki
+    name: verbatim
+    state: present
+    allow_any_name: true
+    allow_bare_domains: true
+    allow_glob_domains: true
+    allow_ip_sans: true
+    allow_localhost: true
+    client_flag: true
+    enforce_hostnames: true
+    require_cn: true
+    server_flag: true

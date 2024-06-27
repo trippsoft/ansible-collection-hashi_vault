@@ -1,0 +1,37 @@
+---
+- name: Converge
+  hosts:
+    - localhost
+  gather_facts: false
+  tasks:
+    - name: Create private key
+      community.crypto.openssl_privatekey_pipe:
+        type: RSA
+        size: 2048
+      register: _private_key
+
+    - name: Create certificate signing request
+      community.crypto.openssl_csr_pipe:
+        privatekey_content: "{{ _private_key.privatekey }}"
+        common_name: test.test.loc
+        subject_alt_name:
+          - DNS:test.test.loc
+        key_usage:
+          - digitalSignature
+          - keyEncipherment
+        key_usage_critical: true
+        extended_key_usage:
+          - serverAuth
+        extended_key_usage_critical: true
+        basic_constraints: []
+        basic_constraints_critical: true
+      register: _csr
+
+    - name: Sign certificate
+      trippsc2.hashi_vault.vault_pki_sign_verbatim:
+        token: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
+        url: http://127.0.0.1:8200
+        engine_mount_point: pki
+        role_name: verbatim
+        csr: "{{ _csr.csr }}"
+      register: _certificate

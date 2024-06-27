@@ -10,29 +10,31 @@ __metaclass__ = type
 
 class ModuleDocFragment(object):
 
-    DOCUMENTATION = r'''
-options: {}
-attributes:
-    check_mode:
-      description: Can run in C(check_mode) and return changed status prediction without modifying target.
-'''
+    DOCUMENTATION = r"""
+    options: {}
+    attributes:
+        check_mode:
+          description:
+            - Can run in C(check_mode) and return changed status prediction without modifying target.
+    """
 
-    ACTION_GROUP = r'''
-options: {}
-attributes:
-  action_group:
-    description: Use C(group/trippsc2.hashi_vault.vault) in C(module_defaults) to set defaults for this module.
-    support: full
-    membership:
-      - trippsc2.hashi_vault.vault
-'''
+    ACTION_GROUP = r"""
+    options: {}
+    attributes:
+      action_group:
+        support: full
+        membership:
+          - trippsc2.hashi_vault.vault
+        description:
+          - Use C(group/trippsc2.hashi_vault.vault) in C(module_defaults) to set defaults for this module.
+    """
 
     # Should be used together with the standard fragment
-    CHECK_MODE_READ_ONLY = r'''
-options: {}
-attributes:
-  check_mode:
-    support: full
-    details:
-      - This module is "read only" and operates the same regardless of check mode.
-'''
+    CHECK_MODE_READ_ONLY = r"""
+    options: {}
+    attributes:
+      check_mode:
+        support: full
+        details:
+          - This module is "read only" and operates the same regardless of check mode.
+    """

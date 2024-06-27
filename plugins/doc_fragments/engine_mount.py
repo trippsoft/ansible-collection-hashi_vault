@@ -10,16 +10,17 @@ __metaclass__ = type
 
 class ModuleDocFragment(object):
 
-    DOCUMENTATION = r'''
-options:
-  engine_mount_point:
-    description: The path where the secret backend is mounted.
-    type: str
-'''
+    DOCUMENTATION = r"""
+    options:
+      engine_mount_point:
+        type: str
+        description:
+          - The path where the secret backend is mounted.
+    """
 
-    PLUGINS = r'''
-options:
-  engine_mount_point:
-    vars:
-      - name: ansible_hashi_vault_engine_mount_point
-'''
+    PLUGINS = r"""
+    options:
+      engine_mount_point:
+        vars:
+          - name: ansible_hashi_vault_engine_mount_point
+    """

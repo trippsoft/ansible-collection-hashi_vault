@@ -7,51 +7,63 @@ __metaclass__ = type
 
 class ModuleDocFragment(object):
 
-    DOCUMENTATION = r'''
+    DOCUMENTATION = r"""
     options:
       state:
-        description: Whether the secret engine should be present or absent.
         type: str
         required: false
         default: present
         choices:
           - present
           - absent
+        description:
+          - Whether the secret engine should be present or absent.
       replace_different_backend_type:
-        description: Whether to replace the secret engine if it has a different backend type.
         type: bool
         required: false
         default: false
+        description:
+          - Whether to replace the secret engine if it has a different backend type.
       description:
-        description: The description of the secret engine.
         type: str
         required: false
+        description:
+          - The description of the secret engine.
       default_lease_ttl:
-        description: The default lease TTL of the secret engine.
         type: str
         required: false
+        description:
+          - The default lease TTL of the secret engine.
       max_lease_ttl:
-        description: The maximum lease TTL of the secret engine.
         type: str
         required: false
+        description:
+          - The maximum lease TTL of the secret engine.
       audit_non_hmac_request_keys:
-        description: The list of non-HMAC request keys to audit.
         type: list
         required: false
+        elements: str
+        description:
+          - The list of non-HMAC request keys to audit.
       audit_non_hmac_response_keys:
-        description: The list of non-HMAC response keys to audit.
         type: list
         required: false
+        elements: str
+        description:
+          - The list of non-HMAC response keys to audit.
       listing_visibility:
-        description: The listing visibility of the secret engine.
         type: str
         required: false
         choices:
           - normal
           - unauth
           - hidden
+        description:
+          - The listing visibility of the secret engine.
       passthrough_request_headers:
-        description: The list of request headers to pass through.
         type: list
         required: false
-    '''
+        elements: str
+        description:
+          - The list of request headers to pass through.
+    """

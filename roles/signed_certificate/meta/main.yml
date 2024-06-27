@@ -1,0 +1,36 @@
+---
+galaxy_info:
+  author: Jim Tarpley
+  namespace: trippsc2
+  role_name: signed_certificate
+  description: This role signs a certificate using Hashicorp Vault.
+
+  license: MIT
+
+  min_ansible_version: '2.14'
+
+  platforms:
+    - name: Debian
+      versions:
+        - bullseye
+        - bookworm
+    - name: EL
+      versions:
+        - '8'
+        - '9'
+    - name: Ubuntu
+      versions:
+        - focal
+        - jammy
+        - noble
+    - name: Windows
+      versions:
+        - '2019'
+        - '2022'
+
+collections:
+  - ansible.windows
+  - trippsc2.general
+
+dependencies:
+  - role: trippsc2.general.generate_csr

@@ -1,0 +1,7 @@
+---
+vault_listen_address: "{{ vault_ip_address }}"
+vault_listen_port: 8200
+
+vault_ip_address: "{{ ansible_host }}"
+
+vault_url: "http://{{ vault_listen_address }}:{{ vault_listen_port }}"

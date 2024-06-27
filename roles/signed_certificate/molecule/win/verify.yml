@@ -1,0 +1,52 @@
+---
+- name: Verify
+  hosts:
+    - subjects
+  tasks:
+  - name: Get private key file info
+    ansible.windows.win_stat:
+      path: C:\Windows\Temp\cert.key
+    register: _private_key_info
+
+  - name: Get certificate file info
+    ansible.windows.win_stat:
+      path: C:\Windows\Temp\cert.crt
+    register: _certificate_info
+
+  - name: Get certificate file info
+    ansible.windows.win_stat:
+      path: C:\Windows\Temp\ca_chain.crt
+    register: _ca_chain_info
+
+  - name: Get CSR file info
+    ansible.windows.win_stat:
+      path: C:\Windows\Temp\cert.csr
+    register: _csr_info
+
+  - name: Assert that private key exists
+    ansible.builtin.assert:
+      that:
+        - _private_key_info.stat.exists
+      fail_msg: Private key does not exist
+      success_msg: Private key exists
+
+  - name: Assert that certificate exists
+    ansible.builtin.assert:
+      that:
+        - _certificate_info.stat.exists
+      fail_msg: Certificate does not exist
+      success_msg: Certificate exists
+
+  - name: Assert that CA chain exists
+    ansible.builtin.assert:
+      that:
+        - _ca_chain_info.stat.exists
+      fail_msg: CA chain does not exist
+      success_msg: CA chain exists
+
+  - name: Assert that CSR does not exist
+    ansible.builtin.assert:
+      that:
+        - not _csr_info.stat.exists
+      fail_msg: CSR was not deleted
+      success_msg: CSR was deleted, as expected

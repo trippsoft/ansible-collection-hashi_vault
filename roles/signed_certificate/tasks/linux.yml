@@ -1,0 +1,60 @@
+---
+- name: Check if CSR exists
+  become: true
+  ansible.builtin.stat:
+    path: "{{ cert_csr_tmp_path }}"
+  register: _cert_csr
+
+- name: Generate CSR and sign certificate
+  when:
+    - _cert_csr.stat.exists
+  block:
+    - name: Get contents of CSR
+      become: true
+      ansible.builtin.slurp:
+        src: "{{ cert_csr_tmp_path }}"
+      register: _cert_csr_data
+
+    - name: Sign certificate with Hashicorp Vault
+      delegate_to: localhost
+      trippsc2.hashi_vault.vault_pki_sign_verbatim:
+        token: "{{ vault_token | default(omit) }}"
+        url: "{{ vault_url | default(omit) }}"
+        engine_mount_point: "{{ cert_vault_mount_point }}"
+        role_name: "{{ cert_vault_role }}"
+        csr: "{{ _cert_csr_data.content | b64decode }}"
+      register: _cert_data
+
+    - name: Copy certificate to path
+      become: true
+      ansible.builtin.copy:
+        content: "{{ _cert_data.certificate }}"
+        dest: "{{ cert_certificate_path }}"
+        owner: "{{ cert_certificate_owner }}"
+        group: "{{ cert_certificate_group }}"
+        mode: "{{ cert_certificate_mode }}"
+
+    - name: Remove CSR file
+      become: true
+      ansible.builtin.file:
+        path: "{{ cert_csr_tmp_path }}"
+        state: absent
+
+    - name: Copy the CA chain to the expected path
+      when:
+        - cert_copy_ca_chain
+      block:
+        - name: Format CA certificate chain
+          ansible.builtin.set_fact:
+            _ca_chain: "{{ _cert_data.ca_chain | join('\n') }}"
+
+        - name: Copy the CA chain to the expected path
+          become: true
+          ansible.builtin.copy:
+            content: "{{ _ca_chain }}"
+            dest: "{{ cert_ca_chain_path }}"
+            owner: "{{ cert_ca_chain_owner }}"
+            group: "{{ cert_ca_chain_group }}"
+            mode: "{{ cert_ca_chain_mode }}"
+          notify:
+            - _cert_update_ca_trust
