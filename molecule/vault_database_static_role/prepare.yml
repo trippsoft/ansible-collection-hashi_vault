@@ -1,0 +1,93 @@
+---
+- name: Prepare PostgreSQL
+  hosts:
+    - postgres
+  gather_facts: true
+  tasks:
+    - name: Create Hashicorp Vault PostgreSQL user
+      delegate_to: localhost
+      community.postgresql.postgresql_user:
+        login_host: '127.0.0.1'
+        login_port: 5432
+        login_user: postgres
+        login_password: postgres
+        name: vault
+        password: T3mp0r@ry1234!
+        role_attr_flags: SUPERUSER
+        state: present
+
+    - name: Create standard PostgreSQL user 1
+      delegate_to: localhost
+      community.postgresql.postgresql_user:
+        login_host: '127.0.0.1'
+        login_port: 5432
+        login_user: postgres
+        login_password: postgres
+        name: test1
+        password: T3mp0r@ry1234!
+        state: present
+
+    - name: Create standard PostgreSQL user 2
+      delegate_to: localhost
+      community.postgresql.postgresql_user:
+        login_host: '127.0.0.1'
+        login_port: 5432
+        login_user: postgres
+        login_password: postgres
+        name: test2
+        password: T3mp0r@ry1234!
+        state: present
+
+    - name: Create standard PostgreSQL user 3
+      delegate_to: localhost
+      community.postgresql.postgresql_user:
+        login_host: '127.0.0.1'
+        login_port: 5432
+        login_user: postgres
+        login_password: postgres
+        name: test3
+        password: T3mp0r@ry1234!
+        state: present
+
+- name: Prepare
+  hosts:
+    - localhost
+  gather_facts: false
+  tasks:
+    - name: Create Database secret engine
+      trippsc2.hashi_vault.vault_database_secret_engine:
+        token: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
+        url: http://127.0.0.1:8200
+        engine_mount_point: database
+        state: present
+    
+    - name: Create Database connection
+      community.hashi_vault.vault_database_connection_configure:
+        token: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
+        url: http://127.0.0.1:8200
+        engine_mount_point: database
+        connection_name: postgres
+        plugin_name: postgresql-database-plugin
+        connection_url: "postgresql://{{ '{{username}}' }}:{{ '{{password}}' }}@{{ hostvars['postgres'].ansible_default_ipv4.address }}:5432/postgres?sslmode=disable"
+        allowed_roles:
+          - '*'
+        connection_username: vault
+        connection_password: T3mp0r@ry1234!
+
+    - name: Create Hashicorp Vault static role to modify
+      trippsc2.hashi_vault.vault_database_static_role:
+        token: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
+        url: http://127.0.0.1:8200
+        engine_mount_point: database
+        name: postgres_test2
+        db_name: postgres
+        db_username: test2
+
+    - name: Create Hashicorp Vault static role to remove
+      trippsc2.hashi_vault.vault_database_static_role:
+        token: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
+        url: http://127.0.0.1:8200
+        engine_mount_point: database
+        name: postgres_test3
+        db_name: postgres
+        db_username: test3
