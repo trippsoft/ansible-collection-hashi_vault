@@ -1,7 +1,7 @@
 ---
 argument_specs:
   main:
-    short_description: Self-Signed Certificate
+    short_description: Vault-Signed Certificate
     description:
       - This role generates a self-signed TLS certificate.
     author:
