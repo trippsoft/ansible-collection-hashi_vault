@@ -12,12 +12,13 @@ platforms:
     box: jtarpley/${MOLECULE_BOX:-rocky8_cis}
     memory: 2048
     cpus: 2
+    groups:
+      - subjects
 provisioner:
   name: ansible
   inventory:
-    links:
-      hosts: ./hosts
-      host_vars: ./host_vars/
-      group_vars: ./group_vars/
+    group_vars:
+      subjects:
+        vault_token: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
 verifier:
   name: ansible

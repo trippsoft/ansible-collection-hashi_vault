@@ -16,12 +16,21 @@ platforms:
     box: jtarpley/${MOLECULE_BOX:-w2022_cis}
     memory: 2048
     cpus: 2
+    groups:
+      - subjects
+      - windows
 provisioner:
   name: ansible
   inventory:
-    links:
-      hosts: ./hosts
-      host_vars: ./host_vars/
-      group_vars: ./group_vars/
+    group_vars:
+      all:
+        vault_token: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
+        vault_url: "http://{{ hostvars['vault'].ansible_host }}:8200"
+      subjects:
+        cert_copy_ca_chain: true
+      windows:
+        ansible_shell_type: powershell
+        ansible_become_method: runas
+        ansible_become_user: SYSTEM
 verifier:
   name: ansible

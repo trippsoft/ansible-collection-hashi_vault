@@ -1,7 +1,7 @@
 ---
 - name: Prepare
   hosts:
-    - linux
+    - vault
   gather_facts: false
   pre_tasks:
     - name: Bootstrap python for Ansible
