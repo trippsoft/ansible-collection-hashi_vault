@@ -8,7 +8,7 @@
   ansible.builtin.command: update-ca-certificates
   changed_when: true
 
-- name: Update CA trust (Red Hat-based)
+- name: Update CA trust (EL)
   listen: _cert_update_ca_trust
   when:
     - ansible_os_family == 'RedHat'

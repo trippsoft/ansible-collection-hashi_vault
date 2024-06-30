@@ -50,7 +50,7 @@ argument_specs:
         description:
           - The path to copy the CA chain.
           - On Debian-based systems, this is defaults /usr/local/share/ca-certificates/ca_chain.crt.
-          - On Red Hat-based systems, this is defaults /etc/pki/ca-trust/source/anchors/ca_chain.crt.
+          - On EL systems, this is defaults /etc/pki/ca-trust/source/anchors/ca_chain.crt.
           - On Windows systems, this is defaults C:\Windows\Temp\ca_chain.crt.
       cert_ca_chain_owner:
         type: str

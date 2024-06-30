@@ -1,7 +1,7 @@
 <!-- BEGIN_ANSIBLE_DOCS -->
 
 # Ansible Role: trippsc2.hashi_vault.signed_certificate
-Version: 1.3.1
+Version: 1.3.3
 
 This role signs a certificate using Hashicorp Vault.
 
@@ -33,7 +33,7 @@ This role signs a certificate using Hashicorp Vault.
 | cert_vault_mount_point | <p>The mount point for the PKI secrets engine in Vault.</p> | str | no |  | pki |
 | cert_vault_role | <p>The role to use for signing the certificate in Vault.</p> | str | no |  | verbatim |
 | cert_copy_ca_chain | <p>Whether to copy the CA chain to the expected path.</p> | bool | no |  | false |
-| cert_ca_chain_path | <p>The path to copy the CA chain.</p><p>On Debian-based systems, this is defaults /usr/local/share/ca-certificates/ca_chain.crt.</p><p>On Red Hat-based systems, this is defaults /etc/pki/ca-trust/source/anchors/ca_chain.crt.</p><p>On Windows systems, this is defaults C:\Windows\Temp\ca_chain.crt.</p> | str | no |  | OS specific |
+| cert_ca_chain_path | <p>The path to copy the CA chain.</p><p>On Debian-based systems, this is defaults /usr/local/share/ca-certificates/ca_chain.crt.</p><p>On EL systems, this is defaults /etc/pki/ca-trust/source/anchors/ca_chain.crt.</p><p>On Windows systems, this is defaults C:\Windows\Temp\ca_chain.crt.</p> | str | no |  | OS specific |
 | cert_ca_chain_owner | <p>The owner of the CA chain on Linux systems.</p> | str | no |  | root |
 | cert_ca_chain_group | <p>The group of the CA chain on Linux systems.</p> | str | no |  | root |
 | cert_ca_chain_mode | <p>The mode of the CA chain on Linux systems.</p> | str | no |  | 0644 |

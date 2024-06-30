@@ -12,7 +12,7 @@
       _certificate_path: /etc/ssl/certs/cert.crt
       _private_key_path: /etc/ssl/private/cert.key
 
-  - name: Set path variables (Red Hat-based)
+  - name: Set path variables (EL)
     when:
       - ansible_os_family == 'RedHat'
     ansible.builtin.set_fact:

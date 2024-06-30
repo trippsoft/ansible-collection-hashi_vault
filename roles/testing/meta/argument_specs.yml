@@ -29,16 +29,16 @@ argument_specs:
         default: OS specific
         description:
           - Whether to configure firewalld.
-          - If Debian-based, this will default to false.
-          - If Red Hat-based, this will default to true.
+          - For EL and Debian systems, this will default to true.
+          - For Ubuntu systems, this will default to false.
       vault_configure_ufw:
         type: bool
         required: false
         default: OS specific
         description:
           - Whether to configure ufw.
-          - If Debian-based, this will default to true.
-          - If Red Hat-based, this will default to false.
+          - For Ubuntu systems, this will default to true.
+          - For EL and Debian systems, this will default to false.
       vault_ip_address:
         type: str
         required: false
