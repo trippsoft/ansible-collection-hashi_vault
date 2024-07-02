@@ -1,0 +1,6 @@
+---
+_testing_ca_certificate_path: >-
+  {{ '/etc/pki/ca-trust/source/anchors/vault.crt' if ansible_os_family == 'RedHat' else '/usr/local/share/ca-certificates/vault.crt' }}
+
+_testing_update_ca_certificates_command: >-
+  {{ 'update-ca-trust' if ansible_os_family == 'RedHat' else 'update-ca-certificates' }}

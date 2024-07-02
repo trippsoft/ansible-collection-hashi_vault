@@ -1,0 +1,7 @@
+---
+- name: Update CA Trust
+  listen: _testing_update_ca_trust
+  become: true
+  ansible.builtin.command:
+    cmd: "{{ _testing_update_ca_certificates_command }}"
+  changed_when: true
