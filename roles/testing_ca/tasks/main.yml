@@ -18,17 +18,11 @@
     ttl: 157680000
     state: present
   register: _testing_rootca
-
-- name: Ensure Root CA certificate is saved to file
-  become: true
-  ansible.builtin.copy:
-    content: "{{ _rootca.certificate }}"
-    dest: "{{ _testing_ca_certificate_path }}"
-    owner: root
-    group: root
-    mode: 0644
   notify:
-    - _testing_update_ca_trust
+    - _testing_copy_ca_cert
+
+- name: Flush handler
+  ansible.builtin.meta: flush_handlers
 
 - name: Create PKI Role
   delegate_to: localhost

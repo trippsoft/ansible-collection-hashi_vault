@@ -1,4 +1,16 @@
 ---
+- name: Ensure Root CA certificate is saved to file
+  listen: _testing_copy_ca_cert
+  become: true
+  ansible.builtin.copy:
+    content: "{{ _testing_rootca.certificate }}"
+    dest: "{{ _testing_ca_certificate_path }}"
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - _testing_update_ca_trust
+
 - name: Update CA Trust
   listen: _testing_update_ca_trust
   become: true
