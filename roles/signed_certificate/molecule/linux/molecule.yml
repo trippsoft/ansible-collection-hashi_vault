@@ -22,6 +22,12 @@ provisioner:
         vault_token: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
         vault_url: "http://{{ hostvars['linux'].ansible_host }}:8200"
       subjects:
+        cert_private_key_owner: test
+        cert_private_key_group: test
+        cert_certificate_owner: test
+        cert_certificate_group: test
+        cert_ca_chain_owner: test
+        cert_ca_chain_group: test
         cert_copy_ca_chain: true
 verifier:
   name: ansible

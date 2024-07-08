@@ -27,26 +27,26 @@
     ansible.builtin.assert:
       that:
         - _private_key_info.stat.exists
-      fail_msg: Private key does not exist
-      success_msg: Private key exists
+      fail_msg: Private key does not exist.
+      success_msg: Private key exists.
 
   - name: Assert that certificate exists
     ansible.builtin.assert:
       that:
         - _certificate_info.stat.exists
-      fail_msg: Certificate does not exist
-      success_msg: Certificate exists
+      fail_msg: Certificate does not exist.
+      success_msg: Certificate exists.
 
   - name: Assert that CA chain exists
     ansible.builtin.assert:
       that:
         - _ca_chain_info.stat.exists
-      fail_msg: CA chain does not exist
-      success_msg: CA chain exists
+      fail_msg: CA chain does not exist.
+      success_msg: CA chain exists.
 
   - name: Assert that CSR does not exist
     ansible.builtin.assert:
       that:
         - not _csr_info.stat.exists
-      fail_msg: CSR was not deleted
-      success_msg: CSR was deleted, as expected
+      fail_msg: CSR was not deleted.
+      success_msg: CSR was deleted as expected.

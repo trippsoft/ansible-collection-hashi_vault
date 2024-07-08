@@ -1,15 +1,4 @@
 ---
-- name: Gathering Facts
-  when:
-    - ansible_os_family is not defined or
-      ansible_distribution is not defined
-  ansible.builtin.setup:
-    gather_subset:
-      - '!all'
-      - '!min'
-      - os_family
-      - distribution
-
 - name: Validate
   ansible.builtin.import_tasks: validate.yml
 

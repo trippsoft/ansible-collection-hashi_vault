@@ -40,39 +40,93 @@
       path: /tmp/cert.csr
     register: _csr_info
 
-  - name: Assert that private key info is expected
+  - name: Validate that private key exists
     ansible.builtin.assert:
       that:
         - _private_key_info.stat.exists
-        - _private_key_info.stat.pw_name == 'root'
-        - _private_key_info.stat.gr_name == 'root'
-        - _private_key_info.stat.mode == '0600'
-      fail_msg: Private key does not exist or has incorrect permissions
-      success_msg: Private key exists and has correct permissions
+      fail_msg: Private key does not exist.
+      success_msg: Private key exists.
 
-  - name: Assert that certificate info is expected
+  - name: Validate private key owner
+    ansible.builtin.assert:
+      that:
+        - _private_key_info.stat.pw_name == cert_private_key_owner | default('root')
+      fail_msg: Private key does not have expected owner.
+      success_msg: Private key has expected owner.
+
+  - name: Validate private key group
+    ansible.builtin.assert:
+      that:
+        - _private_key_info.stat.gr_name == cert_private_key_group | default('root')
+      fail_msg: Private key does not have expected group.
+      success_msg: Private key has expected group.
+
+  - name: Validate private key mode
+    ansible.builtin.assert:
+      that:
+        - _private_key_info.stat.mode == cert_private_key_mode | default('0600')
+      fail_msg: Private key does not have expected mode.
+      success_msg: Private key has expected mode.
+
+  - name: Validate that certificate exists
     ansible.builtin.assert:
       that:
         - _certificate_info.stat.exists
-        - _certificate_info.stat.pw_name == 'root'
-        - _certificate_info.stat.gr_name == 'root'
-        - _certificate_info.stat.mode == '0644'
-      fail_msg: Certificate does not exist or has incorrect permissions
-      success_msg: Certificate exists and has correct permissions
+      fail_msg: Certificate does not exist.
+      success_msg: Certificate exists.
 
-  - name: Assert that CA chain info is expected
+  - name: Validate certificate owner
+    ansible.builtin.assert:
+      that:
+        - _certificate_info.stat.pw_name == cert_certificate_owner | default('root')
+      fail_msg: Certificate does not have expected owner.
+      success_msg: Certificate has expected owner.
+
+  - name: Validate certificate group
+    ansible.builtin.assert:
+      that:
+        - _certificate_info.stat.gr_name == cert_certificate_group | default('root')
+      fail_msg: Certificate does not have expected group.
+      success_msg: Certificate has expected group.
+
+  - name: Validate certificate mode
+    ansible.builtin.assert:
+      that:
+        - _certificate_info.stat.mode == cert_certificate_mode | default('0644')
+      fail_msg: Certificate does not have expected mode.
+      success_msg: Certificate has expected mode.
+
+  - name: Validate that CA chain exists
     ansible.builtin.assert:
       that:
         - _ca_chain_info.stat.exists
-        - _ca_chain_info.stat.pw_name == 'root'
-        - _ca_chain_info.stat.gr_name == 'root'
-        - _ca_chain_info.stat.mode == '0644'
-      fail_msg: CA chain does not exist or has incorrect permissions
-      success_msg: CA chain exists and has correct permissions
+      fail_msg: CA chain does not exist.
+      success_msg: CA chain exists.
+  
+  - name: Validate that CA chain has expected owner
+    ansible.builtin.assert:
+      that:
+        - _ca_chain_info.stat.pw_name == cert_ca_chain_owner | default('root')
+      fail_msg: CA chain does not have expected owner.
+      success_msg: CA chain has expected owner.
+  
+  - name: Validate that CA chain has expected group
+    ansible.builtin.assert:
+      that:
+        - _ca_chain_info.stat.gr_name == cert_ca_chain_group | default('root')
+      fail_msg: CA chain does not have expected group.
+      success_msg: CA chain has expected group.
 
-  - name: Assert that CSR does not exist
+  - name: Validate that CA chain has expected mode
+    ansible.builtin.assert:
+      that:
+        - _ca_chain_info.stat.mode == cert_ca_chain_mode | default('0644')
+      fail_msg: CA chain does not have expected mode.
+      success_msg: CA chain has expected mode.
+
+  - name: Validate that CSR does not exist
     ansible.builtin.assert:
       that:
         - not _csr_info.stat.exists
-      fail_msg: CSR was not deleted
-      success_msg: CSR was deleted, as expected
+      fail_msg: CSR was not deleted.
+      success_msg: CSR was deleted as expected.

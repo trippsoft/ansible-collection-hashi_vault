@@ -1,4 +1,15 @@
 ---
+- name: Gathering Facts
+  when:
+    - ansible_distribution is not defined or
+      ansible_os_family is not defined
+  ansible.builtin.setup:
+    gather_subset:
+      - '!all'
+      - '!min'
+      - distribution
+      - os_family
+
 - name: Validate OS Family is defined
   ansible.builtin.assert:
     that:
