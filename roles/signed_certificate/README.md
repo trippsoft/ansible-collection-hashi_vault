@@ -1,7 +1,7 @@
 <!-- BEGIN_ANSIBLE_DOCS -->
 
 # Ansible Role: trippsc2.hashi_vault.signed_certificate
-Version: 1.3.7
+Version: 1.3.8
 
 This role signs a certificate using Hashicorp Vault.
 
@@ -27,17 +27,19 @@ This role signs a certificate using Hashicorp Vault.
 ## Role Arguments
 |Option|Description|Type|Required|Choices|Default|
 |---|---|---|---|---|---|
-| cert_certificate_owner | <p>The owner of the certificate on Linux systems.</p> | str | no |  | root |
-| cert_certificate_group | <p>The group of the certificate on Linux systems.</p> | str | no |  | root |
-| cert_certificate_mode | <p>The mode of the certificate on Linux systems.</p> | str | no |  | 0644 |
+| vault_url | <p>The URL for accessing HashiCorp Vault.</p><p>Alternatively, this can be configured through ansible.cfg or environment variables.</p> | str | no |  |  |
+| vault_token | <p>The token for accessing HashiCorp Vault.</p><p>Alternatively, this (or any other authentication method) can be configured through ansible.cfg or environment variables.</p> | str | no |  |  |
+| cert_certificate_owner | <p>The owner of the certificate on Linux systems.</p><p>On Windows systems, this is ignored.</p> | str | no |  | root |
+| cert_certificate_group | <p>The group of the certificate on Linux systems.</p><p>On Windows systems, this is ignored.</p> | str | no |  | root |
+| cert_certificate_mode | <p>The mode of the certificate on Linux systems.</p><p>On Windows systems, this is ignored.</p> | str | no |  | 0644 |
 | cert_vault_mount_point | <p>The mount point for the PKI secrets engine in Vault.</p> | str | no |  | pki |
 | cert_vault_role | <p>The role to use for signing the certificate in Vault.</p> | str | no |  | verbatim |
 | cert_copy_ca_chain | <p>Whether to copy the CA chain to the expected path.</p> | bool | no |  | false |
-| cert_ca_chain_path | <p>The path to copy the CA chain.</p><p>On Debian-based systems, this is defaults /usr/local/share/ca-certificates/ca_chain.crt.</p><p>On EL systems, this is defaults /etc/pki/ca-trust/source/anchors/ca_chain.crt.</p><p>On Windows systems, this is defaults C:\Windows\Temp\ca_chain.crt.</p> | str | no |  | OS specific |
-| cert_ca_chain_owner | <p>The owner of the CA chain on Linux systems.</p> | str | no |  | root |
-| cert_ca_chain_group | <p>The group of the CA chain on Linux systems.</p> | str | no |  | root |
-| cert_ca_chain_mode | <p>The mode of the CA chain on Linux systems.</p> | str | no |  | 0644 |
-| cert_update_ca_trust | <p>Whether to run the command to update the CA trust on Linux systems, if the CA chain is copied.</p> | bool | no |  | true |
+| cert_ca_chain_path | <p>The path to copy the CA chain.</p><p>If *cert_copy_ca_chain* is `false`, this is ignored.</p><p>On Debian-based systems, this is defaults to `/usr/local/share/ca-certificates/ca_chain.crt`.</p><p>On EL systems, this is defaults to `/etc/pki/ca-trust/source/anchors/ca_chain.crt`.</p><p>On Windows systems, this is defaults to `C:\Windows\Temp\ca_chain.crt`.</p> | str | no |  |  |
+| cert_ca_chain_owner | <p>The owner of the CA chain on Linux systems.</p><p>On Windows systems, this is ignored.</p><p>If *cert_copy_ca_chain* is `false`, this is ignored.</p> | str | no |  | root |
+| cert_ca_chain_group | <p>The group of the CA chain on Linux systems.</p><p>On Windows systems, this is ignored.</p><p>If *cert_copy_ca_chain* is `false`, this is ignored.</p> | str | no |  | root |
+| cert_ca_chain_mode | <p>The mode of the CA chain on Linux systems.</p><p>On Windows systems, this is ignored.</p><p>If *cert_copy_ca_chain* is `false`, this is ignored.</p> | str | no |  | 0644 |
+| cert_update_ca_trust | <p>Whether to run the command to update the CA trust on Linux systems, if the CA chain is copied.</p><p>On Windows systems, this is ignored.</p><p>If *cert_copy_ca_chain* is `false`, this is ignored.</p> | bool | no |  | true |
 
 
 ## License

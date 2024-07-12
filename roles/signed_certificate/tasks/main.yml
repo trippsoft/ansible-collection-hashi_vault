@@ -1,6 +1,6 @@
 ---
-- name: Include OS family variables
-  ansible.builtin.include_vars: "{{ ansible_os_family }}.yml"
+- name: Validate
+  ansible.builtin.import_tasks: validate.yml
 
 - name: Include OS family tasks
   ansible.builtin.include_tasks: "{{ ansible_os_family }}.yml"

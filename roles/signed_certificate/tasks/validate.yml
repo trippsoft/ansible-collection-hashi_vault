@@ -1,0 +1,83 @@
+---
+- name: Include OS family variables
+  ansible.builtin.include_vars: "{{ ansible_os_family }}.yml"
+
+- name: Check if certificate owner user exists
+  when:
+    - ansible_os_family != 'Windows'
+  become: true
+  check_mode: true
+  ansible.builtin.user:
+    name: "{{ cert_certificate_owner }}"
+    state: present
+  register: _cert_validate_user
+
+- name: Validate certificate owner user exists
+  when:
+    - ansible_os_family != 'Windows'
+  ansible.builtin.assert:
+    that:
+      - not _cert_validate_user.changed
+    fail_msg: "User '{{ cert_certificate_owner }}' does not exist."
+    success_msg: "User '{{ cert_certificate_owner }}' exists."
+
+- name: Check if certificate group exists
+  when:
+    - ansible_os_family != 'Windows'
+  become: true
+  check_mode: true
+  ansible.builtin.group:
+    name: "{{ cert_certificate_group }}"
+    state: present
+  register: _cert_validate_group
+
+- name: Validate certificate group exists
+  when:
+    - ansible_os_family != 'Windows'
+  ansible.builtin.assert:
+    that:
+      - not _cert_validate_group.changed
+    fail_msg: "Group '{{ cert_certificate_group }}' does not exist."
+    success_msg: "Group '{{ cert_certificate_group }}' exists."
+
+- name: Check if certificate chain owner user exists
+  when:
+    - cert_copy_ca_chain
+    - ansible_os_family != 'Windows'
+  become: true
+  check_mode: true
+  ansible.builtin.user:
+    name: "{{ cert_certificate_owner }}"
+    state: present
+  register: _cert_validate_user
+
+- name: Validate certificate chain owner user exists
+  when:
+    - cert_copy_ca_chain
+    - ansible_os_family != 'Windows'
+  ansible.builtin.assert:
+    that:
+      - not _cert_validate_user.changed
+    fail_msg: "User '{{ cert_certificate_owner }}' does not exist."
+    success_msg: "User '{{ cert_certificate_owner }}' exists."
+
+- name: Check if certificate chain group exists
+  when:
+    - cert_copy_ca_chain
+    - ansible_os_family != 'Windows'
+  become: true
+  check_mode: true
+  ansible.builtin.group:
+    name: "{{ cert_certificate_group }}"
+    state: present
+  register: _cert_validate_group
+
+- name: Validate certificate chain group exists
+  when:
+    - cert_copy_ca_chain
+    - ansible_os_family != 'Windows'
+  ansible.builtin.assert:
+    that:
+      - not _cert_validate_group.changed
+    fail_msg: "Group '{{ cert_certificate_group }}' does not exist."
+    success_msg: "Group '{{ cert_certificate_group }}' exists."

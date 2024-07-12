@@ -26,7 +26,6 @@ argument_specs:
       vault_configure_firewalld:
         type: bool
         required: false
-        default: OS specific
         description:
           - Whether to configure firewalld.
           - For EL and Debian systems, this will default to true.
@@ -34,7 +33,6 @@ argument_specs:
       vault_configure_ufw:
         type: bool
         required: false
-        default: OS specific
         description:
           - Whether to configure ufw.
           - For Ubuntu systems, this will default to true.

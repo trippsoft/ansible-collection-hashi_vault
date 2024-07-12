@@ -7,24 +7,39 @@ argument_specs:
     author:
       - Jim Tarpley
     options:
+      vault_url:
+        type: str
+        required: false
+        description:
+          - The URL for accessing HashiCorp Vault.
+          - Alternatively, this can be configured through ansible.cfg or environment variables.
+      vault_token:
+        type: str
+        required: false
+        description:
+          - The token for accessing HashiCorp Vault.
+          - Alternatively, this (or any other authentication method) can be configured through ansible.cfg or environment variables.
       cert_certificate_owner:
         type: str
         required: false
         default: root
         description:
           - The owner of the certificate on Linux systems.
+          - On Windows systems, this is ignored.
       cert_certificate_group:
         type: str
         required: false
         default: root
         description:
           - The group of the certificate on Linux systems.
+          - On Windows systems, this is ignored.
       cert_certificate_mode:
         type: str
         required: false
         default: '0644'
         description:
           - The mode of the certificate on Linux systems.
+          - On Windows systems, this is ignored.
       cert_vault_mount_point:
         type: str
         required: false
@@ -46,33 +61,41 @@ argument_specs:
       cert_ca_chain_path:
         type: str
         required: false
-        default: OS specific
         description:
           - The path to copy the CA chain.
-          - On Debian-based systems, this is defaults /usr/local/share/ca-certificates/ca_chain.crt.
-          - On EL systems, this is defaults /etc/pki/ca-trust/source/anchors/ca_chain.crt.
-          - On Windows systems, this is defaults C:\Windows\Temp\ca_chain.crt.
+          - If *cert_copy_ca_chain* is `false`, this is ignored.
+          - On Debian-based systems, this is defaults to `/usr/local/share/ca-certificates/ca_chain.crt`.
+          - On EL systems, this is defaults to `/etc/pki/ca-trust/source/anchors/ca_chain.crt`.
+          - On Windows systems, this is defaults to `C:\Windows\Temp\ca_chain.crt`.
       cert_ca_chain_owner:
         type: str
         required: false
         default: root
         description:
           - The owner of the CA chain on Linux systems.
+          - On Windows systems, this is ignored.
+          - If *cert_copy_ca_chain* is `false`, this is ignored.
       cert_ca_chain_group:
         type: str
         required: false
         default: root
         description:
           - The group of the CA chain on Linux systems.
+          - On Windows systems, this is ignored.
+          - If *cert_copy_ca_chain* is `false`, this is ignored.
       cert_ca_chain_mode:
         type: str
         required: false
         default: '0644'
         description:
           - The mode of the CA chain on Linux systems.
+          - On Windows systems, this is ignored.
+          - If *cert_copy_ca_chain* is `false`, this is ignored.
       cert_update_ca_trust:
         type: bool
         required: false
         default: true
         description:
           - Whether to run the command to update the CA trust on Linux systems, if the CA chain is copied.
+          - On Windows systems, this is ignored.
+          - If *cert_copy_ca_chain* is `false`, this is ignored.

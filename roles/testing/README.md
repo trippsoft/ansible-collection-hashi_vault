@@ -1,7 +1,7 @@
 <!-- BEGIN_ANSIBLE_DOCS -->
 
 # Ansible Role: trippsc2.hashi_vault.testing
-Version: 1.3.7
+Version: 1.3.8
 
 This role configures Hashicorp Vault in development mode for use in Molecule testing.
 
@@ -25,8 +25,8 @@ This role configures Hashicorp Vault in development mode for use in Molecule tes
 | vault_token | <p>The token to use for authenticating to Vault.</p> | str | yes |  |  |
 | vault_listen_address | <p>The address on which Vault will listen.</p> | str | no |  | {{ vault_ip_address }} |
 | vault_listen_port | <p>The port on which Vault will listen.</p> | int | no |  | 8200 |
-| vault_configure_firewalld | <p>Whether to configure firewalld.</p><p>For EL and Debian systems, this will default to true.</p><p>For Ubuntu systems, this will default to false.</p> | bool | no |  | true |
-| vault_configure_ufw | <p>Whether to configure ufw.</p><p>For Ubuntu systems, this will default to true.</p><p>For EL and Debian systems, this will default to false.</p> | bool | no |  | true |
+| vault_configure_firewalld | <p>Whether to configure firewalld.</p><p>For EL and Debian systems, this will default to true.</p><p>For Ubuntu systems, this will default to false.</p> | bool | no |  | false |
+| vault_configure_ufw | <p>Whether to configure ufw.</p><p>For Ubuntu systems, this will default to true.</p><p>For EL and Debian systems, this will default to false.</p> | bool | no |  | false |
 | vault_ip_address | <p>The IP address of the host on which Vault is running.</p> | str | no |  | {{ ansible_host }} |
 
 

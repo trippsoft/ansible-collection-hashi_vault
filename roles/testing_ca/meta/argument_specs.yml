@@ -6,6 +6,12 @@ argument_specs:
       - This role configures Hashicorp Vault in development mode for use in Molecule testing as a Certification Authority.
     author: Jim Tarpley
     options:
+      vault_url:
+        type: str
+        required: false
+        default: "http://{{ vault_listen_address }}:{{ vault_listen_port }}"
+        description:
+          - The URL to use for accessing Vault.
       vault_token:
         type: str
         required: true
@@ -29,9 +35,3 @@ argument_specs:
         default: "{{ ansible_host }}"
         description:
           - The IP address of the host on which Vault is running.
-      vault_url:
-        type: str
-        required: false
-        default: "http://{{ vault_listen_address }}:{{ vault_listen_port }}"
-        description:
-          - The URL to use for accessing Vault.
