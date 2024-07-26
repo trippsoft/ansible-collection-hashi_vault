@@ -1,16 +1,12 @@
 ---
-cert_certificate_path: "{{ _cert_default_certificate_path | default(omit) }}"
 cert_certificate_owner: root
 cert_certificate_group: root
 cert_certificate_mode: '0644'
-
-cert_csr_tmp_path: "{{ _cert_default_csr_tmp_path | default(omit) }}"
 
 cert_vault_mount_point: pki
 cert_vault_role: verbatim
 
 cert_copy_ca_chain: false
-cert_ca_chain_path: "{{ _cert_default_ca_chain_path | default(omit) }}"
 cert_ca_chain_owner: root
 cert_ca_chain_group: root
 cert_ca_chain_mode: '0644'

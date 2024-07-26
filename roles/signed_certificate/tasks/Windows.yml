@@ -1,7 +1,7 @@
 ---
 - name: Check that the CSR was generated
   ansible.windows.win_stat:
-    path: "{{ cert_csr_tmp_path }}"
+    path: "{{ _cert_csr_tmp_path }}"
   register: _cert_csr
 
 - name: Generate CSR and sign certificate
@@ -10,7 +10,7 @@
   block:
     - name: Get contents of CSR
       ansible.builtin.slurp:
-        src: "{{ cert_csr_tmp_path }}"
+        src: "{{ _cert_csr_tmp_path }}"
       register: _cert_csr_data
 
     - name: Sign certificate with Hashicorp Vault
@@ -30,7 +30,7 @@
 
     - name: Remove CSR file
       ansible.windows.win_file:
-        path: "{{ cert_csr_tmp_path }}"
+        path: "{{ _cert_csr_tmp_path }}"
         state: absent
 
     - name: Copy the CA chain to the expected path
@@ -44,4 +44,4 @@
         - name: Copy the CA chain to the expected path
           ansible.windows.win_copy:
             content: "{{ _ca_chain }}"
-            dest: "{{ cert_ca_chain_path }}"
+            dest: "{{ _cert_ca_chain_path }}"

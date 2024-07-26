@@ -2,7 +2,7 @@
 - name: Check if CSR exists
   become: true
   ansible.builtin.stat:
-    path: "{{ cert_csr_tmp_path }}"
+    path: "{{ _cert_csr_tmp_path }}"
   register: _cert_csr
 
 - name: Generate CSR and sign certificate
@@ -12,7 +12,7 @@
     - name: Get contents of CSR
       become: true
       ansible.builtin.slurp:
-        src: "{{ cert_csr_tmp_path }}"
+        src: "{{ _cert_csr_tmp_path }}"
       register: _cert_csr_data
 
     - name: Sign certificate with Hashicorp Vault
@@ -37,7 +37,7 @@
     - name: Remove CSR file
       become: true
       ansible.builtin.file:
-        path: "{{ cert_csr_tmp_path }}"
+        path: "{{ _cert_csr_tmp_path }}"
         state: absent
 
     - name: Copy the CA chain to the expected path
@@ -52,7 +52,7 @@
           become: true
           ansible.builtin.copy:
             content: "{{ _ca_chain }}"
-            dest: "{{ cert_ca_chain_path }}"
+            dest: "{{ _cert_ca_chain_path }}"
             owner: "{{ cert_ca_chain_owner }}"
             group: "{{ cert_ca_chain_group }}"
             mode: "{{ cert_ca_chain_mode }}"

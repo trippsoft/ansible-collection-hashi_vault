@@ -27,6 +27,8 @@ provisioner:
         vault_token: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
         vault_url: "http://{{ hostvars['vault'].ansible_host }}:8200"
       subjects:
+        cert_certificate_path: C:\Windows\Temp\cert.crt
+        cert_private_key_path: C:\Windows\Temp\cert.key
         cert_copy_ca_chain: true
       windows:
         ansible_shell_type: powershell
