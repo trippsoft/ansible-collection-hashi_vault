@@ -1,7 +1,7 @@
 <!-- BEGIN_ANSIBLE_DOCS -->
 
 # Ansible Role: trippsc2.hashi_vault.signed_certificate
-Version: 1.4.1
+Version: 1.4.2
 
 This role signs a certificate using Hashicorp Vault.
 
