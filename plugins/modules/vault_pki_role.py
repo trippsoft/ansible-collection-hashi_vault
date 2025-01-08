@@ -7,16 +7,16 @@ import hvac.exceptions
 __metaclass__ = type
 
 DOCUMENTATION = r"""
-module: vault_pki_root_ca_certificate
+module: vault_pki_role
 version_added: 1.2.0
 author:
   - Jim Tarpley
-short_description: Configures a PKI secret engine root CA certificate in HashiCorp Vault.
+short_description: Configures a PKI secret engine role in HashiCorp Vault.
 requirements:
   - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html))
   - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
 description:
-  - Ensures that a PKI secret engine root CA certificate is configured in HashiCorp Vault.
+  - Ensures that a PKI secret engine role is configured in HashiCorp Vault.
 attributes:
   check_mode:
     support: full

@@ -1,7 +1,7 @@
 ---
 namespace: trippsc2
 name: hashi_vault
-version: 1.4.2
+version: 1.4.3
 readme: README.md
 authors:
   - Jim Tarpley
@@ -9,7 +9,12 @@ description: This collection extends the community.hashi_vault collection with a
 
 license_file: 'LICENSE'
 
-tags: []
+tags:
+  - application
+  - infrastructure
+  - linux
+  - security
+  - tools
 
 dependencies:
   ansible.posix: ">=1.0.0"

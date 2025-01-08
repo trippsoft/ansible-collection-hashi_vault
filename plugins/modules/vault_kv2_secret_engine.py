@@ -5,16 +5,16 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 DOCUMENTATION = r"""
-module: vault_kv1_secret_engine
+module: vault_kv2_secret_engine
 version_added: 1.0.0
 author:
   - Jim Tarpley
-short_description: Configures a KV version 1 secret engine in HashiCorp Vault.
+short_description: Configures a KV version 2 secret engine in HashiCorp Vault.
 requirements:
   - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html))
   - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
 description:
-  - Creates a L(new KV version 1 secret engine,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/kv_v1.html),
+  - Creates a L(new KV version 2 secret engine,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/kv_v2.html),
     identified by its O(engine_mount_point) in HashiCorp Vault.
 attributes:
   check_mode:
