@@ -3,20 +3,20 @@
   hosts:
     - localhost
   gather_facts: false
+  module_defaults:
+    group/trippsc2.hashi_vault.vault:
+      token: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
+      url: http://127.0.0.1:8200
   tasks:
     - name: Check if PKI Role is created
       check_mode: true
       trippsc2.hashi_vault.vault_pki_role:
-        token: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
-        url: http://127.0.0.1:8200
         engine_mount_point: pki
         name: test1
         state: present
 
     - name: Create PKI Role
       trippsc2.hashi_vault.vault_pki_role:
-        token: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
-        url: http://127.0.0.1:8200
         engine_mount_point: pki
         name: test1
         state: present
@@ -24,8 +24,6 @@
     - name: Check if PKI Role needs modification
       check_mode: true
       trippsc2.hashi_vault.vault_pki_role:
-        token: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
-        url: http://127.0.0.1:8200
         engine_mount_point: pki
         name: test1
         state: present
@@ -95,8 +93,6 @@
 
     - name: Modify PKI Role with custom options
       trippsc2.hashi_vault.vault_pki_role:
-        token: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
-        url: http://127.0.0.1:8200
         engine_mount_point: pki
         name: test1
         state: present
@@ -166,8 +162,6 @@
 
     - name: Create PKI Role with custom options
       trippsc2.hashi_vault.vault_pki_role:
-        token: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
-        url: http://127.0.0.1:8200
         engine_mount_point: pki
         name: test2
         state: present
@@ -238,16 +232,12 @@
     - name: Check if PKI Role needed to be removed
       check_mode: true
       trippsc2.hashi_vault.vault_pki_role:
-        token: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
-        url: http://127.0.0.1:8200
         engine_mount_point: pki
         name: ToBeDeleted
         state: absent
 
     - name: Remove PKI Role
       trippsc2.hashi_vault.vault_pki_role:
-        token: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
-        url: http://127.0.0.1:8200
         engine_mount_point: pki
         name: ToBeDeleted
         state: absent

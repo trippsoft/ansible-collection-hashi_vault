@@ -93,3 +93,17 @@ class VaultModule(HashiVaultModule):
             del filtered_params[key]
 
         return filtered_params
+
+
+    def convert_list_to_comma_separated_string(self, data: list[str]) -> str:
+        """
+        Convert a list to a comma-separated string.
+
+        Args:
+            data (list[str]): The list of strings to convert.
+
+        Returns:
+            str: The comma-separated string.
+        """
+
+        return ','.join(data)

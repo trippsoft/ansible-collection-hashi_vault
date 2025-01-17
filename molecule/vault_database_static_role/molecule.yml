@@ -1,9 +1,11 @@
 ---
 driver:
-  name: docker
+  name: containers
 platforms:
   - name: vault
     image: docker.io/hashicorp/vault:latest
+    # Podman 'pasta' driver does not work correctly. This should do nothing on Docker.
+    network: molecule
     capabilities:
       - SYS_ADMIN
       - IPC_LOCK
@@ -21,6 +23,8 @@ platforms:
   - name: postgres
     image: docker.io/postgres:latest
     shm_size: 128M
+    # Podman 'pasta' driver does not allow inter-container communication. This should do nothing on Docker.
+    network: molecule
     capabilities:
       - SYS_ADMIN
       - IPC_LOCK

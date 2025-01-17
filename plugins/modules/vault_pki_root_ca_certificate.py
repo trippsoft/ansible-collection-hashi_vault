@@ -9,22 +9,16 @@ module: vault_pki_root_ca_certificate
 version_added: 1.2.0
 author:
   - Jim Tarpley
-short_description: Configures a PKI secret engine root CA certificate in HashiCorp Vault.
-requirements:
-  - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html))
-  - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
+short_description: Configures a PKI root CA certificate in HashiCorp Vault
 description:
-  - Ensures that a PKI secret engine root CA certificate is configured in HashiCorp Vault.
-attributes:
-  check_mode:
-    support: full
-    details:
-      - This module supports check mode.
+  - Ensures a L(PKI secret engine root CA certificate,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/pki.html#generate-root)
+    is configured in HashiCorp Vault.
 extends_documentation_fragment:
   - trippsc2.hashi_vault.attributes
-  - trippsc2.hashi_vault.connection
   - trippsc2.hashi_vault.auth
+  - trippsc2.hashi_vault.connection
   - trippsc2.hashi_vault.engine_mount
+  - trippsc2.hashi_vault.requirements
 options:
   state:
     type: str
@@ -34,45 +28,50 @@ options:
       - present
       - absent
     description:
-      - Whether the root CA certificate should exist or not.
+      - The expected state of the root CA certificate.
   common_name:
     type: str
     required: false
     description:
       - The common name for the root CA certificate.
-      - Required if `state` is `present`.
+      - Required when O(state=present).
   export_private_key:
     type: bool
     required: false
     default: false
     description:
       - Whether to export the private key when creating the root certificate.
-      - If set to `true`, the private key will be returned in the response without no_log masking.
+      - If set to V(true), the private key will be returned in the response without no_log masking.
   alt_names:
     type: list
     required: false
     elements: str
     description:
-      - A list of Subject Alternative Names (SANs) to include in the certificate.
-      - These can be host names or email addresses; they will be parsed into their respective fields.
+      - The list of Subject Alternative Names (SANs) to include in the certificate.
+      - These can be host names (DNS names) or email addresses.
+      - If not provided, no SANs will be included.
   ip_sans:
     type: list
     required: false
     elements: str
     description:
-      - A list of IP Address Subject Alternative Names.
+      - The list of IP Address Subject Alternative Names (SANs).
+      - These can be IPv4 or IPv6 addresses.
+      - If not provided, no IP SANs will be included.
   uri_sans:
     type: list
     required: false
     elements: str
     description:
-      - A list of URI Subject Alternative Names.
+      - The list of URI Subject Alternative Names.
+      - If not provided, no URI SANs will be included.
   other_sans:
     type: list
     required: false
     elements: dict
     description:
-      - A list of custom OID/UTF8-string SANs.
+      - The list of custom OID/UTF8-string SANs.
+      - If not provided, no custom SANs will be included.
     suboptions:
       oid:
         type: str
@@ -96,119 +95,142 @@ options:
     type: str
     required: false
     description:
-      - The requested Time-To-Live if the certificate must be generated.
-      - This can be specified as a string duration with time suffix or as an integer number of seconds.
-      - This cannot be larger than the engine's max (or, if not set, the system max).
+      - The expiration duration of the root certificate to be generated.
+      - This value can be provided as a duration string, such as V(72h), or as an number of seconds.
+      - This must be less than or equal to the value of the C(max_ttl) parameter of the PKI secrets engine.
+      - If not provided, the value of the C(default_lease_ttl) parameter of the PKI secrets engine will be used.
   format:
     type: str
     required: false
+    default: pem
     choices: 
       - pem
       - der
       - pem_bundle
     description:
-      - Specifies the format for returned data.
-      - If `pem_bundle`, the `certificate` field will contain the private key (if exported) and
-        certificate, concatenated;
-      - if the issuing CA is not a Vault-derived self-signed root, this will be included as well.
-      - If not set, the default is `pem`.
+      - The format of the returned CA certificate data.
+      - If V(pem_bundle), the RV(certificate) field will contain the private key (if exported) and
+        certificate concatenated.
   private_key_format:
     type: str
+    default: der
     choice:
       - der
       - pkcs8
     description:
-      - Specifies the format for marshaling the private key.
-      - Defaults to `der` which will return either base64-encoded DER or PEM-encoded DER, depending on
-        the value of `format`.
-      - The other option is `pkcs8` which will return the key marshalled as PEM-encoded PKCS8
+      - The format for marshaling the private key.
+      - If set to V(der) and O(format=pem) or O(format=pem_bundle), the private key will be returned in PEM-encoded DER format.
+      - If set to V(der) and O(format=der), the private key will be returned in base64-encoded DER format.
+      - If set to V(pkcs8), the private key will be returned in PEM-encoded PKCS8 format.
   key_type:
     type: str
     required: false
+    default: rsa
     choices: 
       - rsa
       - ec
     description:
-      - Specifies the desired key type.
+      - The desired private key algorithm type.
+      - If not provided, the default is V(rsa).
   key_bits:
     type: int
     required: false
+    choices:
+      - 224
+      - 256
+      - 384
+      - 521
+      - 2048
+      - 3072
+      - 4096
+      - 8192
     description:
-      - Specifies the number of bits to use
+      - The number of bits to use for generated keys.
+      - If O(key_type=rsa), the allowed values are V(2048), V(3072), V(4096), and V(8192).
+      - If not provided and O(key_type=rsa), this defaults to V(2048) on new roles.
+      - If O(key_type=ec), the allowed values are V(224), V(256), V(384), and V(521).
+      - If not provided and O(key_type=ec), this defaults to V(256) on new roles.
   max_path_length:
     type: int
     required: false
     description:
-      - Specifies the maximum path length to encode in the generated certificate.
-      - A limit of `-1` means no limit.
-      - Unless the signing certificate has a maximum path length set, in which case the path length is set
-        to one less than that of the signing certificate.
-      - A limit of `0` means a literal path length of zero.
+      - The maximum path length to encode in the generated certificate.
+      - If set to V(-1), no limit is given.
+      - If set to V(0), no CA certificates can be signed by this CA.
+      - If not provided, the default is V(-1).
   exclude_cn_from_sans:
     type: bool
     required: false
     description:
-      - If set, the given `common_name` will not be included in DNS or Email Subject Alternate Names (as
-        appropriate).
-      - Useful if the CN is not a hostname or email address, but is instead some human-readable
-        identifier.
+      - Whether to exclude the common name from the Subject Alternate Names (SANs).
+      - If set to V(true), the given O(common_name) will not be added to the list of SANs.
+      - If set to V(false), the given O(common_name) will be added to the list of SANs and parsed as a
+        DNS name or email address.
   permitted_dns_domains:
     type: list
     required: false
     elements: str
     description:
-      - A list containing DNS domains for which certificates are allowed to be issued or signed by this CA
+      - The list of DNS domains for which certificates are allowed to be issued or signed by this CA
         certificate.
-      - Note that subdomains are allowed, as per U(https://tools.ietf.org/html/rfc5280#section-4.2.1.10).
+      - Note that subdomains are allowed, as per L(https://tools.ietf.org/html/rfc5280\#section-4.2.1.10).
+      - If not provided, all DNS domains are permitted.
   ou:
     type: list
     required: false
     elements: str
     description:
-      - Specifies the `OU` (OrganizationalUnit) values in the subject field of the resulting certificate.
+      - The Organizational Unit (OU) values to include in the CA certificate.
+      - If not provided, this defaults to an empty list on new roles.
   organization:
     type: list
     required: false
     elements: str
     description:
-      - Specifies the `O` (Organization) values in the subject field of the resulting certificate.
+      - The Organization (O) values to include in the CA certificate.
+      - If not provided, this defaults to an empty list on new roles.
   country:
     type: list
     required: false
     elements: str
     description:
-      - Specifies the `C` (Country) values in the subject field of the resulting certificate.
+      - The Country (C) values to include in the CA certificate.
+      - If not provided, this defaults to an empty list on new roles.
   locality:
     type: list
     required: false
     elements: str
     description:
-      - Specifies the `L` (Locality) values in the subject field of the resulting certificate.
+      - The Locality (L) values to include in the CA certificate.
+      - If not provided, this defaults to an empty list on new roles.
   province:
     type: list
     required: false
     elements: str
     description:
-      - Specifies the `ST` (Province) values in the subject field of the resulting certificate.
+      - The Province or State (ST) values to include in the CA certificate.
+      - If not provided, this defaults to an empty list on new roles.
   street_address:
     type: list
     required: false
     elements: str
     description:
-      - Specifies the Street Address values in the subject field of the resulting certificate.
+      - The Street Address values to include in the CA certificate.
+      - If not provided, this defaults to an empty list on new roles.
   postal_code:
     type: list
     required: false
     elements: str
     description:
-      - Specifies the Postal Code values in the subject field of the resulting certificate.
+      - The Postal Code values to include in the CA certificate.
+      - If not provided, this defaults to an empty list on new roles.
   serial_number:
     type: str
     required: false
     description:
-      - Specifies the Serial Number, if any.
-      - Otherwise Vault will generate a random serial for you.
+      - The serial number of the root CA certificate.
       - If you want more than one, specify alternative names in the alt_names map using OID 2.5.4.5.
+      - If not provided, HashiCorp Vault will generate a random serial number for the certificate.
 """
 
 EXAMPLES = r"""
@@ -238,25 +260,26 @@ certificate:
   type: str
   returned:
     - success
-    - state is present
+    - O(state=present)
 private_key:
   description: The private key for the root CA certificate.
   type: str
   returned:
-    - changed
-    - state is present
-    - export_private_key is true
+    - RV(changed=true)
+    - O(state=present)
+    - O(export_private_key=true)
 prev_certificate:
   description: The previous root CA certificate.
   type: str
   returned:
-    - changed
-    - state is absent
+    - RV(changed=true)
+    - O(state=absent)
 """
 
 import traceback
 
 from ..module_utils._timeparse import duration_str_to_seconds
+from ..module_utils._vault_cert import other_sans_to_list_of_str
 from ..module_utils._vault_module import VaultModule
 from ..module_utils._vault_module_error import VaultModuleError
 
@@ -288,7 +311,7 @@ class VaultPKIRootCACertificateModule(VaultModule):
         format=dict(type='str', required=False, choices=['pem', 'der', 'pem_bundle']),
         private_key_format=dict(type='str', required=False, choices=['der', 'pkcs8']),
         key_type=dict(type='str', required=False, choices=['rsa', 'ec']),
-        key_bits=dict(type='int', required=False),
+        key_bits=dict(type='int', required=False, choices=[224, 256, 384, 521, 2048, 3072, 4096, 8192]),
         max_path_length=dict(type='int', required=False),
         exclude_cn_from_sans=dict(type='bool', required=False),
         permitted_dns_domains=dict(type='list', required=False, elements='str'),
@@ -299,7 +322,7 @@ class VaultPKIRootCACertificateModule(VaultModule):
         province=dict(type='list', required=False, elements='str'),
         street_address=dict(type='list', required=False, elements='str'),
         postal_code=dict(type='list', required=False, elements='str'),
-        serial_number=dict(type='str', required=False)        
+        serial_number=dict(type='str', required=False)
     )
 
     DURATION_PARAMS = ['ttl']
@@ -318,7 +341,8 @@ class VaultPKIRootCACertificateModule(VaultModule):
             required_if=[
                 ('state', 'present', ['common_name'])
             ],
-            **kwargs)
+            **kwargs
+        )
 
 
     def read_certificate_data(self) -> str | None:
@@ -345,39 +369,6 @@ class VaultPKIRootCACertificateModule(VaultModule):
             return None
 
         return response
-
-
-    def other_sans_to_list_of_str(self, other_sans: list[dict]) -> list[str]:
-        """
-        Convert a list of other SANs in dictionary format to a list of strings.
-
-        Args:
-            other_sans (list[dict]): The list of other SANs in dictionary format.
-
-        Returns:
-            list[str]: The list of other SANs in string format.
-        """
-
-        converted = list()
-
-        for san in other_sans:
-            converted.append(f"{san['oid']};{san['type']}:{san['value']}")
-
-        return converted
-
-
-    def convert_list_to_comma_separated_string(self, data: list[str]) -> str:
-        """
-        Convert a list to a comma-separated string.
-
-        Args:
-            data (list[str]): The list of strings to convert.
-
-        Returns:
-            str: The comma-separated string.
-        """
-
-        return ','.join(data)
 
 
     def build_request_payload(self) -> dict:
@@ -407,7 +398,7 @@ class VaultPKIRootCACertificateModule(VaultModule):
                 continue
 
             if key == 'other_sans':
-                extra_params[key] = self.other_sans_to_list_of_str(value)
+                extra_params[key] = other_sans_to_list_of_str(value)
 
             if key in self.DURATION_PARAMS:
                 extra_params[key] = duration_str_to_seconds(value)

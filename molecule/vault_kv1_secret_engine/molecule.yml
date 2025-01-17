@@ -1,6 +1,6 @@
 ---
 driver:
-  name: docker
+  name: containers
 platforms:
   - name: vault
     image: docker.io/hashicorp/vault:latest

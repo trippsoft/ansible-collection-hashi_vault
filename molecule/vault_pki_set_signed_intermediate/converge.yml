@@ -1,0 +1,34 @@
+---
+- name: Converge
+  hosts:
+    - localhost
+  gather_facts: false
+  module_defaults:
+    group/trippsc2.hashi_vault.vault:
+      token: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
+      url: http://127.0.0.1:8200
+  tasks:
+    - name: Get signing CA certificate content
+      ansible.builtin.slurp:
+        src: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}/signing_ca.crt"
+      register: _signing_ca_cert
+
+    - name: Get certificate content
+      ansible.builtin.slurp:
+        src: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}/intermediate_ca.crt"
+      register: _intermediate_ca_cert
+
+    - name: Concatenate certificate content
+      ansible.builtin.set_fact:
+        _concatenated_certificate: "{{ _intermediate_ca_cert.content | b64decode }}{{ _signing_ca_cert.content | b64decode }}"
+
+    - name: Check PKI Intermediate CA Certificate CSR
+      check_mode: true
+      trippsc2.hashi_vault.vault_pki_set_signed_intermediate:
+        engine_mount_point: pki_int
+        certificate: "{{ _concatenated_certificate }}"
+
+    - name: Create PKI Intermediate CA Certificate CSR
+      trippsc2.hashi_vault.vault_pki_set_signed_intermediate:
+        engine_mount_point: pki_int
+        certificate: "{{ _concatenated_certificate }}"

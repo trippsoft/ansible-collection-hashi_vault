@@ -9,28 +9,21 @@ module: vault_database_secret_engine
 version_added: 1.0.0
 author:
   - Jim Tarpley
-short_description: Configures a Database secret engine in HashiCorp Vault.
-requirements:
-  - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html))
-  - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
+short_description: Configures a Database secret engine in HashiCorp Vault
 description:
-  - Creates a L(new Database secret engine,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html),
-    identified by its O(engine_mount_point) in HashiCorp Vault.
-attributes:
-  check_mode:
-    support: full
-    details:
-      - This module supports check mode.
+  - Ensures a L(Database secret engine,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html)
+    is configured as expected in HashiCorp Vault.
 extends_documentation_fragment:
   - trippsc2.hashi_vault.attributes
-  - trippsc2.hashi_vault.connection
   - trippsc2.hashi_vault.auth
+  - trippsc2.hashi_vault.connection
   - trippsc2.hashi_vault.engine_mount
+  - trippsc2.hashi_vault.requirements
   - trippsc2.hashi_vault.secret_engine
 """
 
 EXAMPLES = r"""
-- name: Create a new Database secret engine
+- name: Create Database secret engine
   trippsc2.hashi_vault.vault_database_secret_engine:
     url: https://vault:8201
     auth_method: userpass
@@ -39,8 +32,7 @@ EXAMPLES = r"""
     engine_mount_point: database
     state: present
 
-
-- name: Remove a database secret engine
+- name: Remove database secret engine
   trippsc2.hashi_vault.vault_database_secret_engine:
     url: https://vault:8201
     auth_method: userpass
@@ -55,7 +47,7 @@ config:
   type: dict
   returned:
     - success
-    - state is C(present)
+    - O(state=present)
   description:
     - The configuration of the secret engine.
   sample:
@@ -103,8 +95,7 @@ prev_config:
     - The previous configuration of the secret engine.
   type: dict
   returned:
-    - success
-    - changed
+    - RV(changed=true)
   sample:
     description: 'The database secret engine.'
     default_lease_ttl: 2678400

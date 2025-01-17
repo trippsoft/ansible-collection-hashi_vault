@@ -1,2 +1,39 @@
 ---
 requires_ansible: '>=2.15.0'
+
+action_groups:
+  vault:
+    - community.hashi_vault.vault_database_connection_configure
+    - community.hashi_vault.vault_database_connection_delete
+    - community.hashi_vault.vault_database_connection_read
+    - community.hashi_vault.vault_database_connection_reset
+    - community.hashi_vault.vault_database_connections_list
+    - community.hashi_vault.vault_database_role_create
+    - community.hashi_vault.vault_database_role_delete
+    - community.hashi_vault.vault_database_roles_list
+    - community.hashi_vault.vault_database_rotate_root_credentials
+    - community.hashi_vault.vault_database_static_role_create
+    - community.hashi_vault.vault_database_static_role_get_credentials
+    - community.hashi_vault.vault_database_static_role_read
+    - community.hashi_vault.vault_database_static_role_rotate_credentials
+    - community.hashi_vault.vault_database_static_roles_list
+    - community.hashi_vault.vault_kv1_get
+    - community.hashi_vault.vault_kv2_delete
+    - community.hashi_vault.vault_kv2_get
+    - community.hashi_vault.vault_kv2_write
+    - community.hashi_vault.vault_list
+    - community.hashi_vault.vault_login
+    - community.hashi_vault.vault_pki_generate_certificate
+    - community.hashi_vault.vault_read
+    - community.hashi_vault.vault_token_create
+    - community.hashi_vault.vault_write
+    - vault_database_secret_engine
+    - vault_database_static_role
+    - vault_kv1_secret_engine
+    - vault_kv2_secret_engine
+    - vault_pki_generate_intermediate_csr
+    - vault_pki_role
+    - vault_pki_root_ca_certificate
+    - vault_pki_secret_engine
+    - vault_pki_set_signed_intermediate
+    - vault_pki_sign_verbatim

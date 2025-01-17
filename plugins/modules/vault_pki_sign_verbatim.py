@@ -9,29 +9,23 @@ module: vault_pki_sign_verbatim
 version_added: 1.2.0
 author:
   - Jim Tarpley
-short_description: Signs a certificate signing request (CSR) verbatim in HashiCorp Vault.
-requirements:
-  - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html))
-  - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
+short_description: Signs a certificate signing request verbatim in HashiCorp Vault
 description:
-  - Signs a certificate signing request (CSR) verbatim in HashiCorp Vault.
+  - L(Signs a certificate signing request \(CSR\) verbatim,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/pki.html#sign-verbatim)
+    in HashiCorp Vault.
   - This module is not idempotent.
-attributes:
-  check_mode:
-    support: full
-    details:
-      - This module supports check mode.
 extends_documentation_fragment:
   - trippsc2.hashi_vault.attributes
-  - trippsc2.hashi_vault.connection
   - trippsc2.hashi_vault.auth
+  - trippsc2.hashi_vault.connection
   - trippsc2.hashi_vault.engine_mount
+  - trippsc2.hashi_vault.requirements
 options:
   role_name:
     type: str
     required: true
     description:
-      - The name of the role to use for signing the CSR.
+      - The name of the role to use when signing the certificate signing request (CSR).
   csr:
     type: str
     required: true
@@ -83,13 +77,14 @@ options:
     required: false
     default: false
     description:
-      - Whether to enforce the leaf certificate not after behavior.
+      - Whether to enforce the leaf certificate NotAfter field behavior.
   ttl:
     type: str
     required: false
     description:
-      - The time-to-live (TTL) of the signed certificate.
-      - This value can be supplied as a string with a time unit suffix (e.g., '1h', '2h', '1h30m') or as a number of seconds.
+      - The expiration duration of the signed certificate.
+      - This value can be provided as a duration string, such as V(72h), or as an number of seconds.
+      - If not provided, this defaults to the C(default_lease_ttl) value of the role.
   format:
     type: str
     required: false
@@ -99,25 +94,34 @@ options:
       - der
       - pem_bundle
     description:
-      - The format of the signed certificate.
+      - The format of the signed certificate.      
   not_after:
     type: str
     required: false
     description:
-      - The not after time of the signed certificate.
-      - This value is a UTC timestamp in YYYY-MM-ddTHH:MM:SSZ format.
+      - The latest date and time at which the signed certificate is valid.
+      - This value is a UTC timestamp in C(YYYY-MM-ddTHH:MM:SSZ) format.
+      - If not provided, this defaults to the C(not_after) value on the role.
   signature_bits:
     type: int
     required: false
+    choices:
+      - 256
+      - 256
+      - 384
+      - 512
     description:
-      - The number of bits in the signature.
-      - This defaults to the appropriate value for the key type.
+      - The signature algorithm bit length for the signed certificates.
+      - Should only be provided when O(key_type=rsa).
+      - If not provided, this defaults to the C(signature_bits) on the role.
   uss_pss:
     type: bool
     required: false
     default: false
     description:
-      - Whether to use the RSASSA-PSS signature algorithm.
+      - Whether to use the Probabilistic Signature Scheme (PSS) for RSA keys.
+      - Should only be provided when O(key_type=rsa).
+      - If not provided, this defaults to the C(use_pss) on the role.
   remove_roots_from_chain:
     type: bool
     required: false
@@ -130,7 +134,7 @@ options:
     default: []
     elements: str
     description:
-      - A list of user IDs to include in the signed certificate.
+      - The list of user IDs (OID 0.9.2342.19200300.100.1.1) to include in the signed certificate.
 """
 
 EXAMPLES = r"""
@@ -148,19 +152,27 @@ EXAMPLES = r"""
 RETURN = r"""
 certificate:
   type: str
+  returned:
+    - success
   description:
     - The signed certificate.
 issuing_ca:
   type: str
+  returned:
+    - success
   description:
     - The issuing certificate authority (CA).
 ca_chain:
   type: list
   elements: str
+  returned:
+    - success
   description:
     - The certificate chain.
 serial_number:
   type: str
+  returned:
+    - success
   description:
     - The serial number of the signed certificate.
 """

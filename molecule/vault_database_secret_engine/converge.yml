@@ -3,18 +3,18 @@
   hosts:
     - localhost
   gather_facts: false
+  module_defaults:
+    group/trippsc2.hashi_vault.vault:
+      token: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
+      url: http://127.0.0.1:8200
   tasks:
     - name: Create Database secret engine
       trippsc2.hashi_vault.vault_database_secret_engine:
-        token: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
-        url: http://127.0.0.1:8200
         engine_mount_point: test_1
         state: present
 
     - name: Modify Database secret engine
       trippsc2.hashi_vault.vault_database_secret_engine:
-        token: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
-        url: http://127.0.0.1:8200
         engine_mount_point: test_1
         state: present
         default_lease_ttl: 1h
@@ -33,8 +33,6 @@
 
     - name: Create Database secret engine with arguments
       trippsc2.hashi_vault.vault_database_secret_engine:
-        token: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
-        url: http://127.0.0.1:8200
         engine_mount_point: test_2
         state: present
         default_lease_ttl: 1h
@@ -53,14 +51,10 @@
 
     - name: Remove Database secret engine
       trippsc2.hashi_vault.vault_database_secret_engine:
-        token: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
-        url: http://127.0.0.1:8200
         engine_mount_point: existing_database
         state: absent
 
     - name: Replace KV1 secret engine with Database secret engine
       trippsc2.hashi_vault.vault_database_secret_engine:
-        token: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
-        url: http://127.0.0.1:8200
         engine_mount_point: existing_kv1_1
         replace_different_backend_type: true

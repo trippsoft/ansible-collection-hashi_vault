@@ -13,9 +13,11 @@ class ModuleDocFragment(object):
     DOCUMENTATION = r"""
     options: {}
     attributes:
-        check_mode:
-          description:
-            - Can run in C(check_mode) and return changed status prediction without modifying target.
+      check_mode:
+        support: full
+        description:
+          - Can run in C(check_mode) and return changed status prediction without modifying target.
+          - Does not test whether permissions are sufficient to perform the operation.
     """
 
     ACTION_GROUP = r"""
@@ -37,4 +39,14 @@ class ModuleDocFragment(object):
         support: full
         details:
           - This module is "read only" and operates the same regardless of check mode.
+    """
+
+    # Should be used together with the standard fragment
+    CHECK_MODE_NONE = r"""
+    options: {}
+    attributes:
+      check_mode:
+        support: none
+        details:
+          - Does not support check mode.
     """

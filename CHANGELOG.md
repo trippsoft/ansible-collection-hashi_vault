@@ -2,6 +2,47 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.5.0] - 2025-01-15
+
+### Collection
+
+- *vault* action group added for all **community.hashi_vault** collection module plugins and all **trippsc2.hashi_vault** collection module plugins. This was done to allow for shared default connection arguments to supplied for both collections.
+- *vault_pki_generate_intermediate_csr* module plugin added.
+- *vault_pki_set_signed_intermediate* module plugin added.
+- Revised colllection README documentation.
+
+### Module plugin - vault_database_secret_engine
+
+- Revised plugin documentation.
+
+### Module plugin - vault_database_static_role
+
+- Revised plugin documentation.
+
+### Module plugin - vault_kv1_secret_engine
+
+- Revised plugin documentation.
+
+### Module plugin - vault_kv2_secret_engine
+
+- Revised plugin documentation.
+
+### Module plugin - vault_pki_role
+
+- Revised plugin documentation.
+
+### Module plugin - vault_pki_root_ca_certificate
+
+- Revised plugin documentation.
+
+### Module plugin - vault_pki_secret_engine
+
+- Revised plugin documentation.
+
+### Module plugin - vault_pki_sign_verbatim
+
+- Revised plugin documentation.
+
 ## [1.4.3] - 2025-01-08
 
 ### Collection

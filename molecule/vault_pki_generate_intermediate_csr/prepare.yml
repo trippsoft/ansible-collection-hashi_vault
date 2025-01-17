@@ -12,9 +12,3 @@
         engine_mount_point: pki
         max_lease_ttl: 157680000
         state: present
-
-    - name: Create PKI Role to be deleted
-      trippsc2.hashi_vault.vault_pki_role:
-        engine_mount_point: pki
-        name: ToBeDeleted
-        state: present

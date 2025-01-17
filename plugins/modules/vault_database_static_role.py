@@ -9,29 +9,22 @@ module: vault_database_static_role
 version_added: 1.3.0
 author:
   - Jim Tarpley
-short_description: Configures a Database static role in HashiCorp Vault.
-requirements:
-  - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html))
-  - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
+short_description: Configures a Database static role in HashiCorp Vault
 description:
-  - Creates a L(new Database static role,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#create-static-role),
-    identified by the O(engine_mount_point) and O(name) in HashiCorp Vault.
-attributes:
-  check_mode:
-    support: full
-    details:
-      - This module supports check mode.
+  - Ensures a L(Database static role,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#create-static-role)
+    is configured as expected in HashiCorp Vault.
 extends_documentation_fragment:
   - trippsc2.hashi_vault.attributes
-  - trippsc2.hashi_vault.connection
   - trippsc2.hashi_vault.auth
+  - trippsc2.hashi_vault.connection
   - trippsc2.hashi_vault.engine_mount
+  - trippsc2.hashi_vault.requirements
 options:
   name:
     type: str
     required: true
     description:
-      - The name of the role to create.
+      - The name of the role to configured.
   state:
     type: str
     required: false
@@ -40,37 +33,37 @@ options:
       - present
       - absent
     description:
-      - Whether the role should exist or not.
+      - The expected state of the role.
   db_name:
     type: str
     required: false
     description:
-      - The name of the database connection to associate with the role.
-      - This is required when I(state=present).
+      - Required if O(state=present).
+      - The name of the database connection to use for this role.
   db_username:
     type: str
     required: false
     description:
-      - The username to use when connecting to the database.
-      - This is required when I(state=present).
+      - Required if O(state=present).
+      - The database username to use when connecting to the database system.
   rotation_statements:
     type: list
     required: false
     elements: str
     description:
       - A list of SQL statements to execute when rotating the database credentials.
-      - This defaults to an empty list on new roles.
+      - If not provided, this defaults to an empty list on new roles.
   rotation_period:
     type: str
     required: false
     description:
       - The duration between rotations.
       - This value can be a duration string or a number of seconds.
-      - This defaults to 86400 on new roles.
+      - If not provided, this defaults to V(86400s) on new roles.
 """
 
 EXAMPLES = r"""
-- name: Create a new database static role
+- name: Create database static role
   trippsc2.hashi_vault.vault_database_static_role:
     url: https://vault:8201
     auth_method: userpass
@@ -84,7 +77,7 @@ EXAMPLES = r"""
     rotation_period: 30d
     state: present
 
-- name: Remove a database static role
+- name: Remove database static role
   trippsc2.hashi_vault.vault_database_secret_engine:
     url: https://vault:8201
     auth_method: userpass
@@ -100,55 +93,49 @@ config:
   type: dict
   returned:
     - success
-    - state is present
+    - O(state=present)
   description:
     - The configuration of the role.
   contains:
     db_name:
       type: str
-      returned:
-        - changed
-        - state is absent
       description:
         - The name of the database connection to associate with the role.
     db_username:
       type: str
-      returned:
-        - changed
-        - state is absent
       description:
         - The username to use when connecting to the database.
     rotation_statements:
       type: list
       elements: str
-      returned:
-        - always
       description:
         - The SQL statements to execute when rotating the database credentials.
     rotation_period:
       type: int
-      returned:
-        - always
       description:
         - The duration between rotations.
 prev_config:
   type: dict
   returned:
-    - changed
+    - RV(changed=true)
   description:
     - The previous configuration of the role.
   contains:
+    db_name:
+      type: str
+      description:
+        - The name of the database connection to associate with the role.
+    db_username:
+      type: str
+      description:
+        - The username to use when connecting to the database.
     rotation_statements:
       type: list
       elements: str
-      returned:
-        - always
       description:
         - The SQL statements to execute when rotating the database credentials.
     rotation_period:
       type: int
-      returned:
-        - always
       description:
         - The duration between rotations.
 """

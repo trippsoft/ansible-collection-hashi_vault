@@ -10,22 +10,15 @@ version_added: 1.0.0
 author:
   - Jim Tarpley
 short_description: Configures a KV version 2 secret engine in HashiCorp Vault.
-requirements:
-  - C(hvac) (L(Python library,https://hvac.readthedocs.io/en/stable/overview.html))
-  - For detailed requirements, see R(the collection requirements page,ansible_collections.community.hashi_vault.docsite.user_guide.requirements).
 description:
-  - Creates a L(new KV version 2 secret engine,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/kv_v2.html),
-    identified by its O(engine_mount_point) in HashiCorp Vault.
-attributes:
-  check_mode:
-    support: full
-    details:
-      - This module supports check mode.
+  - Ensures a L(KV version 2 secret engine,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/kv_v2.html)
+    is configured as expected in HashiCorp Vault.
 extends_documentation_fragment:
   - trippsc2.hashi_vault.attributes
-  - trippsc2.hashi_vault.connection
   - trippsc2.hashi_vault.auth
+  - trippsc2.hashi_vault.connection
   - trippsc2.hashi_vault.engine_mount
+  - trippsc2.hashi_vault.requirements
   - trippsc2.hashi_vault.secret_engine
 options:
   max_versions:
@@ -33,16 +26,21 @@ options:
     required: false
     description:
       - The maximum number of versions to keep for each secret.
+      - If set to V(0), the 10 versions will be kept.
+      - If not provided, this defaults to V(10) on new secret engines.
   cas_required:
     type: bool
     required: false
     description:
-      - Whether to require the use of a CAS (Check-And-Set) parameter for write operations.
+      - Whether to require the use of a Check-And-Set (CAS) parameter for write operations.
   delete_version_after:
     type: str
     required: false
     description:
       - The duration after which a version is deleted.
+      - This value can be provided as a duration string, such as V(72h), or as an number of seconds.
+      - If set to V(0), versions will not be deleted.
+      - If not provided, this will default to V(0) on new secret engines.
 """
 
 EXAMPLES = r"""
@@ -71,17 +69,20 @@ config:
   type: dict
   returned:
     - success
-    - state is C(present)
+    - O(state=present)
   description:
     - The configuration of the secret engine.
   sample:
-    description: 'The KV1 secret engine.'
+    description: 'The KV2 secret engine.'
     default_lease_ttl: 2678400
     max_lease_ttl: 2678400
     audit_non_hmac_request_keys: []
     audit_non_hmac_response_keys: []
     listing_visibility: unauth
     passthrough_request_headers: []
+    max_versions: 10
+    cas_required: false
+    delete_version_after: 0
   contains:
     description:
       type: str
@@ -121,7 +122,7 @@ config:
     cas_required:
       type: bool
       description:
-        - Whether to require the use of a CAS (Check-And-Set) parameter for write operations.
+        - Whether to require the use of a Check-And-Set (CAS) parameter for write operations.
     delete_version_after:
       type: str
       description:
@@ -131,16 +132,18 @@ prev_config:
     - The previous configuration of the secret engine.
   type: dict
   returned:
-    - success
-    - changed
+    - RV(changed=true)
   sample:
-    description: 'The KV1 secret engine.'
+    description: 'The KV2 secret engine.'
     default_lease_ttl: 2678400
     max_lease_ttl: 2678400
     audit_non_hmac_request_keys: []
     audit_non_hmac_response_keys: []
     listing_visibility: unauth
     passthrough_request_headers: []
+    max_versions: 10
+    cas_required: false
+    delete_version_after: 0
   contains:
     description:
       type: str
@@ -173,6 +176,18 @@ prev_config:
       elements: str
       description:
         - The list of request headers to pass through.
+    max_versions:
+      type: int
+      description:
+        - The maximum number of versions to keep for each secret.
+    cas_required:
+      type: bool
+      description:
+        - Whether to require the use of a Check-And-Set (CAS) parameter for write operations.
+    delete_version_after:
+      type: str
+      description:
+        - The duration after which a version is deleted.
 """
 
 import hvac
