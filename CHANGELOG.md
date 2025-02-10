@@ -2,6 +2,48 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.5.1] - 2025-02-09
+
+### vault_database_secret_engine Module plugin
+
+- Made several code quality and style changes to the module that were recommended by the Ansible sanity tests.
+
+### vault_database_static_role Module plugin
+
+- Made several code quality and style changes to the module that were recommended by the Ansible sanity tests.
+
+### vault_kv1_secret_engine Module plugin
+
+- Made several code quality and style changes to the module that were recommended by the Ansible sanity tests.
+
+### vault_kv2_secret_engine Module plugin
+
+- Made several code quality and style changes to the module that were recommended by the Ansible sanity tests.
+
+### vault_pki_generate_intermediate_csr Module plugin
+
+- Made several code quality and style changes to the module that were recommended by the Ansible sanity tests.
+
+### vault_pki_role Module plugin
+
+- Made several code quality and style changes to the module that were recommended by the Ansible sanity tests.
+
+### vault_pki_root_ca_certificate Module plugin
+
+- Made several code quality and style changes to the module that were recommended by the Ansible sanity tests.
+
+### vault_pki_secret_engine Module plugin
+
+- Made several code quality and style changes to the module that were recommended by the Ansible sanity tests.
+
+### vault_pki_set_signed_intermediate Module plugin
+
+- Made several code quality and style changes to the module that were recommended by the Ansible sanity tests.
+
+### vault_pki_sign_verbatim Module plugin
+
+- Made several code quality and style changes to the module that were recommended by the Ansible sanity tests.
+
 ## [1.5.0] - 2025-01-15
 
 ### Collection
@@ -11,35 +53,35 @@ All notable changes to this project will be documented in this file.
 - *vault_pki_set_signed_intermediate* module plugin added.
 - Revised colllection README documentation.
 
-### Module plugin - vault_database_secret_engine
+### vault_database_secret_engine Module plugin
 
 - Revised plugin documentation.
 
-### Module plugin - vault_database_static_role
+### vault_database_static_role Module plugin
 
 - Revised plugin documentation.
 
-### Module plugin - vault_kv1_secret_engine
+### vault_kv1_secret_engine Module plugin
 
 - Revised plugin documentation.
 
-### Module plugin - vault_kv2_secret_engine
+### vault_kv2_secret_engine Module plugin
 
 - Revised plugin documentation.
 
-### Module plugin - vault_pki_role
+### vault_pki_role Module plugin
 
 - Revised plugin documentation.
 
-### Module plugin - vault_pki_root_ca_certificate
+### vault_pki_root_ca_certificate Module plugin
 
 - Revised plugin documentation.
 
-### Module plugin - vault_pki_secret_engine
+### vault_pki_secret_engine Module plugin
 
 - Revised plugin documentation.
 
-### Module plugin - vault_pki_sign_verbatim
+### vault_pki_sign_verbatim Module plugin
 
 - Revised plugin documentation.
 
@@ -50,11 +92,11 @@ All notable changes to this project will be documented in this file.
 - Added Changelog.
 - Updated collection README documentation.
 
-### Module plugin - vault_kv2_secret_engine
+### vault_kv2_secret_engine Module plugin
 
 - Fixed the module documentation copied from another module and not changed.
 
-### Module plugin - vault_pki_role
+### vault_pki_role Module plugin
 
 - Fixed the module documentation copied from another module and not changed.
 
@@ -66,7 +108,7 @@ All notable changes to this project will be documented in this file.
 
 ## [1.4.1] - 2024-08-03
 
-### Role - signed_certificate
+### signed_certificate Role
 
 - Added validation for `cert_certificate_owner`, `cert_certificate_group`, `cert_ca_chain_owner`, and `cert_ca_chain_group` variables.
 
@@ -76,13 +118,13 @@ All notable changes to this project will be documented in this file.
 
 - Changed version requirement for **trippsc2.general** collection dependency from `>=2.0.0` to `>=2.4.0`.
 
-### Role - signed_certificate
+### signed_certificate Role
 
 - Removed defaults for the `cert_private_key_path`, `cert_certificate_path`, and `cert_ca_chain_path` variables and made them required to prevent unexpected behavior.
 
 ## [1.3.8] - 2024-07-12
 
-### Role - signed_certificate
+### signed_certificate Role
 
 - Added the `vault_url` and `vault_token` variables to the role argument spec.
 - Updated documentation and role metadata for readability.
@@ -94,41 +136,41 @@ All notable changes to this project will be documented in this file.
 
 - Updated manifest file to ensure that molecule tests are not included in releases.
 
-### Role - signed_certificate
+### signed_certificate Role
 
 - Added step to add the `cert_private_key_owner` user to the `ssl-cert` group on Debian-based machines.
 
 ## [1.3.6] - 2024-07-02
 
-### Role - testing_ca
+### testing_ca Role
 
 - Added missing step to save the CA certificate to a file before copying it, fixing a breaking bug.
 
 ## [1.3.5] - 2024-07-02
 
-### Role - testing_ca
+### testing_ca Role
 
 - Added steps to copy the CA certificate to the system certificate authority bundle.
 
 ## [1.3.4] - 2024-06-30
 
-### Role - testing_ca
+### testing_ca Role
 
 - Fixed documentation to properly include role dependencies.
 
 ## [1.3.3] - 2024-06-30
 
-### Role - signed_certificate
+### signed_certificate Role
 
 - Changed references to Red Hat Enterprise Linux (RHEL) to more accurately reference Enterprise Linux (EL) to convey the intention to support derivatives (Rocky/AlmaLinux/etc.)
 
-### Role - testing
+### testing Role
 
 - Changed references to Red Hat Enterprise Linux (RHEL) to more accurately reference Enterprise Linux (EL) to convey the intention to support derivatives (Rocky/AlmaLinux/etc.)
 
 ## [1.3.1] - 2024-06-28
 
-### Role - signed_certificate
+### signed_certificate Role
 
 - Fixed short description of role.
 
@@ -148,25 +190,25 @@ All notable changes to this project will be documented in this file.
 - *signed_certificate* role added.
 - *testing_ca* role added.
 
-### Module plugin - vault_database_secret_engine
+### vault_database_secret_engine Module plugin
 
 - Refactored module to allow for code reuse.
 
-### Module plugin - vault_kv1_secret_engine
+### vault_kv1_secret_engine Module plugin
 
 - Refactored module to allow for code reuse.
 
-### Module plugin - vault_kv2_secret_engine
+### vault_kv2_secret_engine Module plugin
 
 - Refactored module to allow for code reuse.
 
-### Module plugin - vault_pki_secret_engine
+### vault_pki_secret_engine Module plugin
 
 - Refactored module to allow for code reuse.
 
 ## [1.1.3] - 2024-06-20
 
-### Role - testing
+### testing Role
 
 - Updated documentation and role metadata for readability.
 
