@@ -37,7 +37,7 @@ class ModuleDocFragment(object):
     attributes:
       check_mode:
         support: full
-        details:
+        description:
           - This module is "read only" and operates the same regardless of check mode.
     """
 
@@ -47,6 +47,6 @@ class ModuleDocFragment(object):
     attributes:
       check_mode:
         support: none
-        details:
+        description:
           - Does not support check mode.
     """

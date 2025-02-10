@@ -1,8 +1,6 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 from __future__ import (absolute_import, division, print_function)
-__metaclass__ = type
 
 SECONDS_PER_MINUTE = 60
 SECONDS_PER_HOUR = 60 * SECONDS_PER_MINUTE
@@ -12,7 +10,7 @@ import re
 import math
 
 
-def duration_str_to_seconds(duration:str, default:int=0) -> int:
+def duration_str_to_seconds(duration: str, default: int = 0) -> int:
     """
     Convert a duration string to seconds.
 
@@ -33,7 +31,6 @@ def duration_str_to_seconds(duration:str, default:int=0) -> int:
         return int(math.floor(float(duration)))
     except ValueError:
         pass
-    
 
     days_regex = re.compile(r'(\d+\.?\d*)d')
     hours_regex = re.compile(r'(\d+\.?\d*)h')
@@ -64,7 +61,7 @@ def duration_str_to_seconds(duration:str, default:int=0) -> int:
                 total_seconds += int(math.floor(float(hours_match.group(1))) * SECONDS_PER_HOUR)
             except ValueError:
                 pass
-    
+
     if minutes_match is not None:
         try:
             total_seconds += int(int(minutes_match.group(1)) * SECONDS_PER_MINUTE)

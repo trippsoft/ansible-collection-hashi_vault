@@ -3,39 +3,18 @@
 
 from __future__ import (absolute_import, division, print_function)
 
-__metaclass__ = type
-
-DOCUMENTATION = r"""
-module: vault_pki_set_signed_intermediate
-version_added: 1.5.0
-author:
-  - Jim Tarpley
-short_description: Sets a signed intermediate CA certificate for a PKI secret engine
-description:
-  - L(Sets a signed intermediate CA certificate,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/pki.html#set-signed-intermediate)
-    for a PKI secret engine.
-extends_documentation_fragment:
-  - trippsc2.hashi_vault.attributes
-  - trippsc2.hashi_vault.auth
-  - trippsc2.hashi_vault.connection
-  - trippsc2.hashi_vault.engine_mount
-  - trippsc2.hashi_vault.requirements
-options:
-  certificate:
-    type: str
-    required: true
-    description:
-      - The PEM-encoded signed intermediate CA certificate.
-      - This can include the signing certificate chain.
-"""
-
-EXAMPLES = r"""
-"""
-
-RETURN = r"""
-"""
-
 import traceback
+
+try:
+    import hvac
+except ImportError:
+    HAS_HVAC = False
+    HVAC_IMPORT_ERROR = traceback.format_exc()
+else:
+    HAS_HVAC = True
+    HVAC_IMPORT_ERROR = None
+
+from ansible.module_utils.basic import missing_required_lib
 
 from ..module_utils._vault_module import VaultModule
 from ..module_utils._vault_module_error import VaultModuleError
@@ -52,7 +31,6 @@ class VaultPKISetSignedIntermediateModule(VaultModule):
             argument_spec=argument_spec,
             supports_check_mode=True,
         )
-
 
     def get_existing_certificate(self) -> str:
         """
@@ -77,8 +55,7 @@ class VaultPKISetSignedIntermediateModule(VaultModule):
             )
 
         return response
-    
-    
+
     def build_request_payload(self) -> dict:
         """
         Build the request payload for the module.
@@ -101,6 +78,11 @@ class VaultPKISetSignedIntermediateModule(VaultModule):
 def run_module():
 
     module = VaultPKISetSignedIntermediateModule()
+
+    if not HAS_HVAC:
+        module.fail_json(
+            msg=missing_required_lib('hvac'),
+            exception=HVAC_IMPORT_ERROR)
 
     module.initialize_client()
 

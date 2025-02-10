@@ -2,196 +2,19 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import (absolute_import, division, print_function)
-__metaclass__ = type
 
-DOCUMENTATION = r"""
-module: vault_kv2_secret_engine
-version_added: 1.0.0
-author:
-  - Jim Tarpley
-short_description: Configures a KV version 2 secret engine in HashiCorp Vault.
-description:
-  - Ensures a L(KV version 2 secret engine,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/kv_v2.html)
-    is configured as expected in HashiCorp Vault.
-extends_documentation_fragment:
-  - trippsc2.hashi_vault.attributes
-  - trippsc2.hashi_vault.auth
-  - trippsc2.hashi_vault.connection
-  - trippsc2.hashi_vault.engine_mount
-  - trippsc2.hashi_vault.requirements
-  - trippsc2.hashi_vault.secret_engine
-options:
-  max_versions:
-    type: int
-    required: false
-    description:
-      - The maximum number of versions to keep for each secret.
-      - If set to V(0), the 10 versions will be kept.
-      - If not provided, this defaults to V(10) on new secret engines.
-  cas_required:
-    type: bool
-    required: false
-    description:
-      - Whether to require the use of a Check-And-Set (CAS) parameter for write operations.
-  delete_version_after:
-    type: str
-    required: false
-    description:
-      - The duration after which a version is deleted.
-      - This value can be provided as a duration string, such as V(72h), or as an number of seconds.
-      - If set to V(0), versions will not be deleted.
-      - If not provided, this will default to V(0) on new secret engines.
-"""
-
-EXAMPLES = r"""
-- name: Create a new KV version 2 secret engine
-  trippsc2.hashi_vault.vault_kv2_secret_engine:
-    url: https://vault:8201
-    auth_method: userpass
-    username: '{{ user }}'
-    password: '{{ passwd }}'
-    engine_mount_point: secret
-    state: present
-
-
-- name: Remove a KV version 2 secret engine
-  trippsc2.hashi_vault.vault_kv2_secret_engine:
-    url: https://vault:8201
-    auth_method: userpass
-    username: '{{ user }}'
-    password: '{{ passwd }}'
-    engine_mount_point: secret
-    state: absent
-"""
-
-RETURN = r"""
-config:
-  type: dict
-  returned:
-    - success
-    - O(state=present)
-  description:
-    - The configuration of the secret engine.
-  sample:
-    description: 'The KV2 secret engine.'
-    default_lease_ttl: 2678400
-    max_lease_ttl: 2678400
-    audit_non_hmac_request_keys: []
-    audit_non_hmac_response_keys: []
-    listing_visibility: unauth
-    passthrough_request_headers: []
-    max_versions: 10
-    cas_required: false
-    delete_version_after: 0
-  contains:
-    description:
-      type: str
-      description:
-        - The description of the secret engine.
-    default_lease_ttl:
-      type: int
-      description:
-        - The default lease TTL of the secret engine in seconds.
-    max_lease_ttl:
-      type: int
-      description:
-        - The maximum lease TTL of the secret engine in seconds.
-    audit_non_hmac_request_keys:
-      type: list
-      elements: str
-      description:
-        - The list of non-HMAC request keys to audit.
-    audit_non_hmac_response_keys:
-      type: list
-      elements: str
-      description:
-        - The list of non-HMAC response keys to audit.
-    listing_visibility:
-      type: str
-      description:
-        - The listing visibility of the secret engine.
-    passthrough_request_headers:
-      type: list
-      elements: str
-      description:
-        - The list of request headers to pass through.
-    max_versions:
-      type: int
-      description:
-        - The maximum number of versions to keep for each secret.
-    cas_required:
-      type: bool
-      description:
-        - Whether to require the use of a Check-And-Set (CAS) parameter for write operations.
-    delete_version_after:
-      type: str
-      description:
-        - The duration after which a version is deleted.
-prev_config:
-  description:
-    - The previous configuration of the secret engine.
-  type: dict
-  returned:
-    - RV(changed=true)
-  sample:
-    description: 'The KV2 secret engine.'
-    default_lease_ttl: 2678400
-    max_lease_ttl: 2678400
-    audit_non_hmac_request_keys: []
-    audit_non_hmac_response_keys: []
-    listing_visibility: unauth
-    passthrough_request_headers: []
-    max_versions: 10
-    cas_required: false
-    delete_version_after: 0
-  contains:
-    description:
-      type: str
-      description:
-        - The description of the secret engine.
-    default_lease_ttl:
-      type: int
-      description:
-        - The default lease TTL of the secret engine in seconds.
-    max_lease_ttl:
-      type: int
-      description:
-        - The maximum lease TTL of the secret engine in seconds.
-    audit_non_hmac_request_keys:
-      type: list
-      elements: str
-      description:
-        - The list of non-HMAC request keys to audit.
-    audit_non_hmac_response_keys:
-      type: list
-      elements: str
-      description:
-        - The list of non-HMAC response keys to audit.
-    listing_visibility:
-      type: str
-      description:
-        - The listing visibility of the secret engine.
-    passthrough_request_headers:
-      type: list
-      elements: str
-      description:
-        - The list of request headers to pass through.
-    max_versions:
-      type: int
-      description:
-        - The maximum number of versions to keep for each secret.
-    cas_required:
-      type: bool
-      description:
-        - Whether to require the use of a Check-And-Set (CAS) parameter for write operations.
-    delete_version_after:
-      type: str
-      description:
-        - The duration after which a version is deleted.
-"""
-
-import hvac
 import traceback
+
+try:
+    import hvac
+except ImportError:
+    HAS_HVAC = False
+    HVAC_IMPORT_ERROR = traceback.format_exc()
+else:
+    HAS_HVAC = True
+    HVAC_IMPORT_ERROR = None
+
+from ansible.module_utils.basic import missing_required_lib
 
 from ..module_utils._timeparse import duration_str_to_seconds
 from ..module_utils._vault_module_error import VaultModuleError
@@ -202,7 +25,7 @@ class VaultKV2SecretEngineModule(VaultSecretEngineModule):
     """
     Vault KV version 2 secret engine module.
     """
-    
+
     KV2_ARGSPEC = dict(
         max_versions=dict(type='int', required=False, default=None),
         cas_required=dict(type='bool', required=False, default=None),
@@ -213,7 +36,7 @@ class VaultKV2SecretEngineModule(VaultSecretEngineModule):
             self,
             *args,
             **kwargs):
-        
+
         argspec = self.KV2_ARGSPEC.copy()
 
         super(VaultKV2SecretEngineModule, self).__init__(
@@ -222,7 +45,6 @@ class VaultKV2SecretEngineModule(VaultSecretEngineModule):
             backend_type='kv-v2',
             **kwargs
         )
-
 
     def get_defined_kv2_config_params(self) -> dict:
         """
@@ -246,9 +68,8 @@ class VaultKV2SecretEngineModule(VaultSecretEngineModule):
 
         if 'delete_version_after' in filtered_params:
             filtered_params['delete_version_after'] = duration_str_to_seconds(filtered_params['delete_version_after'])
-        
-        return filtered_params
 
+        return filtered_params
 
     def format_kv2_config_data(self, config_data: dict):
         """
@@ -268,9 +89,9 @@ class VaultKV2SecretEngineModule(VaultSecretEngineModule):
                 formatted_config_data[key] = duration_str_to_seconds(value, 0)
             else:
                 formatted_config_data[key] = value
-        
+
         return formatted_config_data
-    
+
     def get_formatted_kv2_config(self) -> dict | None:
         """
         Read the configuration of the KV version 2 secret engine.
@@ -300,9 +121,8 @@ class VaultKV2SecretEngineModule(VaultSecretEngineModule):
             )
 
         formatted_config: dict = self.format_kv2_config_data(config.get('data', {}))
-        
-        return formatted_config
 
+        return formatted_config
 
     def compare_kv2_config(self, previous_config: dict, desired_config: dict) -> dict:
         """
@@ -311,7 +131,7 @@ class VaultKV2SecretEngineModule(VaultSecretEngineModule):
         Args:
             previous_config (dict): The previous configuration of the KV version 2 secret engine.
             desired_config (dict): The desired configuration of the KV version 2 secret engine.
-        
+
         Returns:
             dict: The differences between the previous and desired configurations.
         """
@@ -336,7 +156,6 @@ class VaultKV2SecretEngineModule(VaultSecretEngineModule):
                     config_diff[key] = value
 
         return config_diff
-
 
     def configure_kv2_secret_engine(self, config: dict) -> None:
         """
@@ -380,7 +199,7 @@ def ensure_engine_absent(
         module (VaultKV2SecretEngineModule): The module object.
         previous_mount_config (dict): The previous configuration of the secret engine.
         previous_kv2_config (dict): The previous configuration of the KV version 2 secret engine.
-    
+
     Returns:
         dict: The result of the operation to be sent to Ansible.
     """
@@ -389,16 +208,16 @@ def ensure_engine_absent(
 
     if previous_mount_config is None:
         return dict(changed=False)
-    
+
     if previous_kv2_config is None:
         module.handle_error(
             VaultModuleError(
                 message=f"The secret engine at '{engine_mount_point}' is not a KV version 2 secret engine"
             )
         )
-    
+
     module.disable_mount()
-    
+
     return dict(changed=True, prev_config=dict(**previous_mount_config, **previous_kv2_config))
 
 
@@ -417,7 +236,7 @@ def ensure_engine_present(
         previous_kv2_config (dict): The previous configuration of the KV version 2 secret engine.
         desired_mount_config (dict): The desired configuration of the secret engine.
         desired_kv2_config (dict): The desired configuration of the KV version 2 secret engine.
-    
+
     Returns:
         dict: The result of the operation to be sent to Ansible.
     """
@@ -426,9 +245,9 @@ def ensure_engine_present(
     replace_non_kv2_secret_engine: bool = module.params['replace_different_backend_type']
 
     if previous_mount_config is None:
-        
+
         description = desired_mount_config.pop('description', None)
-        
+
         module.enable_mount(desired_mount_config)
         module.configure_kv2_secret_engine(desired_kv2_config)
 
@@ -440,7 +259,7 @@ def ensure_engine_present(
                 **desired_kv2_config
             )
         )
-    
+
     if previous_kv2_config is None:
         if not replace_non_kv2_secret_engine:
             module.handle_error(
@@ -450,17 +269,17 @@ def ensure_engine_present(
             )
 
         module.disable_mount()
-        
+
         description = desired_mount_config.pop('description', None)
-        
+
         module.enable_mount(desired_mount_config)
         module.configure_kv2_secret_engine(desired_kv2_config)
-        
+
         return dict(
             changed=True,
             config=dict(description=description, **desired_mount_config, **desired_kv2_config)
         )
-    
+
     changed = False
 
     mount_config_diff = module.compare_mount_config(
@@ -472,30 +291,35 @@ def ensure_engine_present(
 
         changed = True
         module.configure_mount(mount_config_diff)
-   
+
     kv2_config_diff = module.compare_kv2_config(
         previous_kv2_config,
         desired_kv2_config
     )
 
     if kv2_config_diff:
-        
+
         changed = True
         module.configure_kv2_secret_engine(kv2_config_diff)
-    
+
     if changed:
         return dict(
             changed=changed,
             prev_config=dict(**previous_mount_config, **previous_kv2_config),
             config=dict(**desired_mount_config, **desired_kv2_config)
         )
-    
+
     return dict(changed=False, config=dict(**previous_mount_config, **previous_kv2_config))
 
 
 def run_module():
-    
+
     module = VaultKV2SecretEngineModule()
+
+    if not HAS_HVAC:
+        module.fail_json(
+            msg=missing_required_lib('hvac'),
+            exception=HVAC_IMPORT_ERROR)
 
     state: str = module.params.get('state')
 
@@ -503,17 +327,17 @@ def run_module():
     desired_kv2_config = module.get_defined_kv2_config_params()
 
     module.initialize_client()
-    
+
     previous_mount_config = module.get_formatted_mount_config()
     previous_kv2_config = module.get_formatted_kv2_config()
-    
+
     if state == 'absent':
         result = ensure_engine_absent(
             module,
             previous_mount_config,
             previous_kv2_config
         )
-    
+
     if state == 'present':
         result = ensure_engine_present(
             module,
@@ -522,7 +346,7 @@ def run_module():
             desired_mount_config,
             desired_kv2_config
         )
-        
+
     module.exit_json(**result)
 
 

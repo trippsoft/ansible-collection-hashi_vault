@@ -1,8 +1,6 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 from __future__ import (absolute_import, division, print_function)
-__metaclass__ = type
 
 
 def other_sans_to_list_of_str(other_sans: list[dict]) -> list[str]:

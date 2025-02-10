@@ -2,146 +2,19 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import (absolute_import, division, print_function)
-__metaclass__ = type
 
-DOCUMENTATION = r"""
-module: vault_database_static_role
-version_added: 1.3.0
-author:
-  - Jim Tarpley
-short_description: Configures a Database static role in HashiCorp Vault
-description:
-  - Ensures a L(Database static role,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#create-static-role)
-    is configured as expected in HashiCorp Vault.
-extends_documentation_fragment:
-  - trippsc2.hashi_vault.attributes
-  - trippsc2.hashi_vault.auth
-  - trippsc2.hashi_vault.connection
-  - trippsc2.hashi_vault.engine_mount
-  - trippsc2.hashi_vault.requirements
-options:
-  name:
-    type: str
-    required: true
-    description:
-      - The name of the role to configured.
-  state:
-    type: str
-    required: false
-    default: present
-    choices:
-      - present
-      - absent
-    description:
-      - The expected state of the role.
-  db_name:
-    type: str
-    required: false
-    description:
-      - Required if O(state=present).
-      - The name of the database connection to use for this role.
-  db_username:
-    type: str
-    required: false
-    description:
-      - Required if O(state=present).
-      - The database username to use when connecting to the database system.
-  rotation_statements:
-    type: list
-    required: false
-    elements: str
-    description:
-      - A list of SQL statements to execute when rotating the database credentials.
-      - If not provided, this defaults to an empty list on new roles.
-  rotation_period:
-    type: str
-    required: false
-    description:
-      - The duration between rotations.
-      - This value can be a duration string or a number of seconds.
-      - If not provided, this defaults to V(86400s) on new roles.
-"""
-
-EXAMPLES = r"""
-- name: Create database static role
-  trippsc2.hashi_vault.vault_database_static_role:
-    url: https://vault:8201
-    auth_method: userpass
-    username: '{{ user }}'
-    password: '{{ passwd }}'
-    engine_mount_point: database
-    name: my-role
-    db_name: my-database
-    db_username: testuser
-    rotation_statements: []
-    rotation_period: 30d
-    state: present
-
-- name: Remove database static role
-  trippsc2.hashi_vault.vault_database_secret_engine:
-    url: https://vault:8201
-    auth_method: userpass
-    username: '{{ user }}'
-    password: '{{ passwd }}'
-    engine_mount_point: database
-    name: my-role
-    state: absent
-"""
-
-RETURN = r"""
-config:
-  type: dict
-  returned:
-    - success
-    - O(state=present)
-  description:
-    - The configuration of the role.
-  contains:
-    db_name:
-      type: str
-      description:
-        - The name of the database connection to associate with the role.
-    db_username:
-      type: str
-      description:
-        - The username to use when connecting to the database.
-    rotation_statements:
-      type: list
-      elements: str
-      description:
-        - The SQL statements to execute when rotating the database credentials.
-    rotation_period:
-      type: int
-      description:
-        - The duration between rotations.
-prev_config:
-  type: dict
-  returned:
-    - RV(changed=true)
-  description:
-    - The previous configuration of the role.
-  contains:
-    db_name:
-      type: str
-      description:
-        - The name of the database connection to associate with the role.
-    db_username:
-      type: str
-      description:
-        - The username to use when connecting to the database.
-    rotation_statements:
-      type: list
-      elements: str
-      description:
-        - The SQL statements to execute when rotating the database credentials.
-    rotation_period:
-      type: int
-      description:
-        - The duration between rotations.
-"""
-
-import hvac
 import traceback
+
+try:
+    import hvac
+except ImportError:
+    HAS_HVAC = False
+    HVAC_IMPORT_ERROR = traceback.format_exc()
+else:
+    HAS_HVAC = True
+    HVAC_IMPORT_ERROR = None
+
+from ansible.module_utils.basic import missing_required_lib
 
 from ..module_utils._timeparse import duration_str_to_seconds
 from ..module_utils._vault_module import VaultModule
@@ -169,7 +42,7 @@ class VaultDatabaseStaticRole(VaultModule):
     )
 
     def __init__(self, *args, **kwargs):
-        
+
         argspec = self.ARGSPEC.copy()
 
         super(VaultDatabaseStaticRole, self).__init__(
@@ -182,7 +55,6 @@ class VaultDatabaseStaticRole(VaultModule):
             **kwargs
         )
 
-    
     def get_formatted_role_data(self) -> dict | None:
         """
         Get the formatted role data from the Vault server.
@@ -208,7 +80,7 @@ class VaultDatabaseStaticRole(VaultModule):
 
         if role_data.get("data") is None:
             return None
-        
+
         data = role_data["data"]
 
         delete_keys = [key for key in data.keys() if key not in self.DEFAULT_VALUES.keys() and key != 'username' and key != 'db_name']
@@ -217,7 +89,6 @@ class VaultDatabaseStaticRole(VaultModule):
             del data[key]
 
         return data
-    
 
     def get_defined_role_params(self, previous_role_data: dict | None) -> dict:
         """
@@ -225,7 +96,7 @@ class VaultDatabaseStaticRole(VaultModule):
 
         Args:
             previous_role_data (dict | None): The previous role data.
-        
+
         Returns:
             dict: The defined role parameters.
         """
@@ -322,11 +193,11 @@ def ensure_role_present(
                         exception=traceback.format_exc()
                     )
                 )
-        
+
         return dict(changed=True, config=desired_role_data)
-    
+
     previous_db_name: str = previous_role_data.pop("db_name")
-    
+
     if previous_db_name != db_name:
         module.handle_error(
             VaultModuleError(
@@ -360,22 +231,28 @@ def ensure_role_present(
                         exception=traceback.format_exc()
                     )
                 )
-        
+
         return dict(changed=True, prev_config=previous_role_data, config=desired_role_data)
-    
+
     return dict(changed=False, config=previous_role_data)
 
 
 def run_module():
 
     module = VaultDatabaseStaticRole()
+
+    if not HAS_HVAC:
+        module.fail_json(
+            msg=missing_required_lib('hvac'),
+            exception=HVAC_IMPORT_ERROR)
+
     module.initialize_client()
 
-    state: bool = module.params['state']
+    state: str = module.params['state']
 
     previous_role_data = module.get_formatted_role_data()
     desired_role_data = module.get_defined_role_params(previous_role_data)
-    
+
     if state == 'present':
         result = ensure_role_present(
             module,

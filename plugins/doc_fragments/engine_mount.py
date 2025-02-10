@@ -14,6 +14,7 @@ class ModuleDocFragment(object):
     options:
       engine_mount_point:
         type: str
+        required: true
         description:
           - The path where the secret backend is mounted.
     """
