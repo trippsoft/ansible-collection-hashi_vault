@@ -7,10 +7,10 @@ __metaclass__ = type
 class ModuleDocFragment(object):
 
     DOCUMENTATION = r"""
-    options:
-      engine_mount_point:
-        type: str
-        required: true
+    options: {}
+    attributes:
+      check_mode:
+        support: full
         description:
-          - The path where the secret backend is mounted.
+          - This module supports check mode.
     """

@@ -2,6 +2,47 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
+
+DOCUMENTATION = r"""
+module: vault_pki_set_signed_intermediate
+version_added: 1.5.0
+author:
+  - Jim Tarpley (@trippsc2)
+short_description: Sets a signed intermediate CA certificate for a PKI secret engine
+description:
+  - >-
+    L(Sets a signed intermediate CA certificate,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/pki.html#set-signed-intermediate)
+    for a PKI secret engine.
+extends_documentation_fragment:
+  - trippsc2.hashi_vault.auth
+  - trippsc2.hashi_vault.connection
+  - trippsc2.hashi_vault.action_group
+  - trippsc2.hashi_vault.check_mode
+  - trippsc2.hashi_vault.engine_mount
+  - trippsc2.hashi_vault.requirements
+options:
+  certificate:
+    type: str
+    required: true
+    description:
+      - The PEM-encoded signed intermediate CA certificate.
+      - This can include the signing certificate chain.
+"""
+
+EXAMPLES = r"""
+- name: Set signed intermediate CA certificate for PKI secret engine
+  trippsc2.hashi_vault.vault_pki_set_signed_intermediate:
+    url: https://vault:8201
+    auth_method: userpass
+    username: '{{ user }}'
+    password: '{{ passwd }}'
+    engine_mount_point: pki
+    certificate: '{{ signed_intermediate_certificate }}'
+"""
+
+RETURN = r"""
+"""
 
 import traceback
 

@@ -2,6 +2,142 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
+
+DOCUMENTATION = r"""
+module: vault_database_static_role
+version_added: 1.3.0
+author:
+  - Jim Tarpley (@trippsc2)
+short_description: Configures a Database static role in HashiCorp Vault
+description:
+  - >-
+    Ensures a L(Database static role,https://hvac.readthedocs.io/en/stable/usage/secrets_engines/database.html#create-static-role)
+    is configured as expected in HashiCorp Vault.
+extends_documentation_fragment:
+  - trippsc2.hashi_vault.auth
+  - trippsc2.hashi_vault.connection
+  - trippsc2.hashi_vault.action_group
+  - trippsc2.hashi_vault.check_mode
+  - trippsc2.hashi_vault.engine_mount
+  - trippsc2.hashi_vault.requirements
+options:
+  name:
+    type: str
+    required: true
+    description:
+      - The name of the role to configured.
+  state:
+    type: str
+    required: false
+    default: present
+    choices:
+      - present
+      - absent
+    description:
+      - The expected state of the role.
+  db_name:
+    type: str
+    required: false
+    description:
+      - Required if O(state=present).
+      - The name of the database connection to use for this role.
+  db_username:
+    type: str
+    required: false
+    description:
+      - Required if O(state=present).
+      - The database username to use when connecting to the database system.
+  rotation_statements:
+    type: list
+    required: false
+    elements: str
+    description:
+      - A list of SQL statements to execute when rotating the database credentials.
+      - If not provided, this defaults to an empty list on new roles.
+  rotation_period:
+    type: str
+    required: false
+    description:
+      - The duration between rotations.
+      - This value can be a duration string or a number of seconds.
+      - If not provided, this defaults to V(86400s) on new roles.
+"""
+
+EXAMPLES = r"""
+- name: Create database static role
+  trippsc2.hashi_vault.vault_database_static_role:
+    url: https://vault:8201
+    auth_method: userpass
+    username: '{{ user }}'
+    password: '{{ passwd }}'
+    engine_mount_point: database
+    name: my-role
+    db_name: my-database
+    db_username: testuser
+    rotation_statements: []
+    rotation_period: 30d
+    state: present
+
+- name: Remove database static role
+  trippsc2.hashi_vault.vault_database_secret_engine:
+    url: https://vault:8201
+    auth_method: userpass
+    username: '{{ user }}'
+    password: '{{ passwd }}'
+    engine_mount_point: database
+    name: my-role
+    state: absent
+"""
+
+RETURN = r"""
+config:
+  type: dict
+  returned: O(state=present)
+  description:
+    - The configuration of the role.
+  contains:
+    db_name:
+      type: str
+      description:
+        - The name of the database connection to associate with the role.
+    db_username:
+      type: str
+      description:
+        - The username to use when connecting to the database.
+    rotation_statements:
+      type: list
+      elements: str
+      description:
+        - The SQL statements to execute when rotating the database credentials.
+    rotation_period:
+      type: int
+      description:
+        - The duration between rotations.
+prev_config:
+  type: dict
+  returned: changed
+  description:
+    - The previous configuration of the role.
+  contains:
+    db_name:
+      type: str
+      description:
+        - The name of the database connection to associate with the role.
+    db_username:
+      type: str
+      description:
+        - The username to use when connecting to the database.
+    rotation_statements:
+      type: list
+      elements: str
+      description:
+        - The SQL statements to execute when rotating the database credentials.
+    rotation_period:
+      type: int
+      description:
+        - The duration between rotations.
+"""
 
 import traceback
 

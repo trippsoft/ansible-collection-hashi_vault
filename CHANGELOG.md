@@ -2,87 +2,53 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.5.1] - 2025-02-09
-
-### vault_database_secret_engine Module plugin
-
-- Made several code quality and style changes to the module that were recommended by the Ansible sanity tests.
-
-### vault_database_static_role Module plugin
-
-- Made several code quality and style changes to the module that were recommended by the Ansible sanity tests.
-
-### vault_kv1_secret_engine Module plugin
-
-- Made several code quality and style changes to the module that were recommended by the Ansible sanity tests.
-
-### vault_kv2_secret_engine Module plugin
-
-- Made several code quality and style changes to the module that were recommended by the Ansible sanity tests.
-
-### vault_pki_generate_intermediate_csr Module plugin
-
-- Made several code quality and style changes to the module that were recommended by the Ansible sanity tests.
-
-### vault_pki_role Module plugin
-
-- Made several code quality and style changes to the module that were recommended by the Ansible sanity tests.
-
-### vault_pki_root_ca_certificate Module plugin
-
-- Made several code quality and style changes to the module that were recommended by the Ansible sanity tests.
-
-### vault_pki_secret_engine Module plugin
-
-- Made several code quality and style changes to the module that were recommended by the Ansible sanity tests.
-
-### vault_pki_set_signed_intermediate Module plugin
-
-- Made several code quality and style changes to the module that were recommended by the Ansible sanity tests.
-
-### vault_pki_sign_verbatim Module plugin
-
-- Made several code quality and style changes to the module that were recommended by the Ansible sanity tests.
-
-## [1.5.0] - 2025-01-15
+## [1.5.0] - 2025-02-XX
 
 ### Collection
 
 - *vault* action group added for all **community.hashi_vault** collection module plugins and all **trippsc2.hashi_vault** collection module plugins. This was done to allow for shared default connection arguments to supplied for both collections.
 - *vault_pki_generate_intermediate_csr* module plugin added.
 - *vault_pki_set_signed_intermediate* module plugin added.
-- Revised colllection README documentation.
+- Revised collection README documentation.
 
 ### vault_database_secret_engine Module plugin
 
+- Made several code quality and style changes to the module that were recommended by the Ansible sanity tests.
 - Revised plugin documentation.
 
 ### vault_database_static_role Module plugin
 
+- Made several code quality and style changes to the module that were recommended by the Ansible sanity tests.
 - Revised plugin documentation.
 
 ### vault_kv1_secret_engine Module plugin
 
+- Made several code quality and style changes to the module that were recommended by the Ansible sanity tests.
 - Revised plugin documentation.
 
 ### vault_kv2_secret_engine Module plugin
 
+- Made several code quality and style changes to the module that were recommended by the Ansible sanity tests.
 - Revised plugin documentation.
 
 ### vault_pki_role Module plugin
 
+- Made several code quality and style changes to the module that were recommended by the Ansible sanity tests.
 - Revised plugin documentation.
 
 ### vault_pki_root_ca_certificate Module plugin
 
+- Made several code quality and style changes to the module that were recommended by the Ansible sanity tests.
 - Revised plugin documentation.
 
 ### vault_pki_secret_engine Module plugin
 
+- Made several code quality and style changes to the module that were recommended by the Ansible sanity tests.
 - Revised plugin documentation.
 
 ### vault_pki_sign_verbatim Module plugin
 
+- Made several code quality and style changes to the module that were recommended by the Ansible sanity tests.
 - Revised plugin documentation.
 
 ## [1.4.3] - 2025-01-08
