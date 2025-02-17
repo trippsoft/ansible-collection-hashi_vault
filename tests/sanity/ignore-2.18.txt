@@ -1,0 +1,24 @@
+plugins/modules/vault_database_secret_engine.py pylint:unused-import
+plugins/modules/vault_kv1_secret_engine.py pylint:unused-import
+plugins/modules/vault_pki_generate_intermediate_csr.py pylint:unused-import
+plugins/modules/vault_pki_root_ca_certificate.py pylint:unused-import
+plugins/modules/vault_pki_secret_engine.py pylint:unused-import
+plugins/modules/vault_pki_set_signed_intermediate.py pylint:unused-import
+plugins/modules/vault_pki_sign_verbatim.py pylint:unused-import
+plugins/modules/vault_pki_root_ca_certificate.py pep8:E501 # Line contains Vault error message verbatim and cannot be shortened.
+plugins/modules/vault_database_secret_engine.py validate-modules:no-log-needed
+plugins/modules/vault_database_secret_engine.py validate-modules:missing-gplv3-license
+plugins/modules/vault_database_static_role.py validate-modules:missing-gplv3-license
+plugins/modules/vault_kv1_secret_engine.py validate-modules:missing-gplv3-license
+plugins/modules/vault_kv1_secret_engine.py validate-modules:no-log-needed
+plugins/modules/vault_kv2_secret_engine.py validate-modules:missing-gplv3-license
+plugins/modules/vault_kv2_secret_engine.py validate-modules:no-log-needed
+plugins/modules/vault_pki_generate_intermediate_csr.py validate-modules:missing-gplv3-license
+plugins/modules/vault_pki_generate_intermediate_csr.py validate-modules:no-log-needed
+plugins/modules/vault_pki_role.py validate-modules:missing-gplv3-license
+plugins/modules/vault_pki_root_ca_certificate.py validate-modules:missing-gplv3-license
+plugins/modules/vault_pki_secret_engine.py validate-modules:missing-gplv3-license
+plugins/modules/vault_pki_secret_engine.py validate-modules:no-log-needed
+plugins/modules/vault_pki_set_signed_intermediate.py validate-modules:missing-gplv3-license
+plugins/modules/vault_pki_sign_verbatim.py validate-modules:missing-gplv3-license
+roles/testing/templates/vault.sh.j2 shebang # Shell script template does not need analysis

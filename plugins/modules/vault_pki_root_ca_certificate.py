@@ -286,6 +286,8 @@ else:
 
 from ansible.module_utils.basic import missing_required_lib
 
+from typing import Optional
+
 from ..module_utils._timeparse import duration_str_to_seconds
 from ..module_utils._vault_cert import other_sans_to_list_of_str
 from ..module_utils._vault_module import VaultModule
@@ -351,12 +353,12 @@ class VaultPKIRootCACertificateModule(VaultModule):
             **kwargs
         )
 
-    def read_certificate_data(self) -> str | None:
+    def read_certificate_data(self) -> Optional[str]:
         """
         Read the current root CA certificate data from the Vault server.
 
         Returns:
-            str | None: The root CA certificate data, or None if no certificate exists.
+            Optional[str]: The root CA certificate data, or None if no certificate exists.
         """
 
         engine_mount_point: str = self.params['engine_mount_point']
@@ -422,13 +424,13 @@ class VaultPKIRootCACertificateModule(VaultModule):
 
 def ensure_certificate_absent(
         module: VaultPKIRootCACertificateModule,
-        certificate_data: str | None) -> dict:
+        certificate_data: Optional[str]) -> dict:
     """
     Ensure that the root CA certificate is absent.
 
     Args:
         module (VaultPKIRootCACertificateModule): The module object.
-        certificate_data (str | None): The current root CA certificate data.
+        certificate_data (Optional[str]): The current root CA certificate data.
 
     Returns:
         dict: The result of the operation.
@@ -463,13 +465,13 @@ def ensure_certificate_absent(
 
 def ensure_certificate_present(
         module: VaultPKIRootCACertificateModule,
-        certificate_data: str | None) -> dict:
+        certificate_data: Optional[str]) -> dict:
     """
     Ensure that the root CA certificate is present.
 
     Args:
         module (VaultPKIRootCACertificateModule): The module object.
-        certificate_data (str | None): The current root CA certificate data.
+        certificate_data (Optional[str]): The current root CA certificate data.
 
     Returns:
         dict: The result of the operation.

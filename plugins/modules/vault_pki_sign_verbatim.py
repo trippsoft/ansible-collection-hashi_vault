@@ -183,6 +183,8 @@ else:
 
 from ansible.module_utils.basic import missing_required_lib
 
+from typing import Optional
+
 from ..module_utils._timeparse import duration_str_to_seconds
 from ..module_utils._vault_module import VaultModule
 from ..module_utils._vault_module_error import VaultModuleError
@@ -253,7 +255,7 @@ class VaultPKISignVerbatimModule(VaultModule):
             **kwargs
         )
 
-    def get_defined_extra_params(self) -> dict | None:
+    def get_defined_extra_params(self) -> Optional[dict]:
         """
         Get the defined extra parameters.
 
@@ -303,7 +305,7 @@ def run_module():
     role_name: str = module.params['role_name']
     csr: str = module.params['csr']
 
-    extra_params: dict | None = module.get_defined_extra_params()
+    extra_params: Optional[dict] = module.get_defined_extra_params()
 
     try:
         response = module.client.secrets.pki.sign_verbatim(

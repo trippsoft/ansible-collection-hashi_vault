@@ -152,6 +152,8 @@ else:
 
 from ansible.module_utils.basic import missing_required_lib
 
+from typing import Optional
+
 from ..module_utils._timeparse import duration_str_to_seconds
 from ..module_utils._vault_module import VaultModule
 from ..module_utils._vault_module_error import VaultModuleError
@@ -191,7 +193,7 @@ class VaultDatabaseStaticRole(VaultModule):
             **kwargs
         )
 
-    def get_formatted_role_data(self) -> dict | None:
+    def get_formatted_role_data(self) -> Optional[dict]:
         """
         Get the formatted role data from the Vault server.
         """
@@ -226,12 +228,12 @@ class VaultDatabaseStaticRole(VaultModule):
 
         return data
 
-    def get_defined_role_params(self, previous_role_data: dict | None) -> dict:
+    def get_defined_role_params(self, previous_role_data: Optional[dict]) -> dict:
         """
         Get the defined role parameters.
 
         Args:
-            previous_role_data (dict | None): The previous role data.
+            previous_role_data (Optional[dict]): The previous role data.
 
         Returns:
             dict: The defined role parameters.
@@ -256,13 +258,13 @@ class VaultDatabaseStaticRole(VaultModule):
         return filtered_params
 
 
-def ensure_role_absent(module: VaultDatabaseStaticRole, previous_role_data: dict | None) -> dict:
+def ensure_role_absent(module: VaultDatabaseStaticRole, previous_role_data: Optional[dict]) -> dict:
     """
     Ensure the role is absent.
 
     Args:
         module (VaultDatabaseStaticRole): The module object.
-        previous_role_data (dict | None): The previous role data.
+        previous_role_data (Optional[dict]): The previous role data.
 
     Returns:
         dict: The result of the operation.
@@ -293,14 +295,14 @@ def ensure_role_absent(module: VaultDatabaseStaticRole, previous_role_data: dict
 
 def ensure_role_present(
         module: VaultDatabaseStaticRole,
-        previous_role_data: dict | None,
+        previous_role_data: Optional[dict],
         desired_role_data: dict) -> dict:
     """
     Ensure the role is present.
 
     Args:
         module (VaultDatabaseStaticRole): The module object.
-        previous_role_data (dict | None): The previous role data.
+        previous_role_data (Optional[dict]): The previous role data.
         desired_role_data (dict): The desired role data.
 
     Returns:

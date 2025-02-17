@@ -928,6 +928,8 @@ else:
 
 from ansible.module_utils.basic import missing_required_lib
 
+from typing import Optional
+
 from ..module_utils._timeparse import duration_str_to_seconds
 from ..module_utils._vault_module import VaultModule
 from ..module_utils._vault_module_error import VaultModuleError
@@ -1147,7 +1149,7 @@ class VaultPKIRoleModule(VaultModule):
 
         return formatted_config_data
 
-    def get_formatted_role_data(self) -> dict | None:
+    def get_formatted_role_data(self) -> Optional[dict]:
         """
         Get the formatted data for a PKI role.
 
@@ -1224,13 +1226,13 @@ class VaultPKIRoleModule(VaultModule):
         return config_diff
 
 
-def ensure_role_absent(module: VaultPKIRoleModule, previous_role_data: dict | None) -> dict:
+def ensure_role_absent(module: VaultPKIRoleModule, previous_role_data: Optional[dict]) -> dict:
     """
     Ensure that a PKI role is absent.
 
     Args:
         module (VaultPKIRoleModule): The module object.
-        previous_role_data (dict): The previous role data.
+        previous_role_data (Optional[dict]): The previous role data.
 
     Returns:
         dict: The result of the operation.
@@ -1258,7 +1260,7 @@ def ensure_role_absent(module: VaultPKIRoleModule, previous_role_data: dict | No
 
 def ensure_role_present(
         module: VaultPKIRoleModule,
-        previous_role_data: dict | None,
+        previous_role_data: Optional[dict],
         desired_role_data: dict) -> dict:
     """
     Ensure that a PKI role is present.

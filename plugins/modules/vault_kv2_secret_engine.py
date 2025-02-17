@@ -201,6 +201,8 @@ else:
 
 from ansible.module_utils.basic import missing_required_lib
 
+from typing import Optional
+
 from ..module_utils._timeparse import duration_str_to_seconds
 from ..module_utils._vault_module_error import VaultModuleError
 from ..module_utils._vault_secret_engine_module import VaultSecretEngineModule
@@ -277,7 +279,7 @@ class VaultKV2SecretEngineModule(VaultSecretEngineModule):
 
         return formatted_config_data
 
-    def get_formatted_kv2_config(self) -> dict | None:
+    def get_formatted_kv2_config(self) -> Optional[dict]:
         """
         Read the configuration of the KV version 2 secret engine.
         """
@@ -375,15 +377,15 @@ class VaultKV2SecretEngineModule(VaultSecretEngineModule):
 
 def ensure_engine_absent(
         module: VaultKV2SecretEngineModule,
-        previous_mount_config: dict | None,
-        previous_kv2_config: dict | None) -> dict:
+        previous_mount_config: Optional[dict],
+        previous_kv2_config: Optional[dict]) -> dict:
     """
     Ensure that the secret engine is absent.
 
     Args:
         module (VaultKV2SecretEngineModule): The module object.
-        previous_mount_config (dict): The previous configuration of the secret engine.
-        previous_kv2_config (dict): The previous configuration of the KV version 2 secret engine.
+        previous_mount_config (Optional[dict]): The previous configuration of the secret engine.
+        previous_kv2_config (Optional[dict]): The previous configuration of the KV version 2 secret engine.
 
     Returns:
         dict: The result of the operation to be sent to Ansible.
@@ -408,8 +410,8 @@ def ensure_engine_absent(
 
 def ensure_engine_present(
         module: VaultKV2SecretEngineModule,
-        previous_mount_config: dict | None,
-        previous_kv2_config: dict | None,
+        previous_mount_config: Optional[dict],
+        previous_kv2_config: Optional[dict],
         desired_mount_config: dict,
         desired_kv2_config: dict) -> dict:
     """

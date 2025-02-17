@@ -150,14 +150,16 @@ else:
 
 from ansible.module_utils.basic import missing_required_lib
 
+from typing import Optional
+
 from ..module_utils._vault_secret_engine_module import VaultSecretEngineModule
 from ..module_utils._vault_module_error import VaultModuleError
 
 
 def ensure_engine_absent(
         module: VaultSecretEngineModule,
-        previous_mount_config: dict | None,
-        previous_backend_type: str | None) -> dict:
+        previous_mount_config: Optional[dict],
+        previous_backend_type: Optional[str]) -> dict:
     """
     Ensure that a secret engine is absent.
 
@@ -189,8 +191,8 @@ def ensure_engine_absent(
 
 def ensure_engine_present(
         module: VaultSecretEngineModule,
-        previous_mount_config: dict | None,
-        previous_backend_type: str | None,
+        previous_mount_config: Optional[dict],
+        previous_backend_type: Optional[str],
         desired_mount_config: dict) -> dict:
     """
     Ensure that the secret engine is present.

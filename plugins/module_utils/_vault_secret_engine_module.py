@@ -4,6 +4,8 @@ from __future__ import (absolute_import, division, print_function)
 
 import traceback
 
+from typing import Optional
+
 from ._timeparse import duration_str_to_seconds
 from ._vault_module import VaultModule
 from ._vault_module_error import VaultModuleError
@@ -139,7 +141,7 @@ else:
 
             return filtered_params
 
-        def get_mount_backend_type(self) -> str | None:
+        def get_mount_backend_type(self) -> Optional[str]:
             """
             Get the backend type of a secret engine at a given path.
 
@@ -199,7 +201,7 @@ else:
 
             return formatted_data
 
-        def get_formatted_mount_config(self) -> dict | None:
+        def get_formatted_mount_config(self) -> Optional[dict]:
             """
             Read the configuration of the secret engine and format it.
 
@@ -312,7 +314,7 @@ else:
                 return None
 
             path: str = self.params['engine_mount_point']
-            description: str | None = self.params['description']
+            description: Optional[str] = self.params['description']
 
             try:
                 self.client.sys.enable_secrets_engine(

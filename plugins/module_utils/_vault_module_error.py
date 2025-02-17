@@ -2,6 +2,8 @@
 
 from __future__ import (absolute_import, division, print_function)
 
+from typing import Optional
+
 
 class VaultModuleError():
     """
@@ -9,8 +11,8 @@ class VaultModuleError():
     """
 
     message: str
-    exception: str | None
+    exception: Optional[str]
 
-    def __init__(self, message: str, exception: str | None = None):
+    def __init__(self, message: str, exception: Optional[str] = None):
         self.message = message
         self.exception = exception
