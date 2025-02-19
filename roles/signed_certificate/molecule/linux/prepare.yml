@@ -1,4 +1,10 @@
 ---
+- name: Prepare Vault
+  hosts:
+    - vault
+  roles:
+    - role: trippsc2.hashi_vault.testing_ca
+
 - name: Prepare
   hosts:
     - subjects
@@ -19,5 +25,3 @@
         shell: /bin/bash
         password: "{{ 'test' | password_hash('sha512') }}"
         update_password: on_create
-  roles:
-    - role: trippsc2.hashi_vault.testing_ca
