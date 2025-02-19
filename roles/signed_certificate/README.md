@@ -1,7 +1,7 @@
 <!-- BEGIN_ANSIBLE_DOCS -->
 
 # Ansible Role: trippsc2.hashi_vault.signed_certificate
-Version: 1.5.0
+Version: 1.6.0
 
 This role signs a certificate using Hashicorp Vault.
 
@@ -29,6 +29,8 @@ This role signs a certificate using Hashicorp Vault.
 |---|---|---|---|---|---|
 | vault_url | <p>The URL for accessing HashiCorp Vault.</p><p>Alternatively, this can be configured through ansible.cfg or environment variables.</p> | str | no |  |  |
 | vault_token | <p>The token for accessing HashiCorp Vault.</p><p>Alternatively, this (or any other authentication method) can be configured through ansible.cfg or environment variables.</p> | str | no |  |  |
+| cert_certificate_to_file | <p>Whether to write the certificate to a file.</p><p>If `true`, the certificate will be written to the path specified in *cert_certificate_path*.</p> | bool | no |  | True |
+| cert_certificate_to_variable | <p>Whether to store the certificate in a variable.</p><p>If `true`, the certificate will be stored in the variable specified in *cert_certificate_variable*.</p> | bool | no |  | False |
 | cert_certificate_owner | <p>The owner of the certificate on Linux systems.</p><p>On Windows systems, this is ignored.</p> | str | no |  | root |
 | cert_certificate_group | <p>The group of the certificate on Linux systems.</p><p>On Windows systems, this is ignored.</p> | str | no |  | root |
 | cert_certificate_mode | <p>The mode of the certificate on Linux systems.</p><p>On Windows systems, this is ignored.</p> | str | no |  | 0644 |
@@ -46,5 +48,5 @@ This role signs a certificate using Hashicorp Vault.
 MIT
 
 ## Author and Project Information
-Jim Tarpley
+Jim Tarpley (@trippsc2)
 <!-- END_ANSIBLE_DOCS -->

@@ -1,18 +1,8 @@
 ---
-- name: Check that the CSR was generated
-  ansible.windows.win_stat:
-    path: "{{ _cert_csr_tmp_path }}"
-  register: _cert_csr
-
 - name: Generate CSR and sign certificate
   when:
-    - _cert_csr.stat.exists
+    - cert_csr_content | default('') != ''
   block:
-    - name: Get contents of CSR
-      ansible.builtin.slurp:
-        src: "{{ _cert_csr_tmp_path }}"
-      register: _cert_csr_data
-
     - name: Sign certificate with Hashicorp Vault
       delegate_to: localhost
       trippsc2.hashi_vault.vault_pki_sign_verbatim:
@@ -20,17 +10,27 @@
         url: "{{ vault_url | default(omit) }}"
         engine_mount_point: "{{ cert_vault_mount_point }}"
         role_name: "{{ cert_vault_role }}"
-        csr: "{{ _cert_csr_data.content | b64decode }}"
+        csr: "{{ cert_csr_content }}"
       register: _cert_data
 
+    - name: Set certificate content
+      when:
+        - cert_certificate_to_variable
+      ansible.builtin.set_fact:
+        cert_certificate_content: "{{ _cert_data.certificate }}"
+
     - name: Copy certificate to path
+      when:
+        - cert_certificate_to_file
       ansible.windows.win_copy:
         content: "{{ _cert_data.certificate }}"
         dest: "{{ cert_certificate_path }}"
 
     - name: Remove CSR file
+      when:
+        - cert_csr_to_file
       ansible.windows.win_file:
-        path: "{{ _cert_csr_tmp_path }}"
+        path: "{{ _cert_csr_path }}"
         state: absent
 
     - name: Copy the CA chain to the expected path
@@ -45,3 +45,7 @@
           ansible.windows.win_copy:
             content: "{{ _ca_chain }}"
             dest: "{{ _cert_ca_chain_path }}"
+
+    - name: Clear CSR content
+      ansible.builtin.set_fact:
+        cert_csr_content: ''

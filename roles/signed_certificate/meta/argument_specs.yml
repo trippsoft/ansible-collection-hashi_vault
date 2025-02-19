@@ -5,7 +5,7 @@ argument_specs:
     description:
       - This role generates a self-signed TLS certificate.
     author:
-      - Jim Tarpley
+      - Jim Tarpley (@trippsc2)
     options:
       vault_url:
         type: str
@@ -19,6 +19,20 @@ argument_specs:
         description:
           - The token for accessing HashiCorp Vault.
           - Alternatively, this (or any other authentication method) can be configured through ansible.cfg or environment variables.
+      cert_certificate_to_file:
+        type: bool
+        required: false
+        default: true
+        description:
+          - Whether to write the certificate to a file.
+          - If `true`, the certificate will be written to the path specified in *cert_certificate_path*.
+      cert_certificate_to_variable:
+        type: bool
+        required: false
+        default: false
+        description:
+          - Whether to store the certificate in a variable.
+          - If `true`, the certificate will be stored in the variable specified in *cert_certificate_variable*.
       cert_certificate_owner:
         type: str
         required: false

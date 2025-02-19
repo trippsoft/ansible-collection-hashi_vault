@@ -1,0 +1,7 @@
+---
+- name: Prepare
+  hosts:
+    - vault
+  gather_facts: false
+  roles:
+    - role: trippsc2.hashi_vault.testing_ca

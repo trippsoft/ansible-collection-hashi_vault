@@ -4,7 +4,7 @@ argument_specs:
     short_description: Create Testing Hashicorp Vault
     description:
       - This role configures Hashicorp Vault in development mode for use in Molecule testing.
-    author: Jim Tarpley
+    author: Jim Tarpley (@trippsc2)
     options:
       vault_token:
         type: str

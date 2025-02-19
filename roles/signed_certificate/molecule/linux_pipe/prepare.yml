@@ -1,0 +1,23 @@
+---
+- name: Prepare
+  hosts:
+    - subjects
+  gather_facts: false
+  pre_tasks:
+    - name: Create test group
+      become: true
+      ansible.builtin.group:
+        name: test
+        state: present
+
+    - name: Create test user
+      become: true
+      ansible.builtin.user:
+        name: test
+        group: test
+        state: present
+        shell: /bin/bash
+        password: "{{ 'test' | password_hash('sha512') }}"
+        update_password: on_create
+  roles:
+    - role: trippsc2.hashi_vault.testing_ca

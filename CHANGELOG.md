@@ -2,7 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.5.0] - 2025-02-XX
+## [1.6.0] - 2025-02-18
+
+### signed_certificate Role
+
+- Restructured role to match *trippsc2.general.generate_csr* role and make writing certificate to file optional.
+
+## [1.5.0] - 2025-02-13
 
 ### Collection
 

@@ -1,7 +1,7 @@
 <!-- BEGIN_ANSIBLE_DOCS -->
 
 # Ansible Role: trippsc2.hashi_vault.testing_ca
-Version: 1.5.0
+Version: 1.6.0
 
 This role configures Hashicorp Vault in development mode for use in Molecule testing as a Certification Authority.
 
@@ -36,5 +36,5 @@ This role configures Hashicorp Vault in development mode for use in Molecule tes
 MIT
 
 ## Author and Project Information
-Jim Tarpley
+Jim Tarpley (@trippsc2)
 <!-- END_ANSIBLE_DOCS -->
