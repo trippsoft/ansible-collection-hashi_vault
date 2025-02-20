@@ -26,13 +26,6 @@
         content: "{{ _cert_data.certificate }}"
         dest: "{{ cert_certificate_path }}"
 
-    - name: Remove CSR file
-      when:
-        - cert_csr_to_file
-      ansible.windows.win_file:
-        path: "{{ _cert_csr_path }}"
-        state: absent
-
     - name: Copy the CA chain to the expected path
       when:
         - cert_copy_ca_chain
@@ -44,7 +37,7 @@
         - name: Copy the CA chain to the expected path
           ansible.windows.win_copy:
             content: "{{ _ca_chain }}"
-            dest: "{{ _cert_ca_chain_path }}"
+            dest: "{{ cert_ca_chain_path }}"
 
     - name: Clear CSR content
       ansible.builtin.set_fact:

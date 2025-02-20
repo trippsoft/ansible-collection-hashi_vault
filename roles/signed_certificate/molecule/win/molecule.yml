@@ -34,6 +34,7 @@ provisioner:
         cert_certificate_path: C:\Windows\Temp\cert.crt
         cert_private_key_path: C:\Windows\Temp\cert.key
         cert_copy_ca_chain: true
+        cert_ca_chain_path: C:\Windows\Temp\ca_chain.crt
       windows:
         ansible_shell_type: powershell
         ansible_become_method: runas

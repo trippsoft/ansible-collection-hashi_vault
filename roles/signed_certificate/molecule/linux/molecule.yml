@@ -38,7 +38,8 @@ provisioner:
         cert_private_key_group: test
         cert_certificate_owner: test
         cert_certificate_group: test
-        cert_csr_to_file: false
+        cert_ca_chain_path: >-
+          {{ '/etc/pki/ca-trust/source/anchors/ca_chain.crt' if ansible_os_family == 'RedHat' else '/usr/local/share/ca-certificates/ca_chain.crt' }}
         cert_ca_chain_owner: test
         cert_ca_chain_group: test
         cert_copy_ca_chain: true

@@ -78,9 +78,7 @@ argument_specs:
         description:
           - The path to copy the CA chain.
           - If *cert_copy_ca_chain* is `false`, this is ignored.
-          - On Debian-based systems, this is defaults to `/usr/local/share/ca-certificates/ca_chain.crt`.
-          - On EL systems, this is defaults to `/etc/pki/ca-trust/source/anchors/ca_chain.crt`.
-          - On Windows systems, this is defaults to `C:\Windows\Temp\ca_chain.crt`.
+          - If *cert_copy_ca_chain* is `true`, this is required.
       cert_ca_chain_owner:
         type: str
         required: false

@@ -8,8 +8,6 @@ cert_certificate_mode: '0644'
 cert_vault_mount_point: pki
 cert_vault_role: verbatim
 
-cert_csr_to_file: true
-
 cert_copy_ca_chain: false
 cert_ca_chain_owner: root
 cert_ca_chain_group: root

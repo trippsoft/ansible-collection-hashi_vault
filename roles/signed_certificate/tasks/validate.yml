@@ -1,7 +1,4 @@
 ---
-- name: Include OS family variables
-  ansible.builtin.include_vars: "{{ ansible_os_family }}.yml"
-
 - name: Validate certificate path is defined
   when:
     - cert_certificate_to_file
@@ -30,6 +27,15 @@
       - cert_certificate_group in getent_group.keys()
     fail_msg: "Group '{{ cert_certificate_group }}' does not exist."
     success_msg: "Group '{{ cert_certificate_group }}' exists."
+
+- name: Validate CA chain path is defined
+  when:
+    - cert_copy_ca_chain
+  ansible.builtin.assert:
+    that:
+      - cert_ca_chain_path is defined
+    fail_msg: CA chain path is not defined.
+    success_msg: CA chain path is defined.
 
 - name: Validate CA chain owner user exists
   when:

@@ -30,14 +30,6 @@
         group: "{{ cert_certificate_group }}"
         mode: "{{ cert_certificate_mode }}"
 
-    - name: Remove CSR file
-      when:
-        - cert_csr_to_file
-      become: true
-      ansible.builtin.file:
-        path: "{{ _cert_csr_path }}"
-        state: absent
-
     - name: Copy the CA chain to the expected path
       when:
         - cert_copy_ca_chain
@@ -50,7 +42,7 @@
           become: true
           ansible.builtin.copy:
             content: "{{ _ca_chain }}"
-            dest: "{{ _cert_ca_chain_path }}"
+            dest: "{{ cert_ca_chain_path }}"
             owner: "{{ cert_ca_chain_owner }}"
             group: "{{ cert_ca_chain_group }}"
             mode: "{{ cert_ca_chain_mode }}"
