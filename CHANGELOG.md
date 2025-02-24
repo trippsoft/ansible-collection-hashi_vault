@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.8.0] - 2025-02-20
+
+### Collection
+
+- *vault_pki_sign_intermediate* module plugin added.
+
 ## [1.7.0] - 2025-02-20
 
 ### signed_certificate Role

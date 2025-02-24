@@ -1,0 +1,208 @@
+---
+- name: Verify
+  hosts:
+    - localhost
+  gather_facts: false
+  tasks:
+    - name: Parse certificate info
+      community.crypto.x509_certificate_info:
+        path: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}/certificate.crt"
+      register: _certificate_info
+
+    - name: Debug certificate info
+      ansible.builtin.debug:
+        var: _certificate_info
+
+    - name: Verify Common name in certificate
+      ansible.builtin.assert:
+        that:
+          - _certificate_info.subject.commonName == 'Intermediate CA'
+        fail_msg: The common name in certificate does not match.
+        success_msg: The common name in certificate matches.
+
+    - name: Verify DNS SANs in certificate
+      loop:
+        - DNS:test1.test.loc
+        - DNS:test2.test.loc
+      ansible.builtin.assert:
+        that:
+          - item in _certificate_info.subject_alt_name
+        fail_msg: "The SAN '{{ item }}' is not present in the CSR."
+        success_msg: "The SAN '{{ item }}' is present in the CSR."
+
+    - name: Verify IP SANs in certificate
+      loop:
+        - IP:192.0.2.1
+        - IP:192.0.2.2
+      ansible.builtin.assert:
+        that:
+          - item in _certificate_info.subject_alt_name
+        fail_msg: "The SAN '{{ item }}' is not present in the CSR."
+        success_msg: "The SAN '{{ item }}' is present in the CSR."
+
+    - name: Verify URI SANs in certificate
+      loop:
+        - 'URI:http://test1.test.loc'
+        - 'URI:http://test2.test.loc'
+      ansible.builtin.assert:
+        that:
+          - item in _certificate_info.subject_alt_name
+        fail_msg: "The SAN '{{ item }}' is not present in the CSR."
+        success_msg: "The SAN '{{ item }}' is present in the CSR."
+
+    - name: Verify other SANs in certificate
+      loop:
+        - 'otherName:1.3.6.1.4.1.311.20.2.3;0c:0e:74:65:73:74:31:40:74:65:73:74:2e:6c:6f:63'
+        - 'otherName:1.3.6.1.4.1.311.20.2.3;0c:0e:74:65:73:74:32:40:74:65:73:74:2e:6c:6f:63'
+      ansible.builtin.assert:
+        that:
+          - item in _certificate_info.subject_alt_name
+        fail_msg: "The SAN '{{ item }}' is not present in the CSR."
+        success_msg: "The SAN '{{ item }}' is present in the CSR."
+
+    - name: Filter subject components from certificate
+      ansible.builtin.set_fact:
+        _organizational_units: >-
+          {{ _certificate_info.subject_ordered |
+              select('contains', 'organizationalUnitName') |
+              flatten |
+              reject('equalto', 'organizationalUnitName') |
+              list }}
+        _organizations: >-
+          {{ _certificate_info.subject_ordered |
+              select('contains', 'organizationName') |
+              flatten |
+              reject('equalto', 'organizationName') |
+              list }}
+        _countries: >-
+          {{ _certificate_info.subject_ordered |
+              select('contains', 'countryName') |
+              flatten |
+              reject('equalto', 'countryName') |
+              list }}
+        _localities: >-
+          {{ _certificate_info.subject_ordered |
+              select('contains', 'localityName') |
+              flatten |
+              reject('equalto', 'localityName') |
+              list }}
+        _provinces: >-
+          {{ _certificate_info.subject_ordered |
+              select('contains', 'stateOrProvinceName') |
+              flatten |
+              reject('equalto', 'stateOrProvinceName') |
+              list }}
+        _street_addresses: >-
+          {{ _certificate_info.subject_ordered |
+              select('contains', 'streetAddress') |
+              flatten |
+              reject('equalto', 'streetAddress') |
+              list }}
+        _postal_codes: >-
+          {{ _certificate_info.subject_ordered |
+              select('contains', 'postalCode') |
+              flatten |
+              reject('equalto', 'postalCode') |
+              list }}
+        _serial_number: >-
+          {{ _certificate_info.subject_ordered |
+              select('contains', 'serialNumber') |
+              flatten |
+              reject('equalto', 'serialNumber') |
+              list }}
+
+    - name: Verify OU in certificate
+      loop:
+        - Test
+        - Test2
+      ansible.builtin.assert:
+        that:
+          - item in _organizations
+        fail_msg: "The OU '{{ item }}' is not present in the CSR."
+        success_msg: "The OU '{{ item }}' is present in the CSR."
+
+    - name: Verify Organization in certificate
+      loop:
+        - Test
+        - Test2
+      ansible.builtin.assert:
+        that:
+          - item in _organizational_units
+        fail_msg: "The Organization '{{ item }}' is not present in the CSR."
+        success_msg: "The Organization '{{ item }}' is present in the CSR."
+
+    - name: Verify Country in certificate
+      loop:
+        - US
+        - CA
+      ansible.builtin.assert:
+        that:
+          - item in _countries
+        fail_msg: "The Country '{{ item }}' is not present in the CSR."
+        success_msg: "The Country '{{ item }}' is present in the CSR."
+
+    - name: Verify Locality in certificate
+      loop:
+        - Los Angeles
+        - Toronto
+      ansible.builtin.assert:
+        that:
+          - item in _localities
+        fail_msg: "The Locality '{{ item }}' is not present in the CSR."
+        success_msg: "The Locality '{{ item }}' is present in the CSR."
+
+    - name: Verify Province in certificate
+      loop:
+        - California
+        - Ontario
+      ansible.builtin.assert:
+        that:
+          - item in _provinces
+        fail_msg: "The Province '{{ item }}' is not present in the CSR."
+        success_msg: "The Province '{{ item }}' is present in the CSR."
+
+    - name: Verify Street Address in certificate
+      loop:
+        - '1234 Test St'
+        - '5678 Test St'
+      ansible.builtin.assert:
+        that:
+          - item in _street_addresses
+        fail_msg: "The Street Address '{{ item }}' is not present in the CSR."
+        success_msg: "The Street Address '{{ item }}' is present in the CSR."
+
+    - name: Verify Postal Code in certificate
+      loop:
+        - '90001'
+        - 'M1A 1A1'
+      ansible.builtin.assert:
+        that:
+          - item in _postal_codes
+        fail_msg: "The Postal Code '{{ item }}' is not present in the CSR."
+        success_msg: "The Postal Code '{{ item }}' is present in the CSR."
+
+    - name: Verify Serial Number in certificate
+      ansible.builtin.assert:
+        that:
+          - ('1' in _serial_number)
+        fail_msg: "The Serial Number '{{ _serial_number }}' is not present in the CSR."
+        success_msg: "The Serial Number '{{ _serial_number }}' is present in the CSR."
+
+    - name: Verify Basic Constraints in certificate
+      ansible.builtin.assert:
+        that:
+          - ('CA:TRUE' in _certificate_info.basic_constraints)
+          - _certificate_info.basic_constraints_critical
+        fail_msg: The Basic Constraints in certificate are not as expected.
+        success_msg: The Basic Constraints in certificate are as expected.
+
+    - name: Verify key usage in certificate
+      loop:
+        - CRL Sign
+        - Certificate Sign
+      ansible.builtin.assert:
+        that:
+          - item in _certificate_info.key_usage
+          - _certificate_info.key_usage_critical
+        fail_msg: The Key Usage in certificate are not as expected.
+        success_msg: The Key Usage in certificate are as expected.

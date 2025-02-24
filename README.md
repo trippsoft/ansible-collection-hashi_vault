@@ -15,6 +15,7 @@ This collection extends the community.hashi_vault collection with additional fun
 - vault_pki_root_ca_certificate - Configures a PKI root CA certificate in HashiCorp Vault
 - vault_pki_secret_engine - Configures a PKI secret engine in HashiCorp Vault
 - vault_pki_set_signed_intermediate_csr - Sets a signed intermediate CA certificate for a PKI secret engine
+- vault_pki_sign_intermediate - Signs a certificate signing request as an intermediate CA in HashiCorp Vault
 - vault_pki_sign_verbatim - Signs a certificate signing request verbatim in HashiCorp Vault
 
 ### Roles

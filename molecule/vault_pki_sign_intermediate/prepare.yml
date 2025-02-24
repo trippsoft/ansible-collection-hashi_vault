@@ -1,0 +1,55 @@
+- name: Prepare
+  hosts:
+    - localhost
+  gather_facts: false
+  module_defaults:
+    group/trippsc2.hashi_vault.vault:
+      token: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
+      url: http://127.0.0.1:8200
+  tasks:
+    - name: Create PKI root secret engine
+      trippsc2.hashi_vault.vault_pki_secret_engine:
+        engine_mount_point: root_pki
+        max_lease_ttl: 157680000
+        state: present
+    
+    - name: Generate Root CA Certificate
+      trippsc2.hashi_vault.vault_pki_root_ca_certificate:
+        engine_mount_point: root_pki
+        common_name: RootCA
+        ttl: 157680000
+        state: present
+
+    - name: Create PKI Role
+      trippsc2.hashi_vault.vault_pki_role:
+        engine_mount_point: root_pki
+        name: verbatim
+        state: present
+        allow_any_name: true
+        allow_bare_domains: true
+        allow_glob_domains: true
+        allow_ip_sans: true
+        allow_localhost: true
+        client_flag: true
+        enforce_hostnames: true
+        require_cn: true
+        server_flag: true
+
+    - name: Create PKI intermediate secret engine
+      trippsc2.hashi_vault.vault_pki_secret_engine:
+        engine_mount_point: pki
+        max_lease_ttl: 15768000
+        state: present
+
+    - name: Generate Intermediate CA CSR
+      trippsc2.hashi_vault.vault_pki_generate_intermediate_csr:
+        engine_mount_point: pki
+        common_name: Intermediate CA
+        type: internal
+        add_basic_constraints: true
+      register: _intermediate_csr
+
+    - name: Save Intermediate CA CSR # noqa risky-file-permissions
+      ansible.builtin.copy:
+        content: "{{ _intermediate_csr.csr }}"
+        dest: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}/intermediate.csr"

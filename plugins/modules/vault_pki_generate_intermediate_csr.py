@@ -241,7 +241,7 @@ options:
     type: str
     required: false
     description:
-      - The serial number of the root CA certificate.
+      - The serial number of the CA certificate.
       - If you want more than one, specify alternative names in the alt_names map using OID 2.5.4.5.
       - If not provided, HashiCorp Vault will generate a random serial number for the certificate.
   add_basic_constraints:
