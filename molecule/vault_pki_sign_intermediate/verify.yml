@@ -9,10 +9,6 @@
         path: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}/certificate.crt"
       register: _certificate_info
 
-    - name: Debug certificate info
-      ansible.builtin.debug:
-        var: _certificate_info
-
     - name: Verify Common name in certificate
       ansible.builtin.assert:
         that:

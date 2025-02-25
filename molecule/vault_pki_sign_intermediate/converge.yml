@@ -62,7 +62,3 @@
       ansible.builtin.copy:
         content: "{{ _certificate.certificate }}"
         dest: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}/certificate.crt"
-
-    - name: Debug
-      ansible.builtin.debug:
-        var: _certificate

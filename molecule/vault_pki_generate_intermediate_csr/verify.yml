@@ -209,10 +209,6 @@
         path: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}/pki_intermediate_ca_existing_key.csr"
       register: _csr_info
 
-    - name: Debug
-      ansible.builtin.debug:
-        var: _csr_info
-
     - name: Verify Common name in CSR
       ansible.builtin.assert:
         that:
