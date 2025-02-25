@@ -28,7 +28,7 @@
         engine_mount_point: pki_int
         certificate: "{{ _concatenated_certificate }}"
 
-    - name: Create PKI Intermediate CA Certificate CSR
+    - name: Set PKI Intermediate CA Certificate CSR
       trippsc2.hashi_vault.vault_pki_set_signed_intermediate:
         engine_mount_point: pki_int
         certificate: "{{ _concatenated_certificate }}"

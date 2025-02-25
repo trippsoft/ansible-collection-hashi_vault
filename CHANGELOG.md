@@ -2,7 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.8.0] - 2025-02-20
+## [1.8.1] - 2025-02-25
+
+### vault_pki_secret_engine Module plugin
+
+- Fixed a bug that caused PKI secret engines that aren't configured to not accept a signed intermediate CA certificate.
+
+## [1.8.0] - 2025-02-25
 
 ### Collection
 

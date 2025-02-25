@@ -18,18 +18,3 @@ platforms:
       - 0.0.0.0:8300:8300/tcp
       - 0.0.0.0:8300:8300/udp
     command: server -dev -dev-root-token-id=47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
-scenario:
-  test_sequence:
-    - dependency
-    - cleanup
-    - destroy
-    - syntax
-    - create
-    - prepare
-    - converge
-    #- idempotence
-    # Removed idempotence check, because this role cannot be made idempotent.
-    - side_effect
-    - verify
-    - cleanup
-    - destroy

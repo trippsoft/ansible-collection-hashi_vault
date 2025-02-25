@@ -128,9 +128,10 @@ def run_module():
     module.initialize_client()
 
     certificate: str = module.params['certificate']
+    certificate = certificate.rstrip()
     existing_certificate = module.get_existing_certificate()
 
-    if existing_certificate in certificate:
+    if existing_certificate == certificate:
         module.exit_json(changed=False)
 
     if module.check_mode:
