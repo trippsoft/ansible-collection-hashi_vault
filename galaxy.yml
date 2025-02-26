@@ -4,7 +4,7 @@ name: hashi_vault
 version: 1.8.1
 readme: README.md
 authors:
-  - Jim Tarpley (@trippsc2) (@trippsc2) (@trippsc2)
+  - Jim Tarpley (@trippsc2)
 description: This collection extends the community.hashi_vault collection with additional functionality.
 
 license_file: 'LICENSE'
