@@ -1,6 +1,10 @@
 #! /bin/bash
 
-cd ./roles/signed_certificate
+cd ./roles/install
+
+aar-doc . markdown
+
+cd ../signed_certificate
 
 aar-doc . markdown
 
