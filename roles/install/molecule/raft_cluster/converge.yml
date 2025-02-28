@@ -1,0 +1,75 @@
+---
+- name: Converge
+  hosts:
+    - vault1
+  roles:
+    - role: trippsc2.hashi_vault.install
+  tasks:
+    - name: Initialize
+      delegate_to: localhost
+      trippsc2.hashi_vault.vault_init:
+        url: "https://{{ hostvars['vault1'].ansible_host }}:8200"
+        validate_certs: false
+        secret_shares: 5
+        secret_threshold: 3
+      register: _vault_init
+
+    - name: Save root token # noqa no-handler risky-file-permissions
+      when:
+        - _vault_init is changed
+      delegate_to: localhost
+      ansible.builtin.copy:
+        content: "{{ _vault_init.root_token }}"
+        dest: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}/vault_root_token"
+
+    - name: Write keys to file # noqa no-handler risky-file-permissions
+      loop: "{{ range(0, _vault_init.keys_base64 | length) | list }}"
+      when:
+        - _vault_init is changed
+      delegate_to: localhost
+      ansible.builtin.copy:
+        content: "{{ _vault_init.keys_base64[item] }}"
+        dest: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}/vault_key_{{ item }}"
+
+    - name: Get unseal key contents
+      delegate_to: localhost
+      loop: "{{ range(0, 5) | list }}"
+      ansible.builtin.slurp:
+        path: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}/vault_key_{{ item }}"
+      register: _vault_key_files
+
+    - name: Set keys to variable
+      ansible.builtin.set_fact:
+        _vault_keys: "{{ _vault_key_files.results | map(attribute='content') | map('b64decode') | list }}"
+
+    - name: Unseal Vault
+      delegate_to: localhost
+      trippsc2.hashi_vault.vault_unseal:
+        url: "https://{{ ansible_host }}:8200"
+        validate_certs: false
+        unseal_keys: "{{ _vault_keys }}"
+
+- name: Converge
+  hosts:
+    - vault2
+    - vault3
+  roles:
+    - role: trippsc2.hashi_vault.install
+  tasks:
+    - name: Get unseal key contents
+      delegate_to: localhost
+      loop: "{{ range(0, 5) | list }}"
+      ansible.builtin.slurp:
+        path: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}/vault_key_{{ item }}"
+      register: _vault_key_files
+
+    - name: Set keys to variable
+      ansible.builtin.set_fact:
+        _vault_keys: "{{ _vault_key_files.results | map(attribute='content') | map('b64decode') | list }}"
+
+    - name: Unseal Vault
+      delegate_to: localhost
+      trippsc2.hashi_vault.vault_unseal:
+        url: "https://{{ ansible_host }}:8200"
+        validate_certs: false
+        unseal_keys: "{{ _vault_keys }}"

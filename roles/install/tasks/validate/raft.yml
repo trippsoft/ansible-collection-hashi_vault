@@ -1,0 +1,140 @@
+---
+- name: Validate raft data directory is defined
+  ansible.builtin.assert:
+    that:
+      - vault_raft_data_directory is defined
+    fail_msg: The raft data directory is not defined.
+    success_msg: The raft data directory is defined.
+
+- name: Validate raft node ID is defined
+  ansible.builtin.assert:
+    that:
+      - vault_raft_node_id is defined
+    fail_msg: The raft node ID is not defined.
+    success_msg: The raft node ID is defined.
+
+- name: Validate performance multiplier is positive
+  when:
+    - vault_performance_multiplier is defined
+  ansible.builtin.assert:
+    that:
+      - vault_performance_multiplier | float > 0
+    fail_msg: The performance multiplier is not positive.
+    success_msg: The performance multiplier is positive.
+
+- name: Validate raft trailing logs is positive
+  ansible.builtin.assert:
+    that:
+      - vault_raft_trailing_logs | int > 0
+    fail_msg: The raft trailing logs is not positive.
+    success_msg: The raft trailing logs is positive.
+
+- name: Validate raft snapshot threshold is positive
+  ansible.builtin.assert:
+    that:
+      - vault_raft_snapshot_threshold | int > 0
+    fail_msg: The raft snapshot threshold is not positive.
+    success_msg: The raft snapshot threshold is positive.
+
+- name: Validate raft snapshot interval is positive
+  ansible.builtin.assert:
+    that:
+      - vault_raft_snapshot_interval | int > 0
+    fail_msg: The raft snapshot interval is not positive.
+    success_msg: The raft snapshot interval is positive.
+
+- name: Validate raft leader join TLS CA certificate is defined
+  loop: "{{ vault_raft_retry_join }}"
+  ansible.builtin.assert:
+    that:
+      - _raft_retry_join.leader_ca_cert_file is defined
+    fail_msg: The raft leader join TLS CA certificate file is not defined.
+    success_msg: The raft leader join TLS CA certificate file is defined.
+  loop_control:
+    loop_var: _raft_retry_join
+    label: "{{ _raft_retry_join.leader_ca_cert_file }}"
+
+- name: Check if rafe leader join TLS CA certificate exists
+  loop: "{{ vault_raft_retry_join }}"
+  become: true
+  ansible.builtin.stat:
+    path: "{{ _raft_retry_join.leader_ca_cert_file }}"
+  register: _raft_retry_join_ca_cert_file
+  loop_control:
+    loop_var: _raft_retry_join
+    label: "{{ _raft_retry_join.leader_ca_cert_file }}"
+
+- name: Validate raft leader join TLS CA certificate exists
+  loop: "{{ _raft_retry_join_ca_cert_file.results }}"
+  ansible.builtin.assert:
+    that:
+      - _raft_retry_join.stat.exists
+    fail_msg: The raft leader join TLS CA certificate file does not exist.
+    success_msg: The raft leader join TLS CA certificate file exists.
+  loop_control:
+    loop_var: _raft_retry_join
+    label: "{{ _raft_retry_join._raft_retry_join.leader_ca_cert_file }}"
+
+- name: Validate raft leader join TLS client certificate is defined
+  loop: "{{ vault_raft_retry_join }}"
+  ansible.builtin.assert:
+    that:
+      - _raft_retry_join.leader_client_cert_file is defined
+    fail_msg: The raft leader join TLS client certificate file is not defined.
+    success_msg: The raft leader join TLS client certificate file is defined.
+  loop_control:
+    loop_var: _raft_retry_join
+    label: "{{ _raft_retry_join.leader_client_cert_file }}"
+
+- name: Check if raft leader join TLS client certificate exists
+  loop: "{{ vault_raft_retry_join }}"
+  become: true
+  ansible.builtin.stat:
+    path: "{{ _raft_retry_join.leader_client_cert_file }}"
+  register: _raft_retry_join_client_cert_file
+  loop_control:
+    loop_var: _raft_retry_join
+    label: "{{ _raft_retry_join.leader_client_cert_file }}"
+
+- name: Validate raft leader join TLS client certificate exists
+  loop: "{{ _raft_retry_join_client_cert_file.results }}"
+  ansible.builtin.assert:
+    that:
+      - _raft_retry_join.stat.exists
+    fail_msg: The raft leader join TLS client certificate file does not exist.
+    success_msg: The raft leader join TLS client certificate file exists.
+  loop_control:
+    loop_var: _raft_retry_join
+    label: "{{ _raft_retry_join._raft_retry_join.leader_client_cert_file }}"
+
+- name: Validate raft leader join TLS client key is defined
+  loop: "{{ vault_raft_retry_join }}"
+  ansible.builtin.assert:
+    that:
+      - _raft_retry_join.leader_client_key_file is defined
+    fail_msg: The raft leader join TLS client key file is not defined.
+    success_msg: The raft leader join TLS client key file is defined.
+  loop_control:
+    loop_var: _raft_retry_join
+    label: "{{ _raft_retry_join.leader_client_key_file }}"
+
+- name: Check if raft leader join TLS client key exists
+  loop: "{{ vault_raft_retry_join }}"
+  become: true
+  ansible.builtin.stat:
+    path: "{{ _raft_retry_join.leader_client_key_file }}"
+  register: _raft_retry_join_client_key_file
+  loop_control:
+    loop_var: _raft_retry_join
+    label: "{{ _raft_retry_join.leader_client_key_file }}"
+
+- name: Validate raft leader join TLS client key exists
+  loop: "{{ _raft_retry_join_client_key_file.results }}"
+  ansible.builtin.assert:
+    that:
+      - _raft_retry_join.stat.exists
+    fail_msg: The raft leader join TLS client key file does not exist.
+    success_msg: The raft leader join TLS client key file exists.
+  loop_control:
+    loop_var: _raft_retry_join
+    label: "{{ _raft_retry_join._raft_retry_join.leader_client_key_file }}"

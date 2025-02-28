@@ -1,0 +1,43 @@
+---
+- name: Configure HashiCorp Vault service
+  become: true
+  ansible.builtin.template:
+    src: vault.service.j2
+    dest: /usr/lib/systemd/system/vault.service
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - _vault_systemd_reload
+
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
+
+- name: Install HashiCorp Vault
+  become: true
+  ansible.builtin.package:
+    name:
+      - vault
+    state: present
+
+- name: Configure HashiCorp Vault
+  become: true
+  ansible.builtin.template:
+    src: vault.hcl.j2
+    dest: "{{ _vault_config_file }}"
+    owner: "{{ vault_user }}"
+    group: "{{ vault_group }}"
+    mode: '0640'
+  notify:
+    - _vault_restart_vault
+
+- name: Configure logrotate
+  when:
+    - vault_configure_logrotate
+  become: true
+  ansible.builtin.template:
+    src: vault.logrotate.j2
+    dest: /etc/logrotate.d/vault
+    owner: root
+    group: root
+    mode: '0644'

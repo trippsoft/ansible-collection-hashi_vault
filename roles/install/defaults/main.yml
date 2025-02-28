@@ -1,0 +1,67 @@
+---
+vault_configure_firewall: true
+vault_configure_logrotate: true
+
+vault_group: vault
+vault_user: vault
+vault_home_directory: /opt/vault
+
+vault_config_directory: /etc/vault.d
+vault_log_directory: /var/log/vault
+vault_plugin_directory: /usr/local/lib/vault/plugins
+vault_raft_data_directory: /var/lib/vault/raft
+
+vault_config_filename: vault.hcl
+
+vault_logrotate_period: daily
+vault_logrotate_retention: 14
+
+vault_selinux_outbound_udp_dns: true
+vault_selinux_outbound_http: true
+
+vault_default_lease_ttl: 768h
+vault_max_lease_ttl: 768h
+
+vault_default_max_request_duration: 90s
+
+vault_raw_storage_endpoint_enabled: false
+vault_introspection_endpoint_enabled: false
+
+vault_mlock_enabled: true
+
+vault_ui_enabled: true
+
+vault_response_header_hostname_enabled: false
+vault_response_header_raft_node_id_enabled: false
+
+vault_log_level: info
+vault_log_file: "{{ vault_log_directory }}/vault.log"
+
+vault_post_unseal_trace_enabled: false
+
+vault_clustering_enabled: false
+
+vault_api_protocol: https
+vault_apt_host: "{{ ansible_default_ipv4.address }}"
+vault_api_port: 8200
+
+vault_cluster_protocol: https
+vault_cluster_host: "{{ ansible_default_ipv4.address }}"
+vault_cluster_port: 8201
+
+vault_cache_enabled: true
+vault_cache_size: "131072"
+
+vault_backend: raft
+
+vault_raft_trailing_logs: 10000
+vault_raft_snapshot_threshold: 8192
+vault_raft_snapshot_interval: 120
+
+vault_raft_max_entry_size: 1048576
+
+vault_raft_autopilot_reconcile_interval: 10s
+vault_raft_autopilot_update_interval: 2s
+
+vault_raft_retry_auto_join: []
+vault_raft_retry_join: []

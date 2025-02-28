@@ -1,0 +1,54 @@
+---
+- name: Converge
+  hosts:
+    - localhost
+  module_defaults:
+    group/trippsc2.hashi_vault.vault:
+      url: "https://{{ hostvars['linux'].ansible_host }}:8200"
+      validate_certs: false
+  tasks:
+    - name: Get unseal key contents
+      loop: "{{ range(0, 5) | list }}"
+      ansible.builtin.slurp:
+        path: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}/vault_key_{{ item }}"
+      register: _vault_key_files
+
+    - name: Set keys to variable
+      ansible.builtin.set_fact:
+        _vault_keys: "{{ _vault_key_files.results | map(attribute='content') | map('b64decode') | list }}"
+
+    - name: Check unseal
+      check_mode: true
+      trippsc2.hashi_vault.vault_unseal:
+        unseal_keys: "{{ _vault_keys }}"
+      register: _vault_unseal_check
+
+    - name: Debug
+      ansible.builtin.debug:
+        var: _vault_unseal_check
+
+    - name: Verify output
+      ansible.builtin.assert:
+        that:
+          - _vault_unseal_check.unsealed is not defined
+        fail_msg: Vault contains unexpected output.
+        success_msg: Vault contains expected output.
+
+    - name: Unseal
+      trippsc2.hashi_vault.vault_unseal:
+        unseal_keys: "{{ _vault_keys }}"
+      register: _vault_unseal
+
+    - name: Verify output
+      ansible.builtin.assert:
+        that:
+          - _vault_unseal.unsealed is defined
+          - _vault_unseal.unsealed
+        fail_msg: Vault does not contain expected output.
+        success_msg: Vault contains expected output.
+
+    - name: Verify check mode did not change anything
+      ansible.builtin.assert:
+        that:
+          - _vault_unseal_check.changed == _vault_unseal.changed
+        fail_msg: Check mode changed the state of the system.

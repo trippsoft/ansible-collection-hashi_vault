@@ -1,0 +1,4 @@
+---
+_vault_configure_selinux: "{{ vault_configure_selinux | default(_vault_default_configure_selinux) }}"
+_vault_firewall_type: "{{ vault_firewall_type | default(_vault_default_firewall_type) }}"
+_vault_config_file: "{{ vault_config_directory }}/{{ vault_config_filename }}"

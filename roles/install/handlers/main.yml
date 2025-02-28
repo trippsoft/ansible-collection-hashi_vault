@@ -1,0 +1,13 @@
+---
+- name: Reload systemd services
+  listen: _vault_systemd_reload
+  become: true
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+
+- name: Restart HashiCorp Vault
+  listen: _vault_restart_vault
+  become: true
+  ansible.builtin.systemd_service:
+    name: vault.service
+    state: restarted

@@ -1,0 +1,114 @@
+---
+- name: Validate listener IP address
+  ansible.builtin.assert:
+    that:
+      - _listener.address is ansible.utils.ipv4
+    fail_msg: The listener IP address is not valid.
+    success_msg: The listener IP address is valid.
+
+- name: Validate listener port
+  when:
+    - _listener.port is defined
+  ansible.builtin.assert:
+    that:
+      - _listener.port | int > 1024
+      - _listener.port | int < 65536
+    fail_msg: The listener port is not valid.
+    success_msg: The listener port is valid.
+
+- name: Validate listener cluster IP address
+  ansible.builtin.assert:
+    that:
+      - _listener.cluster_address is ansible.utils.ipv4
+    fail_msg: The listener cluster IP address is not valid.
+    success_msg: The listener cluster IP address is valid.
+
+- name: Validate listener cluster port
+  when:
+    - _listener.cluster_port is defined
+  ansible.builtin.assert:
+    that:
+      - _listener.cluster_port | int > 1024
+      - _listener.cluster_port | int < 65536
+    fail_msg: The listener cluster port is not valid.
+    success_msg: The listener cluster port is valid.
+
+- name: Validate TLS configuration
+  when:
+    - _listener.tls_enabled | default(false)
+  block:
+    - name: Validate TLS certificate is defined
+      when:
+        - _listener.tls_enabled | default(false)
+      ansible.builtin.assert:
+        that:
+          - _listener.tls_cert_file is defined
+        fail_msg: The TLS certificate file is not defined.
+        success_msg: The TLS certificate file is defined.
+
+    - name: Check if TLS certificate exists
+      when:
+        - _listener.tls_enabled | default(false)
+      become: true
+      ansible.builtin.stat:
+        path: "{{ _listener.tls_cert_file }}"
+      register: _tls_cert_file
+
+    - name: Validate TLS certificate exists
+      when:
+        - _listener.tls_enabled | default(false)
+      ansible.builtin.assert:
+        that:
+          - _tls_cert_file.stat.exists
+        fail_msg: The TLS certificate file does not exist.
+        success_msg: The TLS certificate file exists.
+
+    - name: Validate TLS key is defined
+      when:
+        - _listener.tls_enabled | default(false)
+      ansible.builtin.assert:
+        that:
+          - _listener.tls_key_file is defined
+        fail_msg: The TLS key file is not defined.
+        success_msg: The TLS key file is defined.
+
+    - name: Check if TLS key exists
+      when:
+        - _listener.tls_enabled | default(false)
+      become: true
+      ansible.builtin.stat:
+        path: "{{ _listener.tls_key_file }}"
+      register: _tls_key_file
+
+    - name: Validate TLS key exists
+      when:
+        - _listener.tls_enabled | default(false)
+      ansible.builtin.assert:
+        that:
+          - _tls_key_file.stat.exists
+        fail_msg: The TLS key file does not exist.
+        success_msg: The TLS key file exists.
+
+    - name: Validate TLS client CA certificate
+      when:
+        - _listener.tls_client_certificate_mode | default('optional') != 'disabled'
+      block:
+        - name: Validate TLS client CA certificate is defined
+          ansible.builtin.assert:
+            that:
+              - _listener.tls_client_ca_file is defined
+            fail_msg: The TLS client CA certificate file is not defined.
+            success_msg: The TLS client CA certificate file is defined.
+
+        - name: Check if TLS client CA certificate exists
+          become: true
+          ansible.builtin.stat:
+            path: "{{ _listener.tls_client_ca_file }}"
+          register: _tls_client_ca_file
+
+        - name: Validate TLS client CA certificate exists
+          ansible.builtin.assert:
+            that:
+              - _tls_client_ca_file.stat.exists
+            fail_msg: The TLS client CA certificate file does not exist.
+            success_msg: The TLS client CA certificate file exists.

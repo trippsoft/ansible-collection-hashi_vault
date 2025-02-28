@@ -1,0 +1,13 @@
+{{ ansible_managed | comment }}
+
+{{ vault_log_file }} {
+    {{ vault_logrotate_period }}
+    missingok 
+    copytruncate
+    rotate {{ vault_logrotate_retention }}
+    dateext
+    compress
+    postrotate
+        /bin/systemctl reload vault 2> /dev/null || true
+    endscript
+}

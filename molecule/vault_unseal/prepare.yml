@@ -1,0 +1,67 @@
+---
+- name: Prepare CA Vault
+  hosts:
+    - ca
+  roles:
+    - role: trippsc2.hashi_vault.testing_ca
+
+- name: Prepare
+  hosts:
+    - subjects
+  pre_tasks:
+    - name: Create group
+      become: true
+      ansible.builtin.group:
+        name: vault
+        system: true
+        state: present
+
+    - name: Create user
+      become: true
+      ansible.builtin.user:
+        name: vault
+        group: vault
+        home: /opt/vault
+        create_home: true
+        password: '!'
+        password_lock: true
+        shell: /usr/sbin/nologin
+        system: true
+        state: present
+  roles:
+    - role: trippsc2.hashi_vault.signed_certificate
+      vars:
+        cert_certificate_path: "{{ _vault_certificate_path }}"
+        cert_private_key_path: "{{ _vault_private_key_path }}"
+        cert_certificate_owner: vault
+        cert_certificate_group: vault
+        cert_private_key_owner: vault
+        cert_private_key_group: vault
+        cert_common_name: "{{ inventory_hostname }}"
+        cert_subject_alternative_names:
+          - "DNS:{{ inventory_hostname }}"
+          - DNS:localhost
+          - "IP:{{ ansible_host }}"
+          - IP:127.0.0.1
+        cert_copy_ca_chain: false
+        vault_url: "{{ _ca_vault_url }}"
+        vault_token: "{{ _ca_vault_token }}"
+    - role: trippsc2.hashi_vault.install
+  tasks:
+    - name: Initialize
+      delegate_to: localhost
+      trippsc2.hashi_vault.vault_init:
+        url: "https://{{ hostvars['linux'].ansible_host }}:8200"
+        validate_certs: false
+        secret_shares: 5
+        secret_threshold: 3
+      register: _vault_init
+
+    - name: Write keys to file # noqa no-handler risky-file-permissions
+      loop: "{{ range(0, _vault_init.keys_base64 | length) | list }}"
+      when:
+        - _vault_init is changed
+      delegate_to: localhost
+      ansible.builtin.copy:
+        content: "{{ _vault_init.keys_base64[item] }}"
+        dest: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}/vault_key_{{ item }}"

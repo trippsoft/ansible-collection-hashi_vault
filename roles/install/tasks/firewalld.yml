@@ -1,0 +1,26 @@
+---
+- name: Allow listener API port
+  loop: "{{ vault_tcp_listeners }}"
+  when:
+    - item.address != '127.0.0.1'
+  become: true
+  ansible.posix.firewalld:
+    port: "{{ item.port | default(8200) }}/tcp"
+    permanent: true
+    state: enabled
+    immediate: true
+  loop_control:
+    label: "{{ item.address }}:{{ item.port | default(8200) }}"
+
+- name: Allow listener cluster port
+  loop: "{{ vault_tcp_listeners }}"
+  when:
+    - item.cluster_address != '127.0.0.1'
+  become: true
+  ansible.posix.firewalld:
+    port: "{{ item.cluster_port | default(8201) }}/tcp"
+    permanent: true
+    state: enabled
+    immediate: true
+  loop_control:
+    label: "{{ item.cluster_address }}:{{ item.cluster_port | default(8201) }}"

@@ -1,0 +1,32 @@
+---
+- name: Verify
+  hosts:
+    - subjects
+  tasks:
+    - name: Get unseal key contents
+      delegate_to: localhost
+      loop: "{{ range(0, 5) | list }}"
+      ansible.builtin.slurp:
+        path: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}/vault_key_{{ item }}"
+      register: _vault_key_files
+
+    - name: Set keys to variable
+      ansible.builtin.set_fact:
+        _vault_keys: "{{ _vault_key_files.results | map(attribute='content') | map('b64decode') | list }}"
+
+    - name: Attempt to unseal Vault
+      delegate_to: localhost
+      trippsc2.hashi_vault.vault_unseal:
+        url: "https://{{ ansible_host }}:8200"
+        validate_certs: false
+        unseal_keys: "{{ _vault_keys }}"
+      register: _vault_unseal
+      ignore_errors: true
+
+    - name: Assert Vault is unsealed
+      ansible.builtin.assert:
+        that:
+          - _vault_unseal is success
+          - _vault_unseal is not changed
+        fail_msg: Vault is not unsealed.
+        success_msg: Vault is unsealed.

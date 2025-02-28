@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.9.0] - 2025-02-28
+
+### Collection
+
+- *install* role added.
+- *vault_init* module plugin added.
+- *vault_unseal* module plugin added.
+
 ## [1.8.1] - 2025-02-25
 
 ### Module Plugin - vault_pki_secret_engine

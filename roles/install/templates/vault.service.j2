@@ -1,0 +1,46 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description="HashiCorp Vault - A tool for managing secrets"
+Documentation=https://www.vaultproject.io/docs/
+Requires=network-online.target
+After=network-online.target
+ConditionPathExists={{ _vault_config_file }}
+
+[Service]
+User={{ vault_user }}
+Group={{ vault_group }}
+ProtectSystem=full
+ProtectHome=read-only
+PrivateTmp=yes
+PrivateDevices=yes
+SecureBits=keep-caps
+Capabilities=CAP_IPC_LOCK+ep
+AmbientCapabilities=CAP_SYSLOG CAP_IPC_LOCK
+CapabilityBoundingSet=CAP_SYSLOG CAP_IPC_LOCK
+NoNewPrivileges=yes
+{% if vault_http_proxy is defined %}
+Environment=HTTP_PROXY={{ vault_http_proxy }}
+{% endif %}
+{% if vault_https_proxy is defined %}
+Environment=HTTPS_PROXY={{ vault_https_proxy }}
+{% endif %}
+{% if vault_no_proxy is defined %}
+Environment=NO_PROXY={{ vault_no_proxy }}
+{% endif %}
+ExecStart=/bin/sh -c 'exec /usr/bin/vault server -config={{ _vault_config_file }}'
+ExecReload=/bin/kill --signal HUP $MAINPID
+KillMode=process
+KillSignal=SIGINT
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=30
+StartLimitInterval=60
+StartLimitBurst=3
+LimitNOFILE=524288
+LimitNPROC=524288
+LimitMEMLOCK=infinity
+LimitCORE=0
+
+[Install]
+WantedBy=multi-user.target

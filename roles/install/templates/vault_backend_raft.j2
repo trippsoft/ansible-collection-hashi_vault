@@ -1,0 +1,41 @@
+storage "raft" {
+  path = "{{ vault_raft_data_directory }}"
+  node_id = "{{ vault_raft_node_id }}"
+{% if vault_raft_performance_multiplier is defined %}
+
+  performance_multiplier = "{{ vault_raft_performance_multiplier }}"
+{% endif %}
+
+  trailing_logs = "{{ vault_raft_trailing_logs }}"
+  snapshot_threshold = "{{ vault_raft_snapshot_threshold }}"
+  snapshot_interval = "{{ vault_raft_snapshot_interval }}"
+
+  max_entry_size = "{{ vault_raft_max_entry_size }}"
+
+  autopilot_reconcile_interval = "{{ vault_raft_autopilot_reconcile_interval }}"
+  autopilot_update_interval = "{{ vault_raft_autopilot_update_interval }}"
+{% for retry_auto_join in vault_raft_retry_auto_join %}
+
+  retry_join {
+    auto_join = "{{ retry_join.auto_join }}"
+{% if retry_join.auto_join_scheme is defined %}
+    auto_join_scheme = "{{ retry_join.auto_join_scheme }}"
+{% endif %}
+{% if retry_join.auto_join_port is defined %}
+    auto_join_port = "{{ retry_join.auto_join_port }}"
+{% endif %}
+  }
+{% endfor %}
+{% for retry_join in vault_raft_retry_join %}
+
+  retry_join {
+    leader_api_addr = "{{ retry_join.leader_api_addr }}"
+{% if retry_join.leader_tls_server_name is defined %}
+    leader_tls_servername = "{{ retry_join.leader_tls_server_name }}"
+{% endif %}
+    leader_ca_cert_file = "{{ retry_join.leader_ca_cert_file }}"
+    leader_client_cert_file = "{{ retry_join.leader_client_cert_file }}"
+    leader_client_key_file = "{{ retry_join.leader_client_key_file }}"
+  }
+{% endfor %}
+}

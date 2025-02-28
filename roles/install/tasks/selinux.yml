@@ -1,0 +1,165 @@
+---
+- name: Check if SELinux policy module is available
+  become: true
+  ansible.builtin.shell: |
+    set -euxo pipefail
+    semodule -l | grep -q '^vault$'
+  register: _vault_selinux_policy_module
+  changed_when: false
+  failed_when: false
+
+- name: Combine and install SELinux policy module
+  when:
+    - _vault_selinux_policy_module.rc != 0
+  block:
+    - name: Install SELinux packages
+      become: true
+      ansible.builtin.package:
+        name: "{{ _vault_selinux_packages }}"
+        state: present
+
+    - name: Copy SELinux policy interface file
+      become: true
+      ansible.builtin.copy:
+        src: vault.if
+        dest: /usr/share/selinux/devel/include/contrib/vault.if
+        mode: '0644'
+        owner: root
+        group: root
+
+    - name: Create temp directory
+      become: true
+      ansible.builtin.tempfile:
+        state: directory
+      register: _vault_selinux_work_directory
+
+    - name: Copy SELinux policy files
+      become: true
+      ansible.builtin.copy:
+        src: vault.te
+        dest: "{{ _vault_selinux_work_directory.path }}/vault.te"
+        mode: '0644'
+        owner: root
+        group: root
+
+    - name: Check SELinux policy module file
+      become: true
+      ansible.builtin.command:
+        cmd: make -f /usr/share/selinux/devel/Makefile vault.pp
+        chdir: "{{ _vault_selinux_work_directory.path }}"
+      changed_when: true
+
+    # - name: Compile SELinux policy module file
+    #   become: true
+    #   ansible.builtin.command: 
+    #     cmd: semodule_package -o vault.pp -m vault.mod
+    #     chdir: "{{ _vault_selinux_work_directory.path }}"
+    #   changed_when: true
+
+    - name: Install SELinux policy module
+      become: true
+      ansible.builtin.command:
+        cmd: semodule -i "{{ _vault_selinux_work_directory.path }}/vault.pp"
+      changed_when: true
+
+- name: Classify Vault cluster SELinux port
+  become: true
+  community.general.seport:
+    ports:
+      - "{{ vault_cluster_port }}"
+    proto: tcp
+    setype: vault_cluster_port_t
+    state: present
+
+- name: Create SELinux file context for Vault executable
+  become: true
+  community.general.sefcontext:
+    target: /usr/bin/vault
+    seuser: system_u
+    setype: vault_exec_t
+    selevel: s0
+    state: present
+
+- name: Classify Vault executable SELinux type
+  become: true
+  ansible.builtin.file:
+    path: /usr/bin/vault
+    seuser: system_u
+    serole: object_r
+    setype: vault_exec_t
+    selevel: s0
+    state: file
+
+- name: Create SELinux file context for Vault home directory
+  become: true
+  community.general.sefcontext:
+    target: '{{ vault_home_directory }}(/.*)?'
+    seuser: system_u
+    setype: vault_sys_content_t
+    selevel: s0
+    state: present
+
+- name: Classify Vault home directory SELinux type
+  become: true
+  ansible.builtin.file:
+    path: "{{ vault_home_directory }}"
+    seuser: system_u
+    serole: object_r
+    setype: vault_sys_content_t
+    selevel: s0
+    state: directory
+    recurse: true
+
+- name: Create SELinux file context for Vault config directory
+  become: true
+  community.general.sefcontext:
+    target: '{{ vault_config_directory }}(/.*)?'
+    seuser: system_u
+    setype: vault_conf_t
+    selevel: s0
+    state: present
+
+- name: Classify Vault config directory SELinux type
+  become: true
+  ansible.builtin.file:
+    path: "{{ vault_config_directory }}"
+    seuser: system_u
+    serole: object_r
+    setype: vault_conf_t
+    selevel: s0
+    state: directory
+    recurse: true
+
+- name: Create SELinux file context for Vault log directory
+  become: true
+  community.general.sefcontext:
+    target: '{{ vault_log_directory }}(/.*)?'
+    seuser: system_u
+    setype: vault_log_t
+    selevel: s0
+    state: present
+
+- name: Classify Vault log directory SELinux type
+  become: true
+  ansible.builtin.file:
+    path: "{{ vault_log_directory }}"
+    seuser: system_u
+    serole: object_r
+    setype: vault_log_t
+    selevel: s0
+    state: directory
+    recurse: true
+
+- name: Enable Vault to make outbound DNS UDP requests
+  become: true
+  ansible.posix.seboolean:
+    name: vault_outbound_udp_dns
+    persistent: true
+    state: "{{ vault_selinux_outbound_udp_dns }}"
+
+- name: Enable Vault to make outbound HTTP requests
+  become: true
+  ansible.posix.seboolean:
+    name: vault_outbound_http
+    persistent: true
+    state: "{{ vault_selinux_outbound_http }}"

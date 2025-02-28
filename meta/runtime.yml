@@ -29,6 +29,7 @@ action_groups:
     - community.hashi_vault.vault_write
     - vault_database_secret_engine
     - vault_database_static_role
+    - vault_init
     - vault_kv1_secret_engine
     - vault_kv2_secret_engine
     - vault_pki_generate_intermediate_csr
@@ -38,3 +39,4 @@ action_groups:
     - vault_pki_set_signed_intermediate
     - vault_pki_sign_intermediate
     - vault_pki_sign_verbatim
+    - vault_unseal

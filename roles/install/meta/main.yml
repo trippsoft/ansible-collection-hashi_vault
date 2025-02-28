@@ -1,0 +1,38 @@
+---
+galaxy_info:
+  author: Jim Tarpley (@trippsc2)
+  namespace: trippsc2
+  role_name: install
+  description: This role installs and configures HashiCorp Vault.
+
+  license: MIT
+
+  min_ansible_version: '2.16'
+
+  platforms:
+    - name: Debian
+      versions:
+        - bullseye
+        - bookworm
+    - name: EL
+      versions:
+        - '8'
+        - '9'
+    - name: Fedora
+      versions:
+        - all
+    - name: Ubuntu
+      versions:
+        - focal
+        - jammy
+        - noble
+    - name: Windows
+      versions:
+        - '2019'
+        - '2022'
+
+collections:
+  - trippsc2.hashicorp
+
+dependencies:
+  - role: trippsc2.hashicorp.repo

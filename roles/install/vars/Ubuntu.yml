@@ -1,0 +1,3 @@
+---
+_vault_default_firewall_type: ufw
+_vault_default_configure_selinux: false

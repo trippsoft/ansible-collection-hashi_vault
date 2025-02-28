@@ -1,0 +1,8 @@
+---
+_vault_default_firewall_type: firewalld
+_vault_default_configure_selinux: true
+
+_vault_selinux_packages:
+  - policycoreutils
+  - python3-libsemanage
+  - selinux-policy-devel

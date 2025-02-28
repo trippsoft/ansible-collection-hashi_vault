@@ -1,0 +1,81 @@
+---
+- name: Include OS specific variables
+  ansible.builtin.include_vars: "{{ _file }}"
+  vars:
+    _file: "{{ lookup('first_found', _params) }}"
+    _params:
+      files:
+        - "{{ ansible_distribution }}-{{ ansible_distribution_release }}.yml"
+        - "{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
+        - "{{ ansible_distribution }}.yml"
+        - "{{ ansible_os_family }}-{{ ansible_distribution_major_version }}.yml"
+        - "{{ ansible_os_family }}.yml"
+      paths:
+        - "{{ role_path }}/vars"
+
+- name: Validate cluster name is defined
+  when:
+    - vault_clustering_enabled or
+      vault_backend == 'raft'
+  ansible.builtin.assert:
+    that:
+      - vault_cluster_name is defined
+    fail_msg: The Vault cluster name is not defined.
+    success_msg: The Vault cluster name is defined.
+
+- name: Validate Vault API host is an IP address or FQDN
+  when:
+    - vault_clustering_enabled or
+      vault_backend == 'raft'
+  ansible.builtin.assert:
+    that:
+      - vault_api_host is defined
+      - vault_api_host is ansible.utils.ipv4 or
+        vault_api_host is community.general.fqdn_valid
+    fail_msg: The Vault API host must be an IP address or FQDN.
+    success_msg: The Vault API host is an IP address or FQDN.
+
+- name: Validate Vault API port is valid
+  when:
+    - vault_clustering_enabled or
+      vault_backend == 'raft'
+  ansible.builtin.assert:
+    that:
+      - vault_api_port | int > 1024
+      - vault_api_port | int < 65536
+    fail_msg: The Vault API port is not valid.
+    success_msg: The Vault API port is valid.
+
+- name: Validate Vault cluster host is an IP address or FQDN
+  when:
+    - vault_clustering_enabled or
+      vault_backend == 'raft'
+  ansible.builtin.assert:
+    that:
+      - vault_cluster_host is defined
+      - vault_cluster_host is ansible.utils.ipv4 or
+        vault_cluster_host is community.general.fqdn_valid
+    fail_msg: The Vault cluster host must be an IP address or FQDN.
+    success_msg: The Vault cluster host is an IP address or FQDN.
+
+- name: Validate Vault cluster port is valid
+  when:
+    - vault_clustering_enabled or
+      vault_backend == 'raft'
+  ansible.builtin.assert:
+    that:
+      - vault_cluster_port | int > 1024
+      - vault_cluster_port | int < 65536
+    fail_msg: The Vault cluster port is not valid.
+    success_msg: The Vault cluster port is valid.
+
+- name: Validate listeners
+  loop: "{{ vault_tcp_listeners }}"
+  ansible.builtin.include_tasks: validate/listener.yml
+  loop_control:
+    loop_var: _listener
+
+- name: Validate raft storage
+  when:
+    - vault_backend == 'raft'
+  ansible.builtin.include_tasks: validate/raft.yml

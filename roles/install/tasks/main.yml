@@ -1,0 +1,32 @@
+---
+- name: Validate
+  ansible.builtin.import_tasks: validate/main.yml
+
+- name: Create user
+  ansible.builtin.import_tasks: user.yml
+
+- name: Create directories
+  ansible.builtin.import_tasks: directories.yml
+
+- name: Install HashiCorp Vault
+  ansible.builtin.import_tasks: install.yml
+
+- name: Configure SELinux
+  when:
+    - _vault_configure_selinux
+  ansible.builtin.include_tasks: selinux.yml
+
+- name: Configure service
+  ansible.builtin.import_tasks: service.yml
+
+- name: Configure firewall
+  when:
+    - vault_configure_firewall
+    - _vault_firewall_type == 'firewalld'
+  ansible.builtin.include_tasks: firewalld.yml
+
+- name: Configure firewall
+  when:
+    - vault_configure_firewall
+    - _vault_firewall_type == 'ufw'
+  ansible.builtin.include_tasks: ufw.yml

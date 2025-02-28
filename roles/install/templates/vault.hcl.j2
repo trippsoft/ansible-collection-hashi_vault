@@ -1,0 +1,154 @@
+# {{ ansible_managed }}
+
+plugin_directory = "{{ vault_plugin_directory }}"
+
+default_lease_ttl = "{{ vault_default_lease_ttl }}"
+max_lease_ttl = "{{ vault_max_lease_ttl }}"
+
+default_max_request_duration = "{{ vault_default_max_request_duration }}"
+
+raw_storage_endpoint = {{ vault_raw_storage_endpoint_enabled | ternary("true", "false") }}
+introspection_endpoint = {{ vault_introspection_endpoint_enabled | ternary("true", "false") }}
+
+ui = {{ vault_ui_enabled | ternary("true", "false") }}
+
+enable_response_header_hostname = {{ vault_response_header_hostname_enabled | ternary("true", "false") }}
+enable_response_header_raft_node_id = {{ vault_response_header_raft_node_id_enabled | ternary("true", "false") }}
+{% if vault_detect_deadlocks is defined %}
+
+detect_deadlocks = "{{ vault_detect_deadlocks }}"
+{% endif %}
+
+enable_post_unseal_trace = {{ vault_post_unseal_trace_enabled | ternary("true", "false") }}
+{% if vault_post_unseal_trace_enabled and vault_post_unseal_trace_directory is defined %}
+post_unseal_trace_directory = "{{ vault_post_unseal_trace_directory }}"
+{% endif %}
+
+log_level = "{{ vault_log_level }}"
+log_file = "{{ vault_log_file }}"
+{% if vault_log_format is defined %}
+log_format = "{{ vault_log_format }}"
+{% endif %}
+{% if vault_log_rotate_duration is defined %}
+log_rotate_duration = "{{ vault_log_rotate_duration }}"
+{% endif %}
+{% if vault_log_rotate_bytes is defined %}
+log_rotate_bytes = "{{ vault_log_rotate_bytes }}"
+{% endif %}
+{% if vault_log_rotate_max_files is defined %}
+log_rotate_max_files = "{{ vault_log_rotate_max_files }}"
+{% endif %}
+
+{% if vault_backend == "raft" %}
+disable_clustering = false
+{% else %}
+disable_clustering = {{ vault_clustering_enabled | ternary("false", "true") }}
+{% endif %}
+
+{% if vault_backend == "raft" or vault_clustering_enabled %}
+cluster_name = "{{ vault_cluster_name }}"
+
+api_addr = "{{ vault_api_protocol }}://{{ vault_apt_host }}:{{ vault_api_port }}"
+cluster_addr = "{{ vault_cluster_protocol }}://{{ vault_cluster_host }}:{{ vault_cluster_port }}"
+{% endif %}
+
+disable_cache = {{ vault_cache_enabled | ternary("false", "true") }}
+{% if vault_cache_enabled %}
+cache_size = "{{ vault_cache_size }}"
+{% endif %}
+
+{% if vault_backend == "raft" %}
+disable_mlock = true
+{% else %}
+disable_mlock = false
+{% endif %}
+
+{% for listener in vault_tcp_listeners %}
+listener "tcp" {
+  address = "{{ listener.address }}:{{ listener.port | default(8200) }}"
+{% if vault_clustering_enabled %}
+  cluster_address = "{{ listener.cluster_address }}:{{ listener.cluster_port | default(8201) }}"
+{% endif %}
+
+  http_idle_timeout = "{{ listener.http_idle_timeout | default("5m") }}"
+  http_read_header_timeout = "{{ listener.http_read_header_timeout | default("10s") }}"
+  http_read_timeout = "{{ listener.http_read_timeout | default("30s") }}"
+  http_write_timeout = "{{ listener.http_write_timeout | default("0") }}"
+
+  max_request_size = "{{ listener.max_request_size | default("33554432") }}"
+  max_request_duration = "{{ listener.max_request_duration | default("90s") }}"
+
+  redact_addresses = {{ listener.redact_addresses | default(false) | ternary("true", "false") }}
+{% if vault_clustering_enabled %}
+  redact_cluster_name = {{ listener.redact_cluster_name | default(false) | ternary("true", "false") }}
+{% endif %}
+  redact_version = {{ listener.redact_version | default(false) | ternary("true", "false") }}
+{% if listener.proxy_protocol_behavior is defined %}
+
+  proxy_protocol_behavior = "{{ listener.proxy_protocol_behavior }}"
+{% endif %}
+{% if (listener.proxy_protocol_behavior | default("") == "allow_authorized" or
+        listener.proxy_protocol_behavior | default("") == "deny_unauthorized") %}
+  proxy_protocol_authorized_addrs = [
+{%     for authorized_address in listener.proxy_protocol_authorized_addrs %}
+    "{{ listener.vault_proxy_protocol_authorized_addrs }}"{{ "," if not loop.last }}
+{%     endfor %}
+  ]
+{% endif %}
+
+  tls_disable = {{ listener.tls_enabled | default(false) | ternary("false", "true") }}
+{% if listener.tls_enabled | default(false) %}
+
+  tls_cert_file = "{{ listener.tls_cert_file }}"
+  tls_key_file = "{{ listener.tls_key_file }}"
+
+  tls_min_version  = "{{ listener.tls_min_version | default("tls12") }}"
+  tls_max_version  = "{{ listener.tls_max_version | default("tls13") }}"
+{% endif %}
+{% if listener.tls_cipher_suites is defined %}
+
+  tls_cipher_suites = "{{ listener.tls_cipher_suites }}"
+{% endif %}
+{% if listener.tls_client_certificate_mode | default("optional") == "disabled" %}
+
+  tls_disable_client_certs = true
+{% else %}
+
+  tls_disable_client_certs = false
+  tls_require_and_verify_client_cert = {{ (listener.tls_client_certificate_mode | default("optional") == "required") | ternary("true", "false") }}
+  tls_client_ca_file = "{{ listener.tls_client_ca_file }}"
+{% endif %}
+{% if listener.x_forwarded_for_authorized_addrs is defined %}
+
+  x_forwarded_for_authorized_addrs = "{{ listener.x_forwarded_for_authorized_addrs | join(",") }}"
+{%     if listener.tls_enabled | default(false) and
+          listener.tls_client_certificate_mode | default("optional") != "disabled" %}
+{%         if listener.x_forwarded_for_client_cert_header is defined %}
+  x_forwarded_for_client_cert_header = "{{ listener.x_forwarded_for_client_cert_header }}"
+{%         endif %}
+{%         if listener.x_forwarded_for_client_cert_header_decoders is defined %}
+  x_forwarded_for_client_cert_header_decoders = "{{ listener.x_forwarded_for_client_cert_header_decoders | join(",") }}"
+{%         endif %}
+{%     endif %}
+  x_forwarded_for_hop_skips = "{{ listener.x_forwarded_for_hop_skips | default("0") }}"
+  x_forwarded_for_reject_not_authorized = {{ listener.x_forwarded_for_reject_not_authorized | default(true) | ternary("true", "false") }}
+  x_forwarded_for_reject_not_present = "{{ listener.x_forwarded_for_reject_not_present | default(true) | ternary("true", "false") }}"
+{% endif %}
+
+  disable_replication_status_endpoints = {{ listener.replication_status_endpoints_enabled | default(true) | ternary("false", "true") }}
+
+  telemetry {
+    unauthenticated_metrics_access = {{ listener.unauthenticated_metrics_access | default(false) | ternary("true", "false") }}
+  }
+
+  profiling {
+    unauthenticated_pprof_access = {{ listener.unauthenticated_pprof_access | default(false) | ternary("true", "false") }}
+    unauthenticated_in_flight_requests_access = {{ listener.unauthenticated_in_flight_requests_access | default(false) | ternary("true", "false") }}
+  }
+}
+{% endfor %}
+
+{# Select which storage backend you want generated and placed in the vault configuration file. #}
+{% if vault_backend == 'raft' %}
+{% include 'vault_backend_raft.j2' with context %}
+{% endif %}

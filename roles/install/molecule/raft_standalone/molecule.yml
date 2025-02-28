@@ -1,0 +1,52 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: vagrant
+  provider:
+    name: libvirt
+  cachier: machine
+  parallel: true
+platforms:
+  - name: ca
+    box: jtarpley/rocky9_cis
+    memory: 2048
+    cpus: 2
+    provider_options:
+      default_prefix: hashi_vault_install_raft_standalone_
+  - name: linux
+    box: jtarpley/${MOLECULE_BOX:-rocky9_cis}
+    memory: 2048
+    cpus: 2
+    provider_options:
+      default_prefix: hashi_vault_install_raft_standalone_
+    groups:
+      - subjects
+provisioner:
+  name: ansible
+  inventory:
+    group_vars:
+      subjects:
+        _ca_vault_url: "http://{{ hostvars['ca'].ansible_host }}:8200"
+        _ca_vault_token: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
+        _vault_private_key_path: >-
+          {{ '/etc/pki/tls/private/vault.key' if ansible_os_family == 'RedHat' else '/etc/ssl/private/vault.key' }}
+        _vault_certificate_path: >-
+          {{ '/etc/pki/tls/certs/vault.crt' if ansible_os_family == 'RedHat' else '/etc/ssl/certs/vault.crt' }}
+        vault_cluster_name: cluster1
+        vault_api_host: '127.0.0.1'
+        vault_cluster_host: '127.0.0.1'
+        vault_tcp_listeners:
+          - address: '0.0.0.0'
+            cluster_address: '0.0.0.0'
+            tls_enabled: true
+            tls_cert_file: "{{ _vault_certificate_path }}"
+            tls_key_file: "{{ _vault_private_key_path }}"
+            tls_client_certificate_mode: disabled
+        vault_raft_node_id: "{{ inventory_hostname }}"
+    host_vars:
+      ca:
+        vault_url: "http://{{ ansible_host }}:8200"
+        vault_token: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
+verifier:
+  name: ansible

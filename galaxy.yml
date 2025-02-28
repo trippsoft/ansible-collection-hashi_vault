@@ -1,7 +1,7 @@
 ---
 namespace: trippsc2
 name: hashi_vault
-version: 1.8.1
+version: 1.9.0
 readme: README.md
 authors:
   - Jim Tarpley (@trippsc2)
@@ -20,6 +20,7 @@ dependencies:
   ansible.posix: ">=1.0.0"
   community.hashi_vault: ">=6.2.0"
   trippsc2.general: ">=2.8.0"
+  trippsc2.hashicorp: ">=1.0.0"
 
 repository: https://github.com/trippsc2/ansible-collection-hashi_vault.git
 

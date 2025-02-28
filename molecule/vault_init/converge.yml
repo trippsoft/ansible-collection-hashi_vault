@@ -1,0 +1,61 @@
+---
+- name: Converge
+  hosts:
+    - localhost
+  module_defaults:
+    group/trippsc2.hashi_vault.vault:
+      url: "https://{{ hostvars['linux'].ansible_host }}:8200"
+      validate_certs: false
+  tasks:
+    - name: Check initialize
+      check_mode: true
+      trippsc2.hashi_vault.vault_init:
+        secret_shares: 5
+        secret_threshold: 3
+      register: _vault_init_check
+
+    - name: Verify output
+      ansible.builtin.assert:
+        that:
+          - _vault_init_check.keys_hex is not defined
+          - _vault_init_check.keys_base64 is not defined
+          - _vault_init_check.root_token is not defined
+        fail_msg: Vault contains unexpected output.
+        success_msg: Vault contains expected output.
+
+    - name: Initialize
+      trippsc2.hashi_vault.vault_init:
+        secret_shares: 5
+        secret_threshold: 3
+      register: _vault_init
+
+    - name: Verify output # noqa no-handler
+      when:
+        - _vault_init is changed
+      ansible.builtin.assert:
+        that:
+          - _vault_init.keys_hex is defined
+          - _vault_init.keys_base64 is defined
+          - _vault_init.root_token is defined
+          - _vault_init.keys_hex | length == 5
+          - _vault_init.keys_base64 | length == 5
+        fail_msg: Vault does not contain expected output.
+        success_msg: Vault contains expected output.
+
+    - name: Verify output
+      when:
+        - _vault_init is not changed
+      ansible.builtin.assert:
+        that:
+          - _vault_init.keys_hex is not defined
+          - _vault_init.keys_base64 is not defined
+          - _vault_init.root_token is not defined
+        fail_msg: Vault contains unexpected output.
+        success_msg: Vault contains expected output.
+
+    - name: Verify check mode did not change anything
+      ansible.builtin.assert:
+        that:
+          - _vault_init_check.changed == _vault_init.changed
+        fail_msg: Check mode changed the state of the system.
+        success_msg: Check mode did not change the state of the system.
