@@ -33,7 +33,6 @@
     rule: allow
     port: 8200
     proto: tcp
-    state: enabled
 
 - name: Copy script to start Vault
   become: true
