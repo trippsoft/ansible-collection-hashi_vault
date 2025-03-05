@@ -5,11 +5,11 @@ set -e
 MOLECULE_BOX="rocky9_cis" molecule test -s raft_standalone
 MOLECULE_BOX="rocky9_cis" molecule test -s raft_cluster
 
-MOLECULE_BOX="debian12_base" molecule test -s raft_standalone
-MOLECULE_BOX="debian12_base" molecule test -s raft_cluster
-
 MOLECULE_BOX="fedora41_base" molecule test -s raft_standalone
 MOLECULE_BOX="fedora41_base" molecule test -s raft_cluster
+
+MOLECULE_BOX="debian12_base" molecule test -s raft_standalone
+MOLECULE_BOX="debian12_base" molecule test -s raft_cluster
 
 MOLECULE_BOX="ubuntu2404_base" molecule test -s raft_standalone
 MOLECULE_BOX="ubuntu2404_base" molecule test -s raft_cluster

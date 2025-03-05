@@ -13,13 +13,13 @@ platforms:
     memory: 2048
     cpus: 2
     provider_options:
-      default_prefix: vault_init_
+      default_prefix: hashi_vault_vault_unseal_
   - name: linux
     box: jtarpley/${MOLECULE_BOX:-rocky9_cis}
     memory: 2048
     cpus: 2
     provider_options:
-      default_prefix: vault_init_
+      default_prefix: hashi_vault_vault_unseal_
     groups:
       - subjects
 provisioner:
