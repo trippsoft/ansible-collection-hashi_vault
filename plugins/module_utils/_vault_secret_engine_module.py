@@ -8,7 +8,7 @@ from ._timeparse import duration_str_to_seconds
 from ._vault_module import VaultModule
 from ._vault_module_error import VaultModuleError
 
-from typing import Optional
+from typing import List, Optional
 
 try:
     from hvac.exceptions import InvalidRequest, Forbidden
@@ -32,7 +32,7 @@ except ImportError:
             passthrough_request_headers=dict(type='list', required=False, default=None, elements='str')
         )
 
-        DURATION_PARAMS: list[str] = ['default_lease_ttl', 'max_lease_ttl']
+        DURATION_PARAMS: List[str] = ['default_lease_ttl', 'max_lease_ttl']
 
         DEFAULT_TTL: int = 2764800
 
@@ -81,8 +81,8 @@ else:
             passthrough_request_headers=dict(type='list', required=False, default=None)
         )
 
-        DURATION_PARAMS: list[str] = ['default_lease_ttl', 'max_lease_ttl']
-        NON_MOUNT_CONFIG_PARAMS: list[str] = ['engine_mount_point', 'state', 'replace_different_backend_type']
+        DURATION_PARAMS: List[str] = ['default_lease_ttl', 'max_lease_ttl']
+        NON_MOUNT_CONFIG_PARAMS: List[str] = ['engine_mount_point', 'state', 'replace_different_backend_type']
 
         DEFAULT_TTL: int = 2764800
 
@@ -119,17 +119,17 @@ else:
 
             filtered_params: dict = self.params.copy()
 
-            delete_keys: list[str] = [key for key in filtered_params.keys() if key not in self.ARGSPEC]
+            delete_keys: List[str] = [key for key in filtered_params.keys() if key not in self.ARGSPEC]
 
             for key in delete_keys:
                 del filtered_params[key]
 
-            delete_keys: list[str] = [key for key in filtered_params.keys() if key in self.NON_MOUNT_CONFIG_PARAMS]
+            delete_keys: List[str] = [key for key in filtered_params.keys() if key in self.NON_MOUNT_CONFIG_PARAMS]
 
             for key in delete_keys:
                 del filtered_params[key]
 
-            delete_keys: list[str] = [key for key in filtered_params.keys() if self.params[key] is None]
+            delete_keys: List[str] = [key for key in filtered_params.keys() if self.params[key] is None]
 
             for key in delete_keys:
                 del filtered_params[key]

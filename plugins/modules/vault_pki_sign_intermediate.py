@@ -274,7 +274,7 @@ import traceback
 
 from ansible.module_utils.basic import missing_required_lib
 
-from typing import Optional
+from typing import List, Optional
 
 try:
     import hvac
@@ -363,8 +363,8 @@ class VaultPKISignIntermediateModule(VaultModule):
         uss_pss=dict(type='bool', required=False)
     )
 
-    DURATION_ARGS: list[str] = ['ttl']
-    LIST_PARAMS_TO_JOIN: list[str] = ['alt_names']
+    DURATION_ARGS: List[str] = ['ttl']
+    LIST_PARAMS_TO_JOIN: List[str] = ['alt_names']
 
     def __init__(self, *args, **kwargs):
 
@@ -386,17 +386,17 @@ class VaultPKISignIntermediateModule(VaultModule):
 
         filtered_params: dict = self.params.copy()
 
-        delete_keys: list[str] = [key for key in filtered_params.keys() if key not in self.ARGSPEC]
+        delete_keys: List[str] = [key for key in filtered_params.keys() if key not in self.ARGSPEC]
 
         for key in delete_keys:
             del filtered_params[key]
 
-        delete_keys: list[str] = [key for key in filtered_params.keys() if key in ['engine_mount_point', 'csr', 'common_name']]
+        delete_keys: List[str] = [key for key in filtered_params.keys() if key in ['engine_mount_point', 'csr', 'common_name']]
 
         for key in delete_keys:
             del filtered_params[key]
 
-        delete_keys: list[str] = [key for key in filtered_params.keys() if filtered_params[key] is None]
+        delete_keys: List[str] = [key for key in filtered_params.keys() if filtered_params[key] is None]
 
         for key in delete_keys:
             del filtered_params[key]

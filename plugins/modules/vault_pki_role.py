@@ -918,7 +918,7 @@ import traceback
 
 from ansible.module_utils.basic import missing_required_lib
 
-from typing import Optional
+from typing import List, Optional
 
 try:
     import hvac
@@ -1082,7 +1082,7 @@ class VaultPKIRoleModule(VaultModule):
         allowed_user_ids=[]
     )
 
-    SET_COMPARE_PARAMS: list[str] = [
+    SET_COMPARE_PARAMS: List[str] = [
         'allowed_domains',
         'allowed_uri_sans',
         'allowed_other_sans',
@@ -1092,7 +1092,7 @@ class VaultPKIRoleModule(VaultModule):
         'policy_identifiers'
     ]
 
-    DURATION_PARAMS: list[str] = ['ttl', 'max_ttl', 'not_before_duration']
+    DURATION_PARAMS: List[str] = ['ttl', 'max_ttl', 'not_before_duration']
 
     def __init__(self, *args, **kwargs) -> None:
 
@@ -1114,12 +1114,12 @@ class VaultPKIRoleModule(VaultModule):
 
         filtered_params: dict = self.params.copy()
 
-        delete_keys: list[str] = [key for key in filtered_params.keys() if key not in self.DEFAULT_VALUES.keys()]
+        delete_keys: List[str] = [key for key in filtered_params.keys() if key not in self.DEFAULT_VALUES.keys()]
 
         for key in delete_keys:
             del filtered_params[key]
 
-        delete_keys: list[str] = [key for key in filtered_params.keys() if filtered_params[key] is None]
+        delete_keys: List[str] = [key for key in filtered_params.keys() if filtered_params[key] is None]
 
         for key in delete_keys:
             del filtered_params[key]

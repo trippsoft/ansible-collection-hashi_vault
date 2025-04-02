@@ -304,7 +304,7 @@ import traceback
 
 from ansible.module_utils.basic import missing_required_lib
 
-from typing import Optional
+from typing import List, Optional
 
 try:
     import hvac
@@ -396,7 +396,7 @@ class VaultPKIGenerateIntermediateCSRModule(VaultModule):
         )
     )
 
-    LIST_PARAMS_TO_JOIN: list[str] = ['alt_names']
+    LIST_PARAMS_TO_JOIN: List[str] = ['alt_names']
 
     def __init__(self, *args, **kwargs) -> None:
 
@@ -476,7 +476,7 @@ def run_module() -> None:
         )
 
     if response.get("warnings") is not None and len(response["warnings"]) > 0:
-        warnings: list[str] = response["warnings"]
+        warnings: List[str] = response["warnings"]
 
         for warning in warnings:
             module.warn(warning)
