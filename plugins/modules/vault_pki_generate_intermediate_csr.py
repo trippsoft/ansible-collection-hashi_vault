@@ -302,16 +302,18 @@ key_id:
 
 import traceback
 
+from ansible.module_utils.basic import missing_required_lib
+
+from typing import Optional
+
 try:
     import hvac
 except ImportError:
-    HAS_HVAC = False
-    HVAC_IMPORT_ERROR = traceback.format_exc()
+    HAS_HVAC: bool = False
+    HVAC_IMPORT_ERROR: Optional[str] = traceback.format_exc()
 else:
-    HAS_HVAC = True
-    HVAC_IMPORT_ERROR = None
-
-from ansible.module_utils.basic import missing_required_lib
+    HAS_HVAC: bool = True
+    HVAC_IMPORT_ERROR: Optional[str] = None
 
 from ..module_utils._vault_cert import other_sans_to_list_of_str
 from ..module_utils._vault_module import VaultModule
@@ -323,7 +325,7 @@ class VaultPKIGenerateIntermediateCSRModule(VaultModule):
     Vault PKI Generate Intermediate CA CSR Module
     """
 
-    ARGSPEC = dict(
+    ARGSPEC: dict = dict(
         engine_mount_point=dict(type='str', required=True),
         type=dict(type='str', required=False, default='internal', choices=['internal', 'existing']),
         key_ref=dict(type='str', required=False),
@@ -394,10 +396,11 @@ class VaultPKIGenerateIntermediateCSRModule(VaultModule):
         )
     )
 
-    LIST_PARAMS_TO_JOIN = ['alt_names']
+    LIST_PARAMS_TO_JOIN: list[str] = ['alt_names']
 
-    def __init__(self, *args, **kwargs):
-        argspec = self.ARGSPEC.copy()
+    def __init__(self, *args, **kwargs) -> None:
+
+        argspec: dict = self.ARGSPEC.copy()
 
         super(VaultPKIGenerateIntermediateCSRModule, self).__init__(
             *args,
@@ -415,10 +418,10 @@ class VaultPKIGenerateIntermediateCSRModule(VaultModule):
         """
 
         engine_mount_point: str = self.params['engine_mount_point']
-        type = self.params['type']
+        type: str = self.params['type']
         common_name: str = self.params['common_name']
 
-        extra_params = dict()
+        extra_params: dict = {}
 
         for key, value in self.params.items():
             if key not in self.ARGSPEC:
@@ -440,7 +443,7 @@ class VaultPKIGenerateIntermediateCSRModule(VaultModule):
 
             extra_params[key] = value
 
-        payload = dict(
+        payload: dict = dict(
             type=type,
             mount_point=engine_mount_point,
             common_name=common_name,
@@ -450,9 +453,9 @@ class VaultPKIGenerateIntermediateCSRModule(VaultModule):
         return payload
 
 
-def run_module():
+def run_module() -> None:
 
-    module = VaultPKIGenerateIntermediateCSRModule()
+    module: VaultPKIGenerateIntermediateCSRModule = VaultPKIGenerateIntermediateCSRModule()
 
     if not HAS_HVAC:
         module.fail_json(
@@ -462,8 +465,8 @@ def run_module():
     module.initialize_client()
 
     try:
-        payload = module.build_request_payload()
-        response = module.client.secrets.pki.generate_intermediate(**payload)
+        payload: dict = module.build_request_payload()
+        response: dict = module.client.secrets.pki.generate_intermediate(**payload)
     except Exception:
         module.handle_error(
             VaultModuleError(
@@ -478,7 +481,7 @@ def run_module():
         for warning in warnings:
             module.warn(warning)
 
-    result = dict(changed=True)
+    result: dict = dict(changed=True)
 
     for key, value in response["data"].items():
         result[key] = value
@@ -486,7 +489,7 @@ def run_module():
     module.exit_json(**result)
 
 
-def main():
+def main() -> None:
     run_module()
 
 

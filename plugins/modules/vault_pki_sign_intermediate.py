@@ -272,18 +272,18 @@ serial_number:
 
 import traceback
 
-try:
-    import hvac
-except ImportError:
-    HAS_HVAC = False
-    HVAC_IMPORT_ERROR = traceback.format_exc()
-else:
-    HAS_HVAC = True
-    HVAC_IMPORT_ERROR = None
-
 from ansible.module_utils.basic import missing_required_lib
 
 from typing import Optional
+
+try:
+    import hvac
+except ImportError:
+    HAS_HVAC: bool = False
+    HVAC_IMPORT_ERROR: Optional[str] = traceback.format_exc()
+else:
+    HAS_HVAC: bool = True
+    HVAC_IMPORT_ERROR: Optional[str] = None
 
 from ..module_utils._timeparse import duration_str_to_seconds
 from ..module_utils._vault_cert import other_sans_to_list_of_str
@@ -296,7 +296,7 @@ class VaultPKISignIntermediateModule(VaultModule):
     Vault PKI sign verbatim module.
     """
 
-    ARGSPEC = dict(
+    ARGSPEC: dict = dict(
         engine_mount_point=dict(type='str', required=True),
         csr=dict(type='str', required=True),
         common_name=dict(type='str', required=True),
@@ -363,12 +363,12 @@ class VaultPKISignIntermediateModule(VaultModule):
         uss_pss=dict(type='bool', required=False)
     )
 
-    DURATION_ARGS = ['ttl']
-    LIST_PARAMS_TO_JOIN = ['alt_names']
+    DURATION_ARGS: list[str] = ['ttl']
+    LIST_PARAMS_TO_JOIN: list[str] = ['alt_names']
 
     def __init__(self, *args, **kwargs):
 
-        argspec = self.ARGSPEC.copy()
+        argspec: dict = self.ARGSPEC.copy()
 
         super(VaultPKISignIntermediateModule, self).__init__(
             *args,
@@ -386,17 +386,17 @@ class VaultPKISignIntermediateModule(VaultModule):
 
         filtered_params: dict = self.params.copy()
 
-        delete_keys = [key for key in filtered_params.keys() if key not in self.ARGSPEC]
+        delete_keys: list[str] = [key for key in filtered_params.keys() if key not in self.ARGSPEC]
 
         for key in delete_keys:
             del filtered_params[key]
 
-        delete_keys = [key for key in filtered_params.keys() if key in ['engine_mount_point', 'csr', 'common_name']]
+        delete_keys: list[str] = [key for key in filtered_params.keys() if key in ['engine_mount_point', 'csr', 'common_name']]
 
         for key in delete_keys:
             del filtered_params[key]
 
-        delete_keys = [key for key in filtered_params.keys() if filtered_params[key] is None]
+        delete_keys: list[str] = [key for key in filtered_params.keys() if filtered_params[key] is None]
 
         for key in delete_keys:
             del filtered_params[key]
@@ -420,9 +420,9 @@ class VaultPKISignIntermediateModule(VaultModule):
         return filtered_params
 
 
-def run_module():
+def run_module() -> None:
 
-    module = VaultPKISignIntermediateModule()
+    module: VaultPKISignIntermediateModule = VaultPKISignIntermediateModule()
 
     if not HAS_HVAC:
         module.fail_json(
@@ -438,7 +438,7 @@ def run_module():
     extra_params: Optional[dict] = module.get_defined_extra_params()
 
     try:
-        response = module.client.secrets.pki.sign_intermediate(
+        response: dict = module.client.secrets.pki.sign_intermediate(
             csr=csr,
             common_name=common_name,
             extra_params=extra_params,
@@ -455,7 +455,7 @@ def run_module():
     module.exit_json(changed=True, **response["data"])
 
 
-def main():
+def main() -> None:
     run_module()
 
 

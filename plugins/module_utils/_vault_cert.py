@@ -14,7 +14,7 @@ def other_sans_to_list_of_str(other_sans: list[dict]) -> list[str]:
         list[str]: The list of other SANs in string format.
     """
 
-    converted = list()
+    converted: list[str] = []
 
     for san in other_sans:
         converted.append(f"{san['oid']};{san['type']}:{san['value']}")

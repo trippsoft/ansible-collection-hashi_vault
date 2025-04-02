@@ -4,8 +4,6 @@ from __future__ import (absolute_import, division, print_function)
 
 import traceback
 
-from ansible.module_utils.common.text.converters import to_native
-
 from ansible_collections.community.hashi_vault.plugins.module_utils._authenticator import HashiVaultAuthenticator
 from ansible_collections.community.hashi_vault.plugins.module_utils._connection_options import HashiVaultConnectionOptions
 from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_common import HashiVaultValueError
@@ -13,37 +11,33 @@ from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault
 
 from ._vault_module_error import VaultModuleError
 
+from ansible.module_utils.common.text.converters import to_native
+
+from typing import Optional
+
 try:
     import hvac
 except ImportError:
-    HAS_HVAC = False
-    HVAC_IMPORT_ERROR = traceback.format_exc()
+    HAS_HVAC: bool = False
+    HVAC_IMPORT_ERROR: Optional[str] = traceback.format_exc()
 
     class VaultModule(HashiVaultModule):
         """
         Extends HashiVaultModule to simplify the creation of Vault modules.
         """
 
-        def __init__(
-                self,
-                *args,
-                argument_spec: dict = None,
-                **kwargs):
+        def __init__(self, *args, argument_spec: Optional[dict] = None, **kwargs) -> None:
 
             if argument_spec is None:
                 argument_spec = dict()
 
-            argspec = HashiVaultModule.generate_argspec(**argument_spec)
+            argspec: dict = HashiVaultModule.generate_argspec(**argument_spec)
 
-            super(VaultModule, self).__init__(
-                *args,
-                argument_spec=argspec,
-                **kwargs
-            )
+            super(VaultModule, self).__init__(*args, argument_spec=argspec, **kwargs)
 
 else:
-    HAS_HVAC = True
-    HVAC_IMPORT_ERROR = None
+    HAS_HVAC: bool = True
+    HVAC_IMPORT_ERROR: Optional[str] = None
 
     class VaultModule(HashiVaultModule):
         """
@@ -52,22 +46,14 @@ else:
 
         client: hvac.Client
 
-        def __init__(
-                self,
-                *args,
-                argument_spec: dict = None,
-                **kwargs):
+        def __init__(self, *args, argument_spec: Optional[dict] = None, **kwargs) -> None:
 
             if argument_spec is None:
                 argument_spec = dict()
 
-            argspec = HashiVaultModule.generate_argspec(**argument_spec)
+            argspec: dict = HashiVaultModule.generate_argspec(**argument_spec)
 
-            super(VaultModule, self).__init__(
-                *args,
-                argument_spec=argspec,
-                **kwargs
-            )
+            super(VaultModule, self).__init__(*args, argument_spec=argspec, **kwargs)
 
         def handle_error(self, error) -> None:
             """
@@ -87,7 +73,7 @@ else:
             """
 
             self.connection_options.process_connection_options()
-            client_args = self.connection_options.get_hvac_connection_options()
+            client_args: dict = self.connection_options.get_hvac_connection_options()
             self.client = self.helper.get_vault_client(**client_args)
 
             try:
@@ -104,18 +90,18 @@ else:
                 dict: The defined non-connection parameters for the module.
             """
 
-            filtered_params = self.params.copy()
-            delete_keys = [key for key in self.params.keys() if key in HashiVaultConnectionOptions.ARGSPEC]
+            filtered_params: dict = self.params.copy()
+            delete_keys: list[str] = [key for key in self.params.keys() if key in HashiVaultConnectionOptions.ARGSPEC]
 
             for key in delete_keys:
                 del filtered_params[key]
 
-            delete_keys = [key for key in self.params.keys() if key in HashiVaultAuthenticator.ARGSPEC]
+            delete_keys: list[str] = [key for key in self.params.keys() if key in HashiVaultAuthenticator.ARGSPEC]
 
             for key in delete_keys:
                 del filtered_params[key]
 
-            delete_keys = [key for key in self.params.keys() if self.params[key] is None]
+            delete_keys: list[str] = [key for key in self.params.keys() if self.params[key] is None]
 
             for key in delete_keys:
                 del filtered_params[key]

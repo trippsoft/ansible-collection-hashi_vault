@@ -141,18 +141,18 @@ prev_config:
 
 import traceback
 
-try:
-    import hvac
-except ImportError:
-    HAS_HVAC = False
-    HVAC_IMPORT_ERROR = traceback.format_exc()
-else:
-    HAS_HVAC = True
-    HVAC_IMPORT_ERROR = None
-
 from ansible.module_utils.basic import missing_required_lib
 
 from typing import Optional
+
+try:
+    import hvac
+except ImportError:
+    HAS_HVAC: bool = False
+    HVAC_IMPORT_ERROR: Optional[str] = traceback.format_exc()
+else:
+    HAS_HVAC: bool = True
+    HVAC_IMPORT_ERROR: Optional[str] = None
 
 from ..module_utils._timeparse import duration_str_to_seconds
 from ..module_utils._vault_module import VaultModule
@@ -164,7 +164,7 @@ class VaultDatabaseStaticRole(VaultModule):
     Vault Database Static Role Module
     """
 
-    ARGSPEC = dict(
+    ARGSPEC: dict = dict(
         engine_mount_point=dict(type='str', required=True),
         state=dict(type='str', choices=['present', 'absent'], default='present'),
         name=dict(type='str', required=True),
@@ -174,14 +174,14 @@ class VaultDatabaseStaticRole(VaultModule):
         rotation_period=dict(type='str', required=False)
     )
 
-    DEFAULT_VALUES = dict(
+    DEFAULT_VALUES: dict = dict(
         rotation_statements=[],
         rotation_period='86400'
     )
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
 
-        argspec = self.ARGSPEC.copy()
+        argspec: dict = self.ARGSPEC.copy()
 
         super(VaultDatabaseStaticRole, self).__init__(
             *args,
@@ -198,11 +198,11 @@ class VaultDatabaseStaticRole(VaultModule):
         Get the formatted role data from the Vault server.
         """
 
-        name = self.params['name']
-        mount_point = self.params['engine_mount_point']
+        name: str = self.params['name']
+        mount_point: str = self.params['engine_mount_point']
 
         try:
-            role_data = self.client.secrets.database.read_static_role(
+            role_data: dict = self.client.secrets.database.read_static_role(
                 name=name,
                 mount_point=mount_point
             )
@@ -219,9 +219,9 @@ class VaultDatabaseStaticRole(VaultModule):
         if role_data.get("data") is None:
             return None
 
-        data = role_data["data"]
+        data: dict = role_data["data"]
 
-        delete_keys = [key for key in data.keys() if key not in self.DEFAULT_VALUES.keys() and key != 'username' and key != 'db_name']
+        delete_keys: list[str] = [key for key in data.keys() if key not in self.DEFAULT_VALUES.keys() and key != 'username' and key != 'db_name']
 
         for key in delete_keys:
             del data[key]
@@ -239,9 +239,9 @@ class VaultDatabaseStaticRole(VaultModule):
             dict: The defined role parameters.
         """
 
-        filtered_params = self.params.copy()
+        filtered_params: dict = self.params.copy()
 
-        delete_keys = [key for key in filtered_params.keys() if key not in self.DEFAULT_VALUES.keys()]
+        delete_keys: list[str] = [key for key in filtered_params.keys() if key not in self.DEFAULT_VALUES.keys()]
 
         for key in delete_keys:
             del filtered_params[key]
@@ -375,9 +375,9 @@ def ensure_role_present(
     return dict(changed=False, config=previous_role_data)
 
 
-def run_module():
+def run_module() -> None:
 
-    module = VaultDatabaseStaticRole()
+    module: VaultDatabaseStaticRole = VaultDatabaseStaticRole()
 
     if not HAS_HVAC:
         module.fail_json(
@@ -388,17 +388,17 @@ def run_module():
 
     state: str = module.params['state']
 
-    previous_role_data = module.get_formatted_role_data()
-    desired_role_data = module.get_defined_role_params(previous_role_data)
+    previous_role_data: Optional[dict] = module.get_formatted_role_data()
+    desired_role_data: dict = module.get_defined_role_params(previous_role_data)
 
     if state == 'present':
-        result = ensure_role_present(
+        result: dict = ensure_role_present(
             module,
             previous_role_data,
             desired_role_data
         )
     else:
-        result = ensure_role_absent(
+        result: dict = ensure_role_absent(
             module,
             previous_role_data
         )
@@ -406,7 +406,7 @@ def run_module():
     module.exit_json(**result)
 
 
-def main():
+def main() -> None:
     run_module()
 
 

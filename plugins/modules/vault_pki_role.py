@@ -916,19 +916,19 @@ prev_config:
 
 import traceback
 
+from ansible.module_utils.basic import missing_required_lib
+
+from typing import Optional
+
 try:
     import hvac
     import hvac.exceptions
 except ImportError:
-    HAS_HVAC = False
-    HVAC_IMPORT_ERROR = traceback.format_exc()
+    HAS_HVAC: bool = False
+    HVAC_IMPORT_ERROR: Optional[str] = traceback.format_exc()
 else:
-    HAS_HVAC = True
-    HVAC_IMPORT_ERROR = None
-
-from ansible.module_utils.basic import missing_required_lib
-
-from typing import Optional
+    HAS_HVAC: bool = True
+    HVAC_IMPORT_ERROR: Optional[str] = None
 
 from ..module_utils._timeparse import duration_str_to_seconds
 from ..module_utils._vault_module import VaultModule
@@ -940,7 +940,7 @@ class VaultPKIRoleModule(VaultModule):
     Vault PKI Role module.
     """
 
-    ARGSPEC = dict(
+    ARGSPEC: dict = dict(
         engine_mount_point=dict(type='str', required=True),
         name=dict(type='str', required=True),
         state=dict(type='str', default='present', choices=['present', 'absent']),
@@ -1036,7 +1036,7 @@ class VaultPKIRoleModule(VaultModule):
         allowed_user_ids=dict(type='list', elements='str', required=False)
     )
 
-    DEFAULT_VALUES = dict(
+    DEFAULT_VALUES: dict = dict(
         ttl=0,
         max_ttl=0,
         allow_localhost=True,
@@ -1082,7 +1082,7 @@ class VaultPKIRoleModule(VaultModule):
         allowed_user_ids=[]
     )
 
-    SET_COMPARE_PARAMS = [
+    SET_COMPARE_PARAMS: list[str] = [
         'allowed_domains',
         'allowed_uri_sans',
         'allowed_other_sans',
@@ -1092,11 +1092,11 @@ class VaultPKIRoleModule(VaultModule):
         'policy_identifiers'
     ]
 
-    DURATION_PARAMS = ['ttl', 'max_ttl', 'not_before_duration']
+    DURATION_PARAMS: list[str] = ['ttl', 'max_ttl', 'not_before_duration']
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
 
-        argspec = self.ARGSPEC.copy()
+        argspec: dict = self.ARGSPEC.copy()
 
         super(VaultPKIRoleModule, self).__init__(
             *args,
@@ -1114,12 +1114,12 @@ class VaultPKIRoleModule(VaultModule):
 
         filtered_params: dict = self.params.copy()
 
-        delete_keys = [key for key in filtered_params.keys() if key not in self.DEFAULT_VALUES.keys()]
+        delete_keys: list[str] = [key for key in filtered_params.keys() if key not in self.DEFAULT_VALUES.keys()]
 
         for key in delete_keys:
             del filtered_params[key]
 
-        delete_keys = [key for key in filtered_params.keys() if filtered_params[key] is None]
+        delete_keys: list[str] = [key for key in filtered_params.keys() if filtered_params[key] is None]
 
         for key in delete_keys:
             del filtered_params[key]
@@ -1241,8 +1241,8 @@ def ensure_role_absent(module: VaultPKIRoleModule, previous_role_data: Optional[
     if previous_role_data is None:
         return dict(changed=False)
 
-    name = module.params['name']
-    mount_point = module.params['engine_mount_point']
+    name: str = module.params['name']
+    mount_point: str = module.params['engine_mount_point']
 
     if not module.check_mode:
         try:
@@ -1274,8 +1274,8 @@ def ensure_role_present(
         dict: The result of the operation.
     """
 
-    name = module.params['name']
-    mount_point = module.params['engine_mount_point']
+    name: str = module.params['name']
+    mount_point: str = module.params['engine_mount_point']
 
     if previous_role_data is None:
 
@@ -1296,7 +1296,7 @@ def ensure_role_present(
 
         return dict(changed=True, role=desired_role_data)
 
-    config_diff = module.compare_role(
+    config_diff: dict = module.compare_role(
         previous_role_data,
         desired_role_data
     )
@@ -1322,9 +1322,9 @@ def ensure_role_present(
     return dict(changed=True, prev_role=previous_role_data, role=desired_role_data)
 
 
-def run_module():
+def run_module() -> None:
 
-    module = VaultPKIRoleModule()
+    module: VaultPKIRoleModule = VaultPKIRoleModule()
 
     if not HAS_HVAC:
         module.fail_json(
@@ -1333,20 +1333,20 @@ def run_module():
 
     state: bool = module.params['state']
 
-    desired_role_data = module.get_defined_role_params()
+    desired_role_data: dict = module.get_defined_role_params()
 
     module.initialize_client()
 
-    previous_role_data = module.get_formatted_role_data()
+    previous_role_data: Optional[dict] = module.get_formatted_role_data()
 
     if state == 'present':
-        result = ensure_role_present(
+        result: dict = ensure_role_present(
             module,
             previous_role_data,
             desired_role_data
         )
     else:
-        result = ensure_role_absent(
+        result: dict = ensure_role_absent(
             module,
             previous_role_data
         )
@@ -1354,7 +1354,7 @@ def run_module():
     module.exit_json(**result)
 
 
-def main():
+def main() -> None:
     run_module()
 
 

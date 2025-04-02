@@ -275,18 +275,18 @@ prev_certificate:
 
 import traceback
 
-try:
-    import hvac
-except ImportError:
-    HAS_HVAC = False
-    HVAC_IMPORT_ERROR = traceback.format_exc()
-else:
-    HAS_HVAC = True
-    HVAC_IMPORT_ERROR = None
-
 from ansible.module_utils.basic import missing_required_lib
 
 from typing import Optional
+
+try:
+    import hvac
+except ImportError:
+    HAS_HVAC: bool = False
+    HVAC_IMPORT_ERROR: Optional[str] = traceback.format_exc()
+else:
+    HAS_HVAC: bool = True
+    HVAC_IMPORT_ERROR: Optional[str] = None
 
 from ..module_utils._timeparse import duration_str_to_seconds
 from ..module_utils._vault_cert import other_sans_to_list_of_str
@@ -299,7 +299,7 @@ class VaultPKIRootCACertificateModule(VaultModule):
     Vault PKI Root CA Certificate Module
     """
 
-    ARGSPEC = dict(
+    ARGSPEC: dict = dict(
         engine_mount_point=dict(type='str', required=True),
         state=dict(type='str', required=False, default='present', choices=['present', 'absent']),
         common_name=dict(type='str', required=False),
@@ -335,13 +335,13 @@ class VaultPKIRootCACertificateModule(VaultModule):
         serial_number=dict(type='str', required=False)
     )
 
-    DURATION_PARAMS = ['ttl']
+    DURATION_PARAMS: list[str] = ['ttl']
 
-    LIST_PARAMS_TO_JOIN = ['alt_names']
+    LIST_PARAMS_TO_JOIN: list[str] = ['alt_names']
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
 
-        argspec = self.ARGSPEC.copy()
+        argspec: dict = self.ARGSPEC.copy()
 
         super(VaultPKIRootCACertificateModule, self).__init__(
             *args,
@@ -390,9 +390,9 @@ class VaultPKIRootCACertificateModule(VaultModule):
         common_name: str = self.params['common_name']
         export_private_key: bool = self.params['export_private_key']
 
-        type = 'exported' if export_private_key else 'internal'
+        type: str = 'exported' if export_private_key else 'internal'
 
-        extra_params = dict()
+        extra_params: dict = {}
 
         for key, value in self.params.items():
             if key not in self.ARGSPEC:
@@ -412,7 +412,7 @@ class VaultPKIRootCACertificateModule(VaultModule):
             elif key in self.LIST_PARAMS_TO_JOIN:
                 extra_params[key] = self.convert_list_to_comma_separated_string(value)
 
-        payload = dict(
+        payload: dict = dict(
             type=type,
             mount_point=engine_mount_point,
             common_name=common_name,
@@ -443,7 +443,7 @@ def ensure_certificate_absent(
 
     if not module.check_mode:
         try:
-            response = module.client.secrets.pki.delete_root(mount_point=engine_mount_point)
+            response: dict = module.client.secrets.pki.delete_root(mount_point=engine_mount_point)
         except Exception:
             module.handle_error(
                 VaultModuleError(
@@ -483,10 +483,10 @@ def ensure_certificate_present(
     if module.check_mode:
         return dict(changed=True)
 
-    payload = module.build_request_payload()
+    payload: dict = module.build_request_payload()
 
     try:
-        response = module.client.secrets.pki.generate_root(**payload)
+        response: dict = module.client.secrets.pki.generate_root(**payload)
     except Exception:
         module.handle_error(
             VaultModuleError(
@@ -501,7 +501,7 @@ def ensure_certificate_present(
         for warning in warnings:
             module.warn(warning)
 
-    result = dict(
+    result: dict = dict(
         changed=True,
         certificate=response["data"]["certificate"]
     )
@@ -512,7 +512,7 @@ def ensure_certificate_present(
     return result
 
 
-def run_module():
+def run_module() -> None:
 
     module = VaultPKIRootCACertificateModule()
 
@@ -525,7 +525,7 @@ def run_module():
 
     module.initialize_client()
 
-    certificate_data = module.read_certificate_data()
+    certificate_data: Optional[str] = module.read_certificate_data()
 
     if state == 'present':
         result = ensure_certificate_present(module, certificate_data)
@@ -535,7 +535,7 @@ def run_module():
     module.exit_json(**result)
 
 
-def main():
+def main() -> None:
     run_module()
 
 

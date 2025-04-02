@@ -172,18 +172,18 @@ serial_number:
 
 import traceback
 
-try:
-    import hvac
-except ImportError:
-    HAS_HVAC = False
-    HVAC_IMPORT_ERROR = traceback.format_exc()
-else:
-    HAS_HVAC = True
-    HVAC_IMPORT_ERROR = None
-
 from ansible.module_utils.basic import missing_required_lib
 
 from typing import Optional
+
+try:
+    import hvac
+except ImportError:
+    HAS_HVAC: bool = False
+    HVAC_IMPORT_ERROR: Optional[str] = traceback.format_exc()
+else:
+    HAS_HVAC: bool = True
+    HVAC_IMPORT_ERROR: Optional[str] = None
 
 from ..module_utils._timeparse import duration_str_to_seconds
 from ..module_utils._vault_module import VaultModule
@@ -195,7 +195,7 @@ class VaultPKISignVerbatimModule(VaultModule):
     Vault PKI sign verbatim module.
     """
 
-    ARGSPEC = dict(
+    ARGSPEC: dict = dict(
         engine_mount_point=dict(type='str', required=True),
         role_name=dict(type='str', required=True),
         csr=dict(type='str', required=True),
@@ -243,11 +243,11 @@ class VaultPKISignVerbatimModule(VaultModule):
         user_ids=dict(type='list', required=False, elements='str')
     )
 
-    DURATION_ARGS = ['ttl']
+    DURATION_ARGS: list[str] = ['ttl']
 
     def __init__(self, *args, **kwargs):
 
-        argspec = self.ARGSPEC.copy()
+        argspec: dict = self.ARGSPEC.copy()
 
         super(VaultPKISignVerbatimModule, self).__init__(
             *args,
@@ -265,17 +265,17 @@ class VaultPKISignVerbatimModule(VaultModule):
 
         filtered_params: dict = self.params.copy()
 
-        delete_keys = [key for key in filtered_params.keys() if key not in self.ARGSPEC]
+        delete_keys: list[str] = [key for key in filtered_params.keys() if key not in self.ARGSPEC]
 
         for key in delete_keys:
             del filtered_params[key]
 
-        delete_keys = [key for key in filtered_params.keys() if key in ['engine_mount_point', 'role_name', 'csr']]
+        delete_keys: list[str] = [key for key in filtered_params.keys() if key in ['engine_mount_point', 'role_name', 'csr']]
 
         for key in delete_keys:
             del filtered_params[key]
 
-        delete_keys = [key for key in filtered_params.keys() if filtered_params[key] is None]
+        delete_keys: list[str] = [key for key in filtered_params.keys() if filtered_params[key] is None]
 
         for key in delete_keys:
             del filtered_params[key]
@@ -290,7 +290,7 @@ class VaultPKISignVerbatimModule(VaultModule):
         return filtered_params
 
 
-def run_module():
+def run_module() -> None:
 
     module = VaultPKISignVerbatimModule()
 
@@ -308,7 +308,7 @@ def run_module():
     extra_params: Optional[dict] = module.get_defined_extra_params()
 
     try:
-        response = module.client.secrets.pki.sign_verbatim(
+        response: dict = module.client.secrets.pki.sign_verbatim(
             csr=csr,
             name=role_name,
             extra_params=extra_params,
@@ -325,7 +325,7 @@ def run_module():
     module.exit_json(changed=True, **response["data"])
 
 
-def main():
+def main() -> None:
     run_module()
 
 

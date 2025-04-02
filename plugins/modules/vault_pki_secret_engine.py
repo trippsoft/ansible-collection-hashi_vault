@@ -215,7 +215,7 @@ def ensure_engine_present(
 
     if previous_mount_config is None:
 
-        description = desired_mount_config.pop('description', None)
+        description: Optional[str] = desired_mount_config.pop('description', None)
 
         module.enable_mount(desired_mount_config)
 
@@ -231,13 +231,13 @@ def ensure_engine_present(
 
         module.disable_mount()
 
-        description = desired_mount_config.pop('description', None)
+        description: Optional[str] = desired_mount_config.pop('description', None)
 
         module.enable_mount(desired_mount_config)
 
         return dict(changed=True, config=dict(description=description, **desired_mount_config))
 
-    mount_config_diff = module.compare_mount_config(
+    mount_config_diff: dict = module.compare_mount_config(
         previous_mount_config,
         desired_mount_config
     )
@@ -254,7 +254,7 @@ def ensure_engine_present(
     return dict(changed=False, config=previous_mount_config)
 
 
-def run_module():
+def run_module() -> None:
 
     module = VaultSecretEngineModule(backend_type='pki')
 
@@ -265,22 +265,22 @@ def run_module():
 
     state: str = module.params.get('state')
 
-    desired_mount_config = module.get_defined_mount_config_params()
+    desired_mount_config: dict = module.get_defined_mount_config_params()
 
     module.initialize_client()
 
-    previous_mount_config = module.get_formatted_mount_config()
-    previous_backend_type = module.get_mount_backend_type()
+    previous_mount_config: Optional[dict] = module.get_formatted_mount_config()
+    previous_backend_type: Optional[str] = module.get_mount_backend_type()
 
     if state == 'absent':
-        result = ensure_engine_absent(
+        result: dict = ensure_engine_absent(
             module,
             previous_mount_config,
             previous_backend_type
         )
 
     if state == 'present':
-        result = ensure_engine_present(
+        result: dict = ensure_engine_present(
             module,
             previous_mount_config,
             previous_backend_type,
@@ -290,7 +290,7 @@ def run_module():
     module.exit_json(**result)
 
 
-def main():
+def main() -> None:
     run_module()
 
 

@@ -4,22 +4,22 @@ from __future__ import (absolute_import, division, print_function)
 
 import traceback
 
-from typing import Optional
-
 from ._timeparse import duration_str_to_seconds
 from ._vault_module import VaultModule
 from ._vault_module_error import VaultModuleError
 
+from typing import Optional
+
 try:
-    import hvac
+    from hvac.exceptions import InvalidRequest, Forbidden
 except ImportError:
-    HAS_HVAC = False
-    HVAC_IMPORT_ERROR = traceback.format_exc()
+    HAS_HVAC: bool = False
+    HVAC_IMPORT_ERROR: Optional[str] = traceback.format_exc()
 
     class VaultSecretEngineModule(VaultModule):
         pass
 
-        ARGSPEC = dict(
+        ARGSPEC: dict = dict(
             engine_mount_point=dict(type='str', required=True),
             state=dict(type='str', required=False, default='present', choices=['present', 'absent']),
             replace_different_backend_type=dict(type='bool', required=False, default=False),
@@ -34,7 +34,7 @@ except ImportError:
 
         DURATION_PARAMS: list[str] = ['default_lease_ttl', 'max_lease_ttl']
 
-        DEFAULT_TTL = 2764800
+        DEFAULT_TTL: int = 2764800
 
         backend_type: str
 
@@ -42,16 +42,15 @@ except ImportError:
                 self,
                 *args,
                 backend_type: str,
-                argument_spec: dict = None,
-                **kwargs):
-
-            if argument_spec is None:
-                argument_spec = dict()
+                argument_spec: Optional[dict] = None,
+                **kwargs) -> None:
 
             self.backend_type = backend_type
 
-            argspec = self.ARGSPEC.copy()
-            argspec.update(argument_spec)
+            argspec: dict = self.ARGSPEC.copy()
+
+            if argument_spec is not None:
+                argspec.update(argument_spec)
 
             super(VaultSecretEngineModule, self).__init__(
                 *args,
@@ -61,15 +60,15 @@ except ImportError:
             )
 
 else:
-    HAS_HVAC = True
-    HVAC_IMPORT_ERROR = None
+    HAS_HVAC: bool = True
+    HVAC_IMPORT_ERROR: Optional[str] = None
 
     class VaultSecretEngineModule(VaultModule):
         """
         Extends VaultModule to simplify the creation of Vault secret engine modules.
         """
 
-        ARGSPEC = dict(
+        ARGSPEC: dict = dict(
             engine_mount_point=dict(type='str', required=True),
             state=dict(type='str', required=False, default='present', choices=['present', 'absent']),
             replace_different_backend_type=dict(type='bool', required=False, default=False),
@@ -83,8 +82,9 @@ else:
         )
 
         DURATION_PARAMS: list[str] = ['default_lease_ttl', 'max_lease_ttl']
+        NON_MOUNT_CONFIG_PARAMS: list[str] = ['engine_mount_point', 'state', 'replace_different_backend_type']
 
-        DEFAULT_TTL = 2764800
+        DEFAULT_TTL: int = 2764800
 
         backend_type: str
 
@@ -92,16 +92,15 @@ else:
                 self,
                 *args,
                 backend_type: str,
-                argument_spec: dict = None,
-                **kwargs):
-
-            if argument_spec is None:
-                argument_spec = dict()
+                argument_spec: Optional[dict] = None,
+                **kwargs) -> None:
 
             self.backend_type = backend_type
 
-            argspec = self.ARGSPEC.copy()
-            argspec.update(argument_spec)
+            argspec: dict = self.ARGSPEC.copy()
+
+            if argument_spec is not None:
+                argspec.update(argument_spec)
 
             super(VaultSecretEngineModule, self).__init__(
                 *args,
@@ -118,19 +117,19 @@ else:
                 dict: The defined mount configuration parameters.
             """
 
-            filtered_params = self.params.copy()
+            filtered_params: dict = self.params.copy()
 
-            delete_keys = [key for key in filtered_params.keys() if key not in self.ARGSPEC]
-
-            for key in delete_keys:
-                del filtered_params[key]
-
-            delete_keys = [key for key in filtered_params.keys() if key in ['engine_mount_point', 'state', 'replace_different_backend_type']]
+            delete_keys: list[str] = [key for key in filtered_params.keys() if key not in self.ARGSPEC]
 
             for key in delete_keys:
                 del filtered_params[key]
 
-            delete_keys = [key for key in filtered_params.keys() if self.params[key] is None]
+            delete_keys: list[str] = [key for key in filtered_params.keys() if key in self.NON_MOUNT_CONFIG_PARAMS]
+
+            for key in delete_keys:
+                del filtered_params[key]
+
+            delete_keys: list[str] = [key for key in filtered_params.keys() if self.params[key] is None]
 
             for key in delete_keys:
                 del filtered_params[key]
@@ -152,8 +151,8 @@ else:
             mount_path: str = self.params['engine_mount_point']
 
             try:
-                mounted_engines = self.client.sys.list_mounted_secrets_engines().get('data', {})
-            except hvac.exceptions.Forbidden:
+                mounted_engines: dict = self.client.sys.list_mounted_secrets_engines().get('data', {})
+            except Forbidden:
                 self.handle_error(
                     VaultModuleError(
                         message="Forbidden: Permission Denied to list mounted engines",
@@ -168,11 +167,12 @@ else:
                     )
                 )
 
-            mount_data = mounted_engines.get(mount_path + '/', {})
-            mount_type = mount_data.get('type', None)
+            mount_data: dict = mounted_engines.get(mount_path + '/', {})
+            mount_type: Optional[str] = mount_data.get('type', None)
 
             if mount_type == 'kv':
-                version = mount_data.get('options', {}).get('version', "0")
+                mount_options: dict = mount_data.get('options', {})
+                version: str = mount_options.get('version', "0")
 
                 if (version == "1" or version == 1):
                     return 'kv-v1'
@@ -193,7 +193,7 @@ else:
                 dict: The formatted configuration data.
             """
 
-            formatted_data = {}
+            formatted_data: dict = {}
 
             for key, value in config_data.items():
                 if key != 'options':
@@ -213,9 +213,9 @@ else:
 
             try:
                 config: dict = self.client.sys.read_mount_configuration(path=path)
-            except hvac.exceptions.InvalidRequest:
+            except InvalidRequest:
                 return None
-            except hvac.exceptions.Forbidden:
+            except Forbidden:
                 self.handle_error(
                     VaultModuleError(
                         message=f"Forbidden: Permission Denied to path '{path}'",
@@ -225,7 +225,7 @@ else:
 
             config_data: dict = config.get('data', {})
 
-            config_data = self.format_mount_config_data(config_data)
+            config_data: dict = self.format_mount_config_data(config_data)
 
             return config_data
 
@@ -287,7 +287,7 @@ else:
 
             try:
                 self.client.sys.disable_secrets_engine(path=path)
-            except hvac.exceptions.Forbidden:
+            except Forbidden:
                 self.handle_error(
                     VaultModuleError(
                         message=f"Forbidden: Permission Denied to path '{path}'",
@@ -323,7 +323,7 @@ else:
                     description=description,
                     config=config
                 )
-            except hvac.exceptions.Forbidden:
+            except Forbidden:
                 self.handle_error(
                     VaultModuleError(
                         message=f"Forbidden: Permission Denied to path '{path}'",
@@ -355,7 +355,7 @@ else:
                 self.client.sys.tune_mount_configuration(
                     path=path,
                     **config)
-            except hvac.exceptions.Forbidden:
+            except Forbidden:
                 self.handle_error(
                     VaultModuleError(
                         message=f"Forbidden: Permission Denied to path '{path}'",

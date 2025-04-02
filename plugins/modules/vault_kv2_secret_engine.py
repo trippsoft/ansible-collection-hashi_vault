@@ -190,18 +190,18 @@ prev_config:
 
 import traceback
 
-try:
-    import hvac
-except ImportError:
-    HAS_HVAC = False
-    HVAC_IMPORT_ERROR = traceback.format_exc()
-else:
-    HAS_HVAC = True
-    HVAC_IMPORT_ERROR = None
-
 from ansible.module_utils.basic import missing_required_lib
 
 from typing import Optional
+
+try:
+    import hvac
+except ImportError:
+    HAS_HVAC: bool = False
+    HVAC_IMPORT_ERROR: Optional[str] = traceback.format_exc()
+else:
+    HAS_HVAC: bool = True
+    HVAC_IMPORT_ERROR: Optional[str] = None
 
 from ..module_utils._timeparse import duration_str_to_seconds
 from ..module_utils._vault_module_error import VaultModuleError
@@ -213,18 +213,15 @@ class VaultKV2SecretEngineModule(VaultSecretEngineModule):
     Vault KV version 2 secret engine module.
     """
 
-    KV2_ARGSPEC = dict(
+    KV2_ARGSPEC: dict = dict(
         max_versions=dict(type='int', required=False, default=None),
         cas_required=dict(type='bool', required=False, default=None),
         delete_version_after=dict(type='str', required=False, default=None)
     )
 
-    def __init__(
-            self,
-            *args,
-            **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
 
-        argspec = self.KV2_ARGSPEC.copy()
+        argspec: dict = self.KV2_ARGSPEC.copy()
 
         super(VaultKV2SecretEngineModule, self).__init__(
             *args,
@@ -243,12 +240,12 @@ class VaultKV2SecretEngineModule(VaultSecretEngineModule):
 
         filtered_params: dict = self.params.copy()
 
-        delete_keys = [key for key in filtered_params.keys() if key not in self.KV2_ARGSPEC.keys()]
+        delete_keys: list[str] = [key for key in filtered_params.keys() if key not in self.KV2_ARGSPEC.keys()]
 
         for key in delete_keys:
             del filtered_params[key]
 
-        delete_keys = [key for key in filtered_params.keys() if filtered_params[key] is None]
+        delete_keys: list[str] = [key for key in filtered_params.keys() if filtered_params[key] is None]
 
         for key in delete_keys:
             del filtered_params[key]
@@ -433,7 +430,7 @@ def ensure_engine_present(
 
     if previous_mount_config is None:
 
-        description = desired_mount_config.pop('description', None)
+        description: Optional[str] = desired_mount_config.pop('description', None)
 
         module.enable_mount(desired_mount_config)
         module.configure_kv2_secret_engine(desired_kv2_config)
@@ -457,7 +454,7 @@ def ensure_engine_present(
 
         module.disable_mount()
 
-        description = desired_mount_config.pop('description', None)
+        description: Optional[str] = desired_mount_config.pop('description', None)
 
         module.enable_mount(desired_mount_config)
         module.configure_kv2_secret_engine(desired_kv2_config)
@@ -467,7 +464,7 @@ def ensure_engine_present(
             config=dict(description=description, **desired_mount_config, **desired_kv2_config)
         )
 
-    changed = False
+    changed: bool = False
 
     mount_config_diff = module.compare_mount_config(
         previous_mount_config,
@@ -476,7 +473,7 @@ def ensure_engine_present(
 
     if mount_config_diff:
 
-        changed = True
+        changed: bool = True
         module.configure_mount(mount_config_diff)
 
     kv2_config_diff = module.compare_kv2_config(
@@ -486,7 +483,7 @@ def ensure_engine_present(
 
     if kv2_config_diff:
 
-        changed = True
+        changed: bool = True
         module.configure_kv2_secret_engine(kv2_config_diff)
 
     if changed:
@@ -499,9 +496,9 @@ def ensure_engine_present(
     return dict(changed=False, config=dict(**previous_mount_config, **previous_kv2_config))
 
 
-def run_module():
+def run_module() -> None:
 
-    module = VaultKV2SecretEngineModule()
+    module: VaultKV2SecretEngineModule = VaultKV2SecretEngineModule()
 
     if not HAS_HVAC:
         module.fail_json(
@@ -510,23 +507,23 @@ def run_module():
 
     state: str = module.params.get('state')
 
-    desired_mount_config = module.get_defined_mount_config_params()
-    desired_kv2_config = module.get_defined_kv2_config_params()
+    desired_mount_config: dict = module.get_defined_mount_config_params()
+    desired_kv2_config: dict = module.get_defined_kv2_config_params()
 
     module.initialize_client()
 
-    previous_mount_config = module.get_formatted_mount_config()
-    previous_kv2_config = module.get_formatted_kv2_config()
+    previous_mount_config: Optional[dict] = module.get_formatted_mount_config()
+    previous_kv2_config: Optional[dict] = module.get_formatted_kv2_config()
 
     if state == 'absent':
-        result = ensure_engine_absent(
+        result: dict = ensure_engine_absent(
             module,
             previous_mount_config,
             previous_kv2_config
         )
 
     if state == 'present':
-        result = ensure_engine_present(
+        result: dict = ensure_engine_present(
             module,
             previous_mount_config,
             previous_kv2_config,
@@ -537,7 +534,7 @@ def run_module():
     module.exit_json(**result)
 
 
-def main():
+def main() -> None:
     run_module()
 
 

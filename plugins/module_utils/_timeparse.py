@@ -2,9 +2,9 @@
 
 from __future__ import (absolute_import, division, print_function)
 
-SECONDS_PER_MINUTE = 60
-SECONDS_PER_HOUR = 60 * SECONDS_PER_MINUTE
-SECONDS_PER_DAY = 24 * SECONDS_PER_HOUR
+SECONDS_PER_MINUTE: int = 60
+SECONDS_PER_HOUR: int = 60 * SECONDS_PER_MINUTE
+SECONDS_PER_DAY: int = 24 * SECONDS_PER_HOUR
 
 import re
 import math
@@ -32,17 +32,17 @@ def duration_str_to_seconds(duration: str, default: int = 0) -> int:
     except ValueError:
         pass
 
-    days_regex = re.compile(r'(\d+\.?\d*)d')
-    hours_regex = re.compile(r'(\d+\.?\d*)h')
-    minutes_regex = re.compile(r'(\d+\.?\d*)m')
-    seconds_regex = re.compile(r'(\d+\.?\d*)s')
+    days_regex: re.Pattern[str] = re.compile(r'(\d+\.?\d*)d')
+    hours_regex: re.Pattern[str] = re.compile(r'(\d+\.?\d*)h')
+    minutes_regex: re.Pattern[str] = re.compile(r'(\d+\.?\d*)m')
+    seconds_regex: re.Pattern[str] = re.compile(r'(\d+\.?\d*)s')
 
-    days_match = days_regex.search(duration)
-    hours_match = hours_regex.search(duration)
-    minutes_match = minutes_regex.search(duration)
-    seconds_match = seconds_regex.search(duration)
+    days_match: re.Match[str] = days_regex.search(duration)
+    hours_match: re.Match[str] = hours_regex.search(duration)
+    minutes_match: re.Match[str] = minutes_regex.search(duration)
+    seconds_match: re.Match[str] = seconds_regex.search(duration)
 
-    total_seconds = 0
+    total_seconds: int = 0
 
     if days_match is not None:
         try:

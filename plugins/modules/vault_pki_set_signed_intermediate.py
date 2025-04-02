@@ -46,16 +46,18 @@ RETURN = r"""
 
 import traceback
 
+from ansible.module_utils.basic import missing_required_lib
+
+from typing import Optional
+
 try:
     import hvac
 except ImportError:
-    HAS_HVAC = False
-    HVAC_IMPORT_ERROR = traceback.format_exc()
+    HAS_HVAC: bool = False
+    HVAC_IMPORT_ERROR: Optional[str] = traceback.format_exc()
 else:
-    HAS_HVAC = True
-    HVAC_IMPORT_ERROR = None
-
-from ansible.module_utils.basic import missing_required_lib
+    HAS_HVAC: bool = True
+    HVAC_IMPORT_ERROR: Optional[str] = None
 
 from ..module_utils._vault_module import VaultModule
 from ..module_utils._vault_module_error import VaultModuleError
@@ -63,7 +65,7 @@ from ..module_utils._vault_module_error import VaultModuleError
 
 class VaultPKISetSignedIntermediateModule(VaultModule):
     def __init__(self):
-        argument_spec = dict(
+        argument_spec: dict = dict(
             engine_mount_point=dict(required=True, type='str'),
             certificate=dict(required=True, type='str')
         )
@@ -84,7 +86,7 @@ class VaultPKISetSignedIntermediateModule(VaultModule):
         engine_mount_point: str = self.params['engine_mount_point']
 
         try:
-            response = self.client.secrets.pki.read_ca_certificate_chain(
+            response: str = self.client.secrets.pki.read_ca_certificate_chain(
                 mount_point=engine_mount_point
             )
         except Exception:
@@ -108,7 +110,7 @@ class VaultPKISetSignedIntermediateModule(VaultModule):
         engine_mount_point: str = self.params['engine_mount_point']
         certificate: str = self.params['certificate']
 
-        payload = dict(
+        payload: dict = dict(
             mount_point=engine_mount_point,
             certificate=certificate
         )
@@ -116,7 +118,7 @@ class VaultPKISetSignedIntermediateModule(VaultModule):
         return payload
 
 
-def run_module():
+def run_module() -> None:
 
     module = VaultPKISetSignedIntermediateModule()
 
@@ -128,8 +130,8 @@ def run_module():
     module.initialize_client()
 
     certificate: str = module.params['certificate']
-    certificate = certificate.rstrip()
-    existing_certificate = module.get_existing_certificate()
+    certificate: str = certificate.rstrip()
+    existing_certificate: str = module.get_existing_certificate()
 
     if existing_certificate == certificate:
         module.exit_json(changed=False)
@@ -138,8 +140,8 @@ def run_module():
         module.exit_json(changed=True)
 
     try:
-        payload = module.build_request_payload()
-        response = module.client.secrets.pki.set_signed_intermediate(**payload)
+        payload: dict = module.build_request_payload()
+        response: dict = module.client.secrets.pki.set_signed_intermediate(**payload)
     except Exception:
         module.handle_error(
             VaultModuleError(
@@ -157,7 +159,7 @@ def run_module():
     module.exit_json(changed=True)
 
 
-def main():
+def main() -> None:
     run_module()
 
 

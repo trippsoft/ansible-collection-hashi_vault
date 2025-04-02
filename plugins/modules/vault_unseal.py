@@ -53,17 +53,21 @@ import traceback
 from ansible_collections.community.hashi_vault.plugins.module_utils._connection_options import HashiVaultConnectionOptions
 from ansible_collections.community.hashi_vault.plugins.module_utils._hashi_vault_module import HashiVaultModule
 
+from ansible.module_utils.basic import missing_required_lib
+
+from typing import Optional
+
 from ..module_utils._vault_module_error import VaultModuleError
 
-ARGSPEC = dict(
+ARGSPEC: dict = dict(
     unseal_keys=dict(type='list', required=True, elements='str', no_log=True)
 )
 
 try:
     import hvac
 except ImportError:
-    HAS_HVAC = False
-    HVAC_IMPORT_ERROR = traceback.format_exc()
+    HAS_HVAC: bool = False
+    HVAC_IMPORT_ERROR: Optional[str] = traceback.format_exc()
 
     class VaultUnsealModule(HashiVaultModule):
         """
@@ -73,14 +77,14 @@ except ImportError:
         def __init__(
                 self,
                 *args,
-                argument_spec: dict = None,
-                **kwargs):
+                argument_spec: Optional[dict] = None,
+                **kwargs) -> None:
 
-            if argument_spec is None:
-                argument_spec = dict()
+            argspec: dict = ARGSPEC.copy()
 
-            argspec = ARGSPEC.copy()
-            argspec.update(argument_spec.copy())
+            if argument_spec is not None:
+                argspec.update(argument_spec)
+
             argspec.update(HashiVaultConnectionOptions.ARGSPEC.copy())
 
             super(VaultUnsealModule, self).__init__(
@@ -91,8 +95,8 @@ except ImportError:
             )
 
 else:
-    HAS_HVAC = True
-    HVAC_IMPORT_ERROR = None
+    HAS_HVAC: bool = True
+    HVAC_IMPORT_ERROR: Optional[str] = None
 
     class VaultUnsealModule(HashiVaultModule):
         """
@@ -104,14 +108,14 @@ else:
         def __init__(
                 self,
                 *args,
-                argument_spec: dict = None,
-                **kwargs):
+                argument_spec: Optional[dict] = None,
+                **kwargs) -> None:
 
-            if argument_spec is None:
-                argument_spec = dict()
+            argspec: dict = ARGSPEC.copy()
 
-            argspec = ARGSPEC.copy()
-            argspec.update(argument_spec.copy())
+            if argument_spec is not None:
+                argspec.update(argument_spec)
+
             argspec.update(HashiVaultConnectionOptions.ARGSPEC.copy())
 
             super(VaultUnsealModule, self).__init__(
@@ -139,7 +143,7 @@ else:
             """
 
             self.connection_options.process_connection_options()
-            client_args = self.connection_options.get_hvac_connection_options()
+            client_args: dict = self.connection_options.get_hvac_connection_options()
             self.client = self.helper.get_vault_client(**client_args)
 
         def get_defined_non_connection_params(self) -> dict:
@@ -150,25 +154,23 @@ else:
                 dict: The defined non-connection parameters for the module.
             """
 
-            filtered_params = self.params.copy()
-            delete_keys = [key for key in self.params.keys() if key in HashiVaultConnectionOptions.ARGSPEC]
+            filtered_params: dict = self.params.copy()
+            delete_keys: list[str] = [key for key in self.params.keys() if key in HashiVaultConnectionOptions.ARGSPEC]
 
             for key in delete_keys:
                 del filtered_params[key]
 
-            delete_keys = [key for key in filtered_params.keys() if filtered_params[key] is None]
+            delete_keys: list[str] = [key for key in filtered_params.keys() if filtered_params[key] is None]
 
             for key in delete_keys:
                 del filtered_params[key]
 
             return filtered_params
 
-from ansible.module_utils.basic import missing_required_lib
-
 
 def run_module():
 
-    module = VaultUnsealModule()
+    module: VaultUnsealModule = VaultUnsealModule()
 
     if not HAS_HVAC:
         module.fail_json(
@@ -177,7 +179,7 @@ def run_module():
 
     module.initialize_client()
 
-    result = dict(changed=False)
+    result: dict = dict(changed=False)
 
     if not module.client.sys.is_initialized():
         module.handle_error(VaultModuleError(message="Cannot unseal a Vault that has not been initialized."))
@@ -189,12 +191,12 @@ def run_module():
         if not module.check_mode:
 
             result["unsealed"] = False
-            reset = True
+            reset: bool = True
 
             for key in module.params["unseal_keys"]:
 
                 module.client.sys.submit_unseal_key(key=key, reset=reset)
-                reset = False
+                reset: bool = False
 
                 if not module.client.sys.is_sealed():
                     result["unsealed"] = True
