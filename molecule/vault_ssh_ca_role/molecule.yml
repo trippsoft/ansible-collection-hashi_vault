@@ -1,0 +1,20 @@
+---
+driver:
+  name: containers
+platforms:
+  - name: vault
+    image: docker.io/hashicorp/vault:latest
+    capabilities:
+      - SYS_ADMIN
+      - IPC_LOCK
+    exposed_ports:
+      - 8200/tcp
+      - 8200/udp
+      - 8300/tcp
+      - 8300/udp
+    published_ports:
+      - 0.0.0.0:8200:8200/tcp
+      - 0.0.0.0:8200:8200/udp
+      - 0.0.0.0:8300:8300/tcp
+      - 0.0.0.0:8300:8300/udp
+    command: server -dev -dev-root-token-id=47542cbc-6bf8-4fba-8eda-02e0a0d29a0a

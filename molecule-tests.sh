@@ -14,4 +14,9 @@ molecule test -s vault_pki_secret_engine
 molecule test -s vault_pki_set_signed_intermediate
 molecule test -s vault_pki_sign_intermediate
 molecule test -s vault_pki_sign_verbatim
+molecule test -s vault_ssh_ca_role
+molecule test -s vault_ssh_ca_signing_key
+molecule test -s vault_ssh_otp_role
+molecule test -s vault_ssh_secret_engine
+molecule test -s vault_ssh_sign_public_key
 molecule test -s vault_unseal

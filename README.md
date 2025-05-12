@@ -17,9 +17,16 @@ This collection extends the community.hashi_vault collection with additional fun
 - vault_pki_set_signed_intermediate_csr - Sets a signed intermediate CA certificate for a PKI secret engine
 - vault_pki_sign_intermediate - Signs a certificate signing request as an intermediate CA in HashiCorp Vault
 - vault_pki_sign_verbatim - Signs a certificate signing request verbatim in HashiCorp Vault
+- vault_ssh_ca_role - Configures an SSH CA role in HashiCorp Vault
+- vault_ssh_ca_signing_key - Configure SSH CA signing key in HashiCorp Vault
+- vault_ssh_otp_role - Configures an SSH one-time-password role in HashiCorp Vault
+- vault_ssh_secret_engine - Configures an SSH secret engine in HashiCorp Vault
+- vault_ssh_sign_public_key - Signs an SSH public key with an SSH CA role in HashiCorp Vault
+- vault_unseal - Unseals a HashiCorp Vault instance
 
 ### Roles
 
+- [install](roles/install/README.md) - This role installs and configures HashiCorp Vault.
 - [signed_certificate](roles/signed_certificate/README.md) - This role signs a certificate using Hashicorp Vault.
 - [testing](roles/testing/README.md) - This role configures Hashicorp Vault in development mode for use in Molecule testing.
 - [testing_ca](roles/testing_ca/README.md) - This role configures Hashicorp Vault in development mode for use in Molecule testing as a Certification Authority.

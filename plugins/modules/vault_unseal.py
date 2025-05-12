@@ -9,7 +9,7 @@ module: vault_unseal
 version_added: 1.0.0
 author:
   - Jim Tarpley (@trippsc2)
-short_description: Unseals a HashiCorp Vault instance.
+short_description: Unseals a HashiCorp Vault instance
 description:
   - >-
     L(Unseals,https://python-hvac.org/en/stable/usage/system_backend/seal.html#submit-unseal-key)

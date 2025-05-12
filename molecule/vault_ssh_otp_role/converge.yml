@@ -1,0 +1,171 @@
+---
+- name: Converge
+  hosts:
+    - localhost
+  gather_facts: false
+  module_defaults:
+    group/trippsc2.hashi_vault.vault:
+      token: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
+      url: http://127.0.0.1:8200
+  tasks:
+    - name: Create SSH OTP role (check mode)
+      check_mode: true
+      trippsc2.hashi_vault.vault_ssh_otp_role:
+        engine_mount_point: ssh
+        name: otp_role
+        default_user: testuser
+        state: present
+
+    - name: Create SSH OTP role
+      trippsc2.hashi_vault.vault_ssh_otp_role:
+        engine_mount_point: ssh
+        name: otp_role
+        default_user: testuser
+        state: present
+
+    - name: Create SSH OTP role over existing CA role (check mode)
+      check_mode: true
+      trippsc2.hashi_vault.vault_ssh_otp_role:
+        engine_mount_point: ssh
+        name: ca_role_to_overwrite
+        overwrite_non_otp_role: true
+        default_user: testuser
+        state: present
+
+    - name: Create SSH OTP role over existing CA role
+      trippsc2.hashi_vault.vault_ssh_otp_role:
+        engine_mount_point: ssh
+        name: ca_role_to_overwrite
+        overwrite_non_otp_role: true
+        default_user: testuser
+        state: present
+
+    - name: Change SSH OTP role allowed users (check mode)
+      check_mode: true
+      trippsc2.hashi_vault.vault_ssh_otp_role:
+        engine_mount_point: ssh
+        name: otp_role_to_change_allowed_users
+        allowed_users:
+          - testuser
+        default_user: testuser
+        state: present
+
+    - name: Change SSH OTP role allowed users
+      trippsc2.hashi_vault.vault_ssh_otp_role:
+        engine_mount_point: ssh
+        name: otp_role_to_change_allowed_users
+        allowed_users:
+          - testuser
+        default_user: testuser
+        state: present
+
+    - name: Change SSH OTP role CIDR list (check mode)
+      check_mode: true
+      trippsc2.hashi_vault.vault_ssh_otp_role:
+        engine_mount_point: ssh
+        name: otp_role_to_change_cidr_list
+        cidr_list:
+          - 192.168.1.0/24
+        default_user: testuser
+        state: present
+
+    - name: Change SSH OTP role CIDR list
+      trippsc2.hashi_vault.vault_ssh_otp_role:
+        engine_mount_point: ssh
+        name: otp_role_to_change_cidr_list
+        cidr_list:
+          - 192.168.1.0/24
+        default_user: testuser
+        state: present
+
+    - name: Change SSH OTP role default user (check mode)
+      check_mode: true
+      trippsc2.hashi_vault.vault_ssh_otp_role:
+        engine_mount_point: ssh
+        name: otp_role_to_change_default_user
+        default_user: testuser2
+        state: present
+
+    - name: Change SSH OTP role default user
+      trippsc2.hashi_vault.vault_ssh_otp_role:
+        engine_mount_point: ssh
+        name: otp_role_to_change_default_user
+        default_user: testuser2
+        state: present
+
+    - name: Change SSH OTP role exclude CIDR list (check mode)
+      check_mode: true
+      trippsc2.hashi_vault.vault_ssh_otp_role:
+        engine_mount_point: ssh
+        name: otp_role_to_change_exclude_cidr_list
+        exclude_cidr_list:
+          - 192.168.1.0/24
+        default_user: testuser
+        state: present
+
+    - name: Change SSH OTP role exclude CIDR list
+      trippsc2.hashi_vault.vault_ssh_otp_role:
+        engine_mount_point: ssh
+        name: otp_role_to_change_exclude_cidr_list
+        exclude_cidr_list:
+          - 192.168.1.0/24
+        default_user: testuser
+        state: present
+
+    - name: Change SSH OTP role port (check mode)
+      check_mode: true
+      trippsc2.hashi_vault.vault_ssh_otp_role:
+        engine_mount_point: ssh
+        name: otp_role_to_change_port
+        port: 2222
+        default_user: testuser
+        state: present
+
+    - name: Change SSH OTP role port
+      trippsc2.hashi_vault.vault_ssh_otp_role:
+        engine_mount_point: ssh
+        name: otp_role_to_change_port
+        port: 2222
+        default_user: testuser
+        state: present
+
+    - name: Delete SSH OTP role (check mode)
+      check_mode: true
+      trippsc2.hashi_vault.vault_ssh_otp_role:
+        engine_mount_point: ssh
+        name: otp_role_to_delete
+        state: absent
+
+    - name: Delete SSH OTP role
+      trippsc2.hashi_vault.vault_ssh_otp_role:
+        engine_mount_point: ssh
+        name: otp_role_to_delete
+        state: absent
+
+    - name: Delete SSH CA role (check mode)
+      check_mode: true
+      trippsc2.hashi_vault.vault_ssh_otp_role:
+        engine_mount_point: ssh
+        name: ca_role_to_delete
+        overwrite_non_otp_role: true
+        state: absent
+
+    - name: Delete SSH CA role
+      trippsc2.hashi_vault.vault_ssh_otp_role:
+        engine_mount_point: ssh
+        name: ca_role_to_delete
+        overwrite_non_otp_role: true
+        state: absent
+
+    - name: Delete non-existent SSH role (check mode)
+      check_mode: true
+      trippsc2.hashi_vault.vault_ssh_otp_role:
+        engine_mount_point: ssh
+        name: non_existent_role
+        state: absent
+
+    - name: Delete non-existent SSH role
+      trippsc2.hashi_vault.vault_ssh_otp_role:
+        engine_mount_point: ssh
+        name: non_existent_role
+        state: absent

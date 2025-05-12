@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.10.0] - 2025-05-07
+
+### Collection
+
+- *vault_ssh_ca_role* module plugin added.
+- *vault_ssh_ca_signing_key* module plugin added.
+- *vault_ssh_otp_role* module plugin added.
+- *vault_ssh_secret_engine* module plugin added.
+- *vault_ssh_sign_public_key* module plugin added.
+
 ## [1.9.0] - 2025-02-28
 
 ### Collection

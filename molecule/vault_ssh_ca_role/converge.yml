@@ -1,0 +1,396 @@
+---
+- name: Converge
+  hosts:
+    - localhost
+  gather_facts: false
+  module_defaults:
+    group/trippsc2.hashi_vault.vault:
+      token: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
+      url: http://127.0.0.1:8200
+  tasks:
+    - name: Create SSH CA role (check mode)
+      check_mode: true
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: ca_role
+        allow_host_certificates: true
+        allow_user_certificates: true
+        state: present
+
+    - name: Create SSH CA role
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: ca_role
+        allow_host_certificates: true
+        allow_user_certificates: true
+        state: present
+
+    - name: Create SSH CA role over existing OTP role (check mode)
+      check_mode: true
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: otp_role_to_overwrite
+        overwrite_non_ca_role: true
+        allow_host_certificates: true
+        allow_user_certificates: true
+        state: present
+
+    - name: Create SSH CA role over existing OTP role
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: otp_role_to_overwrite
+        overwrite_non_ca_role: true
+        allow_host_certificates: true
+        allow_user_certificates: true
+        state: present
+
+    - name: Change SSH CA role algorithm signer (check mode)
+      check_mode: true
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: ca_role_to_change_algorithm_signer
+        algorithm_signer: ssh-rsa
+        state: present
+
+    - name: Change SSH CA role algorithm signer
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: ca_role_to_change_algorithm_signer
+        algorithm_signer: ssh-rsa
+        state: present
+
+    - name: Change SSH CA role allow bare domains (check mode)
+      check_mode: true
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: ca_role_to_change_allow_bare_domains
+        allow_bare_domains: true
+        state: present
+
+    - name: Change SSH CA role allow bare domains
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: ca_role_to_change_allow_bare_domains
+        allow_bare_domains: true
+        state: present
+
+    - name: Change SSH CA role allow host certificates (check mode)
+      check_mode: true
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: ca_role_to_change_allow_host_certificates
+        allow_host_certificates: false
+        state: present
+
+    - name: Change SSH CA role allow host certificates
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: ca_role_to_change_allow_host_certificates
+        allow_host_certificates: false
+        state: present
+
+    - name: Change SSH CA role allow subdomains (check mode)
+      check_mode: true
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: ca_role_to_change_allow_subdomains
+        allow_subdomains: true
+        state: present
+
+    - name: Change SSH CA role allow subdomains
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: ca_role_to_change_allow_subdomains
+        allow_subdomains: true
+        state: present
+
+    - name: Change SSH CA role allow user certificates (check mode)
+      check_mode: true
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: ca_role_to_change_allow_user_certificates
+        allow_user_certificates: false
+        state: present
+
+    - name: Change SSH CA role allow user certificates
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: ca_role_to_change_allow_user_certificates
+        allow_user_certificates: false
+        state: present
+
+    - name: Change SSH CA role allow user key IDs (check mode)
+      check_mode: true
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: ca_role_to_change_allow_user_key_ids
+        allow_user_key_ids: true
+        state: present
+
+    - name: Change SSH CA role allow user key IDs
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: ca_role_to_change_allow_user_key_ids
+        allow_user_key_ids: true
+        state: present
+
+    - name: Change SSH CA role allowed critical options (check mode)
+      check_mode: true
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: ca_role_to_change_allowed_critical_options
+        allowed_critical_options:
+          - permit-pty
+        state: present
+
+    - name: Change SSH CA role allowed critical options
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: ca_role_to_change_allowed_critical_options
+        allowed_critical_options:
+          - permit-pty
+        state: present
+
+    - name: Change SSH CA role allowed domains (check mode)
+      check_mode: true
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: ca_role_to_change_allowed_domains
+        allowed_domains:
+          - example.com
+          - localdomain
+        state: present
+
+    - name: Change SSH CA role allowed domains
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: ca_role_to_change_allowed_domains
+        allowed_domains:
+          - example.com
+          - localdomain
+        state: present
+
+    - name: Change SSH CA role allowed extensions (check mode)
+      check_mode: true
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: ca_role_to_change_allowed_extensions
+        allowed_extensions:
+          - permit-pty
+        state: present
+
+    - name: Change SSH CA role allowed extensions
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: ca_role_to_change_allowed_extensions
+        allowed_extensions:
+          - permit-pty
+        state: present
+
+    - name: Change SSH CA role allowed user key lengths (check mode)
+      check_mode: true
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: ca_role_to_change_allowed_user_key_lengths
+        allowed_user_key_lengths:
+          rsa:
+            - 2048
+            - 3072
+            - 4096
+          dsa:
+            - 2048
+          ecdsa:
+            - 256
+            - 384
+            - 521
+          ed25519:
+            - 0
+        state: present
+
+    - name: Change SSH CA role allowed user key lengths
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: ca_role_to_change_allowed_user_key_lengths
+        allowed_user_key_lengths:
+          rsa:
+            - 2048
+            - 3072
+            - 4096
+          dsa:
+            - 2048
+          ecdsa:
+            - 256
+            - 384
+            - 521
+          ed25519:
+            - 0
+        state: present
+
+    - name: Change SSH CA role allowed users (check mode)
+      check_mode: true
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: ca_role_to_change_allowed_users
+        allowed_users:
+          - user1
+          - user2
+        state: present
+
+    - name: Change SSH CA role allowed users
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: ca_role_to_change_allowed_users
+        allowed_users:
+          - user1
+          - user2
+        state: present
+
+    - name: Change SSH CA role allowed users template (check mode)
+      check_mode: true
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: ca_role_to_change_allowed_users_template
+        allowed_users_template: true
+        state: present
+
+    - name: Change SSH CA role allowed users template
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: ca_role_to_change_allowed_users_template
+        allowed_users_template: true
+        state: present
+
+    - name: Change SSH CA role default critical options (check mode)
+      check_mode: true
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: ca_role_to_change_default_critical_options
+        default_critical_options:
+          permit-pty: ""
+        state: present
+
+    - name: Change SSH CA role default critical options
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: ca_role_to_change_default_critical_options
+        default_critical_options:
+          permit-pty: ""
+        state: present
+
+    - name: Change SSH CA role default extensions (check mode)
+      check_mode: true
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: ca_role_to_change_default_extensions
+        default_extensions:
+          permit-pty: ""
+        state: present
+
+    - name: Change SSH CA role default extensions
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: ca_role_to_change_default_extensions
+        default_extensions:
+          permit-pty: ""
+        state: present
+
+    - name: Change SSH CA role default user (check mode)
+      check_mode: true
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: ca_role_to_change_default_user
+        default_user: user1
+        state: present
+
+    - name: Change SSH CA role default user
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: ca_role_to_change_default_user
+        default_user: user1
+        state: present
+
+    - name: Change SSH CA role key ID format (check mode)
+      check_mode: true
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: ca_role_to_change_key_id_format
+        key_id_format: user1
+        state: present
+
+    - name: Change SSH CA role key ID format
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: ca_role_to_change_key_id_format
+        key_id_format: user1
+        state: present
+
+    - name: Change SSH CA role max TTL (check mode)
+      check_mode: true
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: ca_role_to_change_max_ttl
+        max_ttl: 1h
+        state: present
+
+    - name: Change SSH CA role max TTL
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: ca_role_to_change_max_ttl
+        max_ttl: 1h
+        state: present
+
+    - name: Change SSH CA role TTL (check mode)
+      check_mode: true
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: ca_role_to_change_ttl
+        ttl: 1h
+        state: present
+
+    - name: Change SSH CA role TTL
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: ca_role_to_change_ttl
+        ttl: 1h
+        state: present
+
+    - name: Delete SSH CA role (check mode)
+      check_mode: true
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: ca_role_to_delete
+        state: absent
+
+    - name: Delete SSH CA role
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: ca_role_to_delete
+        state: absent
+
+    - name: Delete SSH OTP role (check mode)
+      check_mode: true
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: otp_role_to_delete
+        overwrite_non_ca_role: true
+        state: absent
+
+    - name: Delete SSH OTP role
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: otp_role_to_delete
+        overwrite_non_ca_role: true
+        state: absent
+
+    - name: Delete non-existent SSH role (check mode)
+      check_mode: true
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: non_existent_role
+        state: absent
+
+    - name: Delete non-existent SSH role
+      trippsc2.hashi_vault.vault_ssh_ca_role:
+        engine_mount_point: ssh
+        name: non_existent_role
+        state: absent

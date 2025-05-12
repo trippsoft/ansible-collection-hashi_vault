@@ -39,4 +39,9 @@ action_groups:
     - vault_pki_set_signed_intermediate
     - vault_pki_sign_intermediate
     - vault_pki_sign_verbatim
+    - vault_ssh_ca_role
+    - vault_ssh_ca_signing_key
+    - vault_ssh_otp_role
+    - vault_ssh_secret_engine
+    - vault_ssh_sign_public_key
     - vault_unseal

@@ -1331,7 +1331,7 @@ def run_module() -> None:
             msg=missing_required_lib('hvac'),
             exception=HVAC_IMPORT_ERROR)
 
-    state: bool = module.params['state']
+    state: str = module.params['state']
 
     desired_role_data: dict = module.get_defined_role_params()
 

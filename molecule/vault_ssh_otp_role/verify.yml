@@ -1,0 +1,40 @@
+---
+- name: Verify
+  hosts:
+    - localhost
+  gather_facts: false
+  module_defaults:
+    group/trippsc2.hashi_vault.vault:
+      token: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
+      url: http://127.0.0.1:8200
+  tasks:
+    - name: Check if creating an OTP role over an existing CA role fails by default
+      trippsc2.hashi_vault.vault_ssh_otp_role:
+        engine_mount_point: ssh
+        name: ca_role_to_error_on
+        state: present
+        default_user: testuser
+      ignore_errors: true
+      register: _error_on_create
+
+    - name: Verify creating an OTP role over an existing CA role fails by default
+      ansible.builtin.assert:
+        that:
+          - _error_on_create is failed
+        fail_msg: The OTP role was created over an existing CA role when it should have failed.
+        success_msg: The OTP role was not created over an existing CA role as expected.
+
+    - name: Check if removing a CA role fails by default
+      trippsc2.hashi_vault.vault_ssh_otp_role:
+        engine_mount_point: ssh
+        name: ca_role_to_error_on
+        state: absent
+      ignore_errors: true
+      register: _error_on_delete
+
+    - name: Verify removing a CA role fails by default
+      ansible.builtin.assert:
+        that:
+          - _error_on_delete is failed
+        fail_msg: The CA role was removed when it should have failed.
+        success_msg: The CA role was not removed as expected.
