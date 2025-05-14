@@ -7,7 +7,6 @@ plugins/modules/vault_pki_set_signed_intermediate.py pylint:unused-import
 plugins/modules/vault_pki_sign_intermediate.py pylint:unused-import
 plugins/modules/vault_pki_sign_verbatim.py pylint:unused-import
 plugins/modules/vault_ssh_secret_engine.py pylint:unused-import
-plugins/modules/vault_ssh_sign_public_key.py pylint:unused-import
 plugins/modules/vault_pki_root_ca_certificate.py pep8:E501 # Line contains Vault error message verbatim and cannot be shortened.
 plugins/modules/vault_database_secret_engine.py validate-modules:no-log-needed
 plugins/modules/vault_database_secret_engine.py validate-modules:missing-gplv3-license

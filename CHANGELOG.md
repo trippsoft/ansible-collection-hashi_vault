@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.10.1] - 2025-05-14
+
+### Module Plugin - vault_ssh_sign_public_key
+
+- Added signing public key to the module output.
+
 ## [1.10.0] - 2025-05-07
 
 ### Collection

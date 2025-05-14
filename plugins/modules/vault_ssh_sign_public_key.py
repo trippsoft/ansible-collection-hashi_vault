@@ -97,6 +97,11 @@ EXAMPLES = r"""
 """
 
 RETURN = r"""
+signing_public_key:
+  type: str
+  returned: always
+  description:
+    - The public key used to sign the SSH public key.
 serial_number:
   type: str
   returned: always
@@ -217,6 +222,24 @@ def run_module() -> None:
     module.initialize_client()
 
     try:
+        response: dict = module.client.secrets.ssh.read_public_key(mount_point=mount_point)
+        signing_public_key: str = response['data']['public_key']
+    except hvac.exceptions.Forbidden:
+        module.handle_error(
+            VaultModuleError(
+                message=f"Forbidden: Permission denied to read SSH CA key at mount point '{mount_point}'",
+                exception=traceback.format_exc()
+            )
+        )
+    except Exception:
+        module.handle_error(
+            VaultModuleError(
+                message=f"Error reading SSH CA key at mount point '{mount_point}'",
+                exception=traceback.format_exc()
+            )
+        )
+
+    try:
         response: dict = module.client.secrets.ssh.sign_ssh_key(mount_point=mount_point, **payload)
     except Exception:
         module.handle_error(
@@ -228,6 +251,7 @@ def run_module() -> None:
 
     result: dict = dict(
         changed=True,
+        signing_public_key=signing_public_key,
         serial_number=response['data']['serial_number'],
         signed_key=response['data']['signed_key']
     )
