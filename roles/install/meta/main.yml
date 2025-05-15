@@ -12,26 +12,23 @@ galaxy_info:
   platforms:
     - name: Debian
       versions:
-        - bullseye
         - bookworm
     - name: EL
       versions:
-        - '8'
         - '9'
+        - '8'
     - name: Fedora
       versions:
         - all
     - name: Ubuntu
       versions:
-        - focal
-        - jammy
         - noble
-    - name: Windows
-      versions:
-        - '2019'
-        - '2022'
+        - jammy
+        - focal
 
 collections:
+  - ansible.posix
+  - community.general
   - trippsc2.hashicorp
 
 dependencies:

@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.10.2] - 2025-05-15
+
+### Role - install
+
+- Changed OS validation.
+
 ## [1.10.1] - 2025-05-14
 
 ### Module Plugin - vault_ssh_sign_public_key

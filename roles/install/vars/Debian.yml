@@ -1,3 +1,7 @@
 ---
+_vault_os_is_supported: true
+_vault_os_is_tested: false
+
 _vault_default_firewall_type: firewalld
+
 _vault_default_configure_selinux: false
