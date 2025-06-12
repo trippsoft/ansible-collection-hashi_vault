@@ -27,13 +27,12 @@ defaults:
   run:
     working-directory: 'trippsc2.hashi_vault'
 jobs:
-  molecule:
+  molecule_raft_standalone:
     name: Run Molecule tests
-    uses: trippsoft/github-actions/.github/workflows/molecule.yml@main
-    with:
-      working_directory: 'trippsc2.hashi_vault'
-      role_name: 'install'
-      box: ${{ matrix.box }}
+    runs-on:
+      - self-hosted
+      - linux
+      - x64
     strategy:
       fail-fast: false
       matrix:
@@ -45,3 +44,54 @@ jobs:
           - rocky8_cis
           - ubuntu2404_base
           - ubuntu2204_base
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: 'trippsc2.hashi_vault'
+      - name: Run Molecule tests
+        run: |
+          source ~/venv/ansible-2.16/bin/activate
+          rm -rf ~/.ansible/collections/ansible_collections/*
+          cd ./roles/install
+          molecule test -s raft_standalone
+          rm -rf ~/.ansible/collections/ansible_collections/*
+          deactivate
+        env:
+          ANSIBLE_FORCE_COLOR: '1'
+          PY_COLORS: '1'
+          MOLECULE_BOX: ${{ matrix.box }}
+  molecule_raft_cluster:
+    name: Run Molecule tests
+    runs-on:
+      - self-hosted
+      - linux
+      - x64
+    strategy:
+      fail-fast: false
+      matrix:
+        box:
+          - debian12_base
+          - fedora42_base
+          - fedora41_base
+          - rocky9_cis
+          - rocky8_cis
+          - ubuntu2404_base
+          - ubuntu2204_base
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: 'trippsc2.hashi_vault'
+      - name: Run Molecule tests
+        run: |
+          source ~/venv/ansible-2.16/bin/activate
+          rm -rf ~/.ansible/collections/ansible_collections/*
+          cd ./roles/install
+          molecule test -s raft_cluster
+          rm -rf ~/.ansible/collections/ansible_collections/*
+          deactivate
+        env:
+          ANSIBLE_FORCE_COLOR: '1'
+          PY_COLORS: '1'
+          MOLECULE_BOX: ${{ matrix.box }}
