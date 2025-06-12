@@ -40,7 +40,6 @@ jobs:
         run: |
           source ~/venv/ansible-2.16/bin/activate
           rm -rf ~/.ansible/collections/ansible_collections/*
-          ansible-galaxy collection install community.docker
           molecule test -s vault_database_static_role
           rm -rf ~/.ansible/collections/ansible_collections/*
           deactivate

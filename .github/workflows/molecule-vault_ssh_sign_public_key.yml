@@ -40,7 +40,6 @@ jobs:
         run: |
           source ~/venv/ansible-2.16/bin/activate
           rm -rf ~/.ansible/collections/ansible_collections/*
-          ansible-galaxy collection install community.docker
           molecule test -s vault_ssh_sign_public_key
           rm -rf ~/.ansible/collections/ansible_collections/*
           deactivate
