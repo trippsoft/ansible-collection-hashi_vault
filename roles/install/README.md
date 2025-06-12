@@ -1,7 +1,7 @@
 <!-- BEGIN_ANSIBLE_DOCS -->
 
 # Ansible Role: trippsc2.hashi_vault.install
-Version: 1.10.2
+Version: 1.10.3
 
 This role installs and configures HashiCorp Vault.
 
@@ -12,7 +12,7 @@ This role installs and configures HashiCorp Vault.
 | Debian | <ul><li>bookworm</li></ul> |
 | EL | <ul><li>9</li><li>8</li></ul> |
 | Fedora | <ul><li>all</li></ul> |
-| Ubuntu | <ul><li>noble</li><li>jammy</li><li>focal</li></ul> |
+| Ubuntu | <ul><li>noble</li><li>jammy</li></ul> |
 
 ## Dependencies
 | Role |
@@ -22,6 +22,7 @@ This role installs and configures HashiCorp Vault.
 | Collection |
 | ---------- |
 | ansible.posix |
+| ansible.utils |
 | community.general |
 | trippsc2.hashicorp |
 
