@@ -1,0 +1,64 @@
+---
+name: Generate Role Docs
+'on':
+  workflow_dispatch: {}
+  push:
+    branches:
+      - main
+    paths:
+      - galaxy.yml
+      - roles/install/.aar_doc.yml
+      - roles/install/README.md
+      - roles/install/meta/argument_specs.yml
+      - roles/install/meta/main.yml
+      - roles/signed_certificate/.aar_doc.yml
+      - roles/signed_certificate/README.md
+      - roles/signed_certificate/meta/argument_specs.yml
+      - roles/signed_certificate/meta/main.yml
+      - roles/testing/.aar_doc.yml
+      - roles/testing/README.md
+      - roles/testing/meta/argument_specs.yml
+      - roles/testing/meta/main.yml
+      - roles/testing_ca/.aar_doc.yml
+      - roles/testing_ca/README.md
+      - roles/testing_ca/meta/argument_specs.yml
+      - roles/testing_ca/meta/main.yml
+defaults:
+  run:
+    working-directory: 'trippsc2.hashi_vault'
+jobs:
+  docs_install:
+    name: Generate install role documentation
+    permissions:
+      contents: write
+    uses: trippsoft/github-actions/.github/workflows/role-docs.yml@main
+    with:
+      working_directory: 'trippsc2.hashi_vault'
+      role_name: 'install'
+  docs_signed_certificate:
+    name: Generate signed_certificate role documentation
+    permissions:
+      contents: write
+    needs: docs_install
+    uses: trippsoft/github-actions/.github/workflows/role-docs.yml@main
+    with:
+      working_directory: 'trippsc2.hashi_vault'
+      role_name: 'signed_certificate'
+  docs_testing:
+    name: Generate testing role documentation
+    permissions:
+      contents: write
+    needs: docs_signed_certificate
+    uses: trippsoft/github-actions/.github/workflows/role-docs.yml@main
+    with:
+      working_directory: 'trippsc2.hashi_vault'
+      role_name: 'testing'
+  docs_testing_ca:
+    name: Generate testing_ca role documentation
+    permissions:
+      contents: write
+    needs: docs_testing
+    uses: trippsoft/github-actions/.github/workflows/role-docs.yml@main
+    with:
+      working_directory: 'trippsc2.hashi_vault'
+      role_name: 'testing_ca'

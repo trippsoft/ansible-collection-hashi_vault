@@ -1,0 +1,45 @@
+---
+name: Molecule - testing_ca role
+'on':
+  workflow_call: {}
+  workflow_dispatch: {}
+  pull_request:
+    branches:
+      - main
+    paths:
+      - galaxy.yml
+      - roles/testing_ca/**
+      - '!roles/testing_ca/.aar_doc.yml'
+      - '!roles/testing_ca/README.md'
+      - '!roles/testing_ca/meta/argument_specs.yml'
+      - '!roles/testing_ca/meta/main.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - galaxy.yml
+      - roles/testing_ca/**
+      - '!roles/testing_ca/.aar_doc.yml'
+      - '!roles/testing_ca/README.md'
+      - '!roles/testing_ca/meta/argument_specs.yml'
+      - '!roles/testing_ca/meta/main.yml'
+defaults:
+  run:
+    working-directory: 'trippsc2.hashi_vault'
+jobs:
+  molecule:
+    name: Run Molecule tests
+    uses: trippsoft/github-actions/.github/workflows/molecule.yml@main
+    with:
+      working_directory: 'trippsc2.hashi_vault'
+      role_name: 'testing_ca'
+      box: ${{ matrix.box }}
+    strategy:
+      fail-fast: false
+      matrix:
+        box:
+          - debian12_base
+          - rocky9_cis
+          - rocky8_cis
+          - ubuntu2404_base
+          - ubuntu2204_base

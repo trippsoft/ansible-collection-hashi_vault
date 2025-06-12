@@ -49,13 +49,6 @@
         chdir: "{{ _vault_selinux_work_directory.path }}"
       changed_when: true
 
-    # - name: Compile SELinux policy module file
-    #   become: true
-    #   ansible.builtin.command: 
-    #     cmd: semodule_package -o vault.pp -m vault.mod
-    #     chdir: "{{ _vault_selinux_work_directory.path }}"
-    #   changed_when: true
-
     - name: Install SELinux policy module
       become: true
       ansible.builtin.command:

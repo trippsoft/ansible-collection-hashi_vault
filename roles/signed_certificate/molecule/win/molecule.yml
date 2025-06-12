@@ -15,7 +15,7 @@ platforms:
     provider_options:
       default_prefix: hashi_vault_signed_certificate_win_
   - name: win
-    box: jtarpley/${MOLECULE_BOX:-w2022_cis}
+    box: jtarpley/${MOLECULE_BOX:-w2025_cis}
     memory: 2048
     cpus: 2
     provider_options:

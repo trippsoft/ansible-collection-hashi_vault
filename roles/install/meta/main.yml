@@ -24,10 +24,10 @@ galaxy_info:
       versions:
         - noble
         - jammy
-        - focal
 
 collections:
   - ansible.posix
+  - ansible.utils
   - community.general
   - trippsc2.hashicorp
 
