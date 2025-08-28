@@ -63,6 +63,11 @@ disable_mlock = true
 disable_mlock = false
 {% endif %}
 
+telemetry {
+  prometheus_retention_time = "{{ vault_prometheus_retention_time }}"
+  disable_hostname = {{ vault_prometheus_disable_hostname | ternary("true", "false") }}
+}
+
 {% for listener in vault_tcp_listeners %}
 listener "tcp" {
   address = "{{ listener.address }}:{{ listener.port | default(8200) }}"

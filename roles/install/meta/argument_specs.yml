@@ -325,6 +325,20 @@ argument_specs:
         description:
           - The size of the cache in bytes.
           - 'Reference: https://developer.hashicorp.com/vault/docs/configuration#cache_size'
+      vault_prometheus_retention_time:
+        type: str
+        required: false
+        default: "24h"
+        description:
+          - The retention time for Prometheus metrics.
+          - 'Reference: https://developer.hashicorp.com/vault/docs/configuration/telemetry#prometheus_retention_time'
+      vault_prometheus_disable_hostname:
+        type: bool
+        required: false
+        default: true
+        description:
+          - Whether to disable the hostname in Prometheus metrics.
+          - 'Reference: https://developer.hashicorp.com/vault/docs/configuration/telemetry#disable_hostname'
       vault_tcp_listeners:
         type: list
         required: true

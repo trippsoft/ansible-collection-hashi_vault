@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.10.4] - 2025-08-28
+
+### Role - install
+
+- Added support for Prometheus metrics.
+
 ## [1.10.3] - 2025-06-11
 
 ### Collection

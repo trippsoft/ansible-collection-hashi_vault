@@ -52,6 +52,9 @@ vault_cluster_port: 8201
 vault_cache_enabled: true
 vault_cache_size: "131072"
 
+vault_prometheus_retention_time: 24h
+vault_prometheus_disable_hostname: true
+
 vault_backend: raft
 
 vault_raft_trailing_logs: 10000
