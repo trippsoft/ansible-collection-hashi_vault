@@ -35,13 +35,13 @@
       trippsc2.hashi_vault.vault_ssh_ca_signing_key:
         engine_mount_point: custom_size_key
         state: present
-        key_bits: 8192
+        key_bits: 6144
 
     - name: Create SSH CA signing key with custom size key
       trippsc2.hashi_vault.vault_ssh_ca_signing_key:
         engine_mount_point: custom_size_key
         state: present
-        key_bits: 8192
+        key_bits: 6144
 
     - name: Create SSH CA signing key with custom ECDSA key (check mode)
       check_mode: true
