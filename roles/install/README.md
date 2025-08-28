@@ -1,7 +1,7 @@
 <!-- BEGIN_ANSIBLE_DOCS -->
 
 # Ansible Role: trippsc2.hashi_vault.install
-Version: 1.10.3
+Version: 1.10.4
 
 This role installs and configures HashiCorp Vault.
 
@@ -75,6 +75,8 @@ This role installs and configures HashiCorp Vault.
 | vault_cluster_port | <p>The port on which the Vault cluster will communicate.</p><p>Reference: https://developer.hashicorp.com/vault/docs/configuration#cluster_addr</p> | int | no |  | 8201 |
 | vault_cache_enabled | <p>Whether to enable caching.</p><p>Reference: https://developer.hashicorp.com/vault/docs/configuration#disable_cache</p> | bool | no |  | True |
 | vault_cache_size | <p>The size of the cache in bytes.</p><p>Reference: https://developer.hashicorp.com/vault/docs/configuration#cache_size</p> | str | no |  | 131072 |
+| vault_prometheus_retention_time | <p>The retention time for Prometheus metrics.</p><p>Reference: https://developer.hashicorp.com/vault/docs/configuration/telemetry#prometheus_retention_time</p> | str | no |  | 24h |
+| vault_prometheus_disable_hostname | <p>Whether to disable the hostname in Prometheus metrics.</p><p>Reference: https://developer.hashicorp.com/vault/docs/configuration/telemetry#disable_hostname</p> | bool | no |  | True |
 | vault_tcp_listeners | <p>The TCP listeners for the Vault service.</p><p>Reference: https://developer.hashicorp.com/vault/docs/configuration/listener/tcp</p> | list of dicts of 'vault_tcp_listeners' options | yes |  |  |
 | vault_raft_node_id | <p>The node ID for the Vault service.</p><p>If *vault_backend* is set to `raft`, this is required.</p><p>Reference: https://developer.hashicorp.com/vault/docs/configuration/storage/raft#node_id</p> | str | no |  |  |
 | vault_raft_performance_multiplier | <p>The performance multiplier for the Vault service.</p><p>Reference: https://developer.hashicorp.com/vault/docs/configuration/storage/raft#performance_multiplier</p> | int | no |  |  |
