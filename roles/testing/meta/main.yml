@@ -11,6 +11,7 @@ galaxy_info:
   platforms:
   - name: Debian
     versions:
+      - trixie
       - bookworm
   - name: EL
     versions:
@@ -25,4 +26,5 @@ collections:
   - ansible.posix
   - community.general
 
-dependencies: []
+dependencies:
+  - role: trippsc2.hashicorp.repo

@@ -38,7 +38,9 @@ jobs:
       fail-fast: false
       matrix:
         box:
+          - debian13_base
           - debian12_base
+          - rocky10_base
           - rocky9_cis
           - rocky8_cis
           - ubuntu2404_base

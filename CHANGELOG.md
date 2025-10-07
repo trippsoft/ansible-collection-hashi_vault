@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.11.0] - 2025-10-07
+
+### Role - install
+
+- Added support for Debian 13.
+
+### Role - signed_certificate
+
+- Added support for Debian 13.
+- Added support for EL 10.
+
+### Role - testing
+
+- Moved repository setup to use **trippsc2.hashicorp.repo** role.
+- Documented support for Debian 13.
+
+### Role - testing_ca
+
+- Documented support for Debian 13.
+
 ## [1.10.4] - 2025-08-28
 
 ### Role - install
