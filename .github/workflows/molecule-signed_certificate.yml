@@ -49,7 +49,7 @@ jobs:
           - ubuntu2204_base
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           path: 'trippsc2.hashi_vault'
       - name: Run Molecule tests
@@ -86,7 +86,7 @@ jobs:
           - ubuntu2204_base
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           path: 'trippsc2.hashi_vault'
       - name: Run Molecule tests
@@ -120,7 +120,7 @@ jobs:
           - w11_23h2_base
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           path: 'trippsc2.hashi_vault'
       - name: Run Molecule tests
@@ -154,7 +154,7 @@ jobs:
           - w11_23h2_base
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           path: 'trippsc2.hashi_vault'
       - name: Run Molecule tests
