@@ -12,7 +12,7 @@
         state: present
       register: _result
       ignore_errors: true
-    
+
     - name: Verify that the KV1 secret engine failed to create
       ansible.builtin.assert:
         that:

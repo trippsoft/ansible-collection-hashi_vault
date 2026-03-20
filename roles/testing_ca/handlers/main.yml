@@ -7,7 +7,7 @@
     dest: "{{ _testing_ca_certificate_path }}"
     owner: root
     group: root
-    mode: 0644
+    mode: '0644'
   notify:
     - _testing_update_ca_trust
 

@@ -8,7 +8,7 @@
       login_host: '127.0.0.1'
       login_port: 5432
       login_user: postgres
-      login_password: postgres      
+      login_password: postgres
   tasks:
     - name: Create Hashicorp Vault PostgreSQL user
       delegate_to: localhost
@@ -52,7 +52,7 @@
       trippsc2.hashi_vault.vault_database_secret_engine:
         engine_mount_point: database
         state: present
-    
+
     - name: Create Database connection
       community.hashi_vault.vault_database_connection_configure:
         engine_mount_point: database

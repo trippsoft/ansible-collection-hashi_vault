@@ -1,3 +1,9 @@
 ---
 collections:
-  - community.docker
+  - name: community.crypto
+    version: <3.0.0
+  - name: community.docker
+  - name: community.general
+    version: <12.0.0
+  - name: community.hashi_vault
+    version: <7.0.0

@@ -27,7 +27,6 @@ scenario:
     - create
     - prepare
     - converge
-    #- idempotence
     # Removed idempotence check, because this role cannot be made idempotent.
     - side_effect
     - verify

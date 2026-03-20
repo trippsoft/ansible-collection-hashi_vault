@@ -1,3 +1,4 @@
+---
 - name: Prepare
   hosts:
     - localhost
@@ -12,7 +13,7 @@
         engine_mount_point: root_pki
         max_lease_ttl: 157680000
         state: present
-    
+
     - name: Generate Root CA Certificate
       trippsc2.hashi_vault.vault_pki_root_ca_certificate:
         engine_mount_point: root_pki
