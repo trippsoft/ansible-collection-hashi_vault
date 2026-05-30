@@ -24,6 +24,7 @@ galaxy_info:
         - all
     - name: Ubuntu
       versions:
+        - resolute
         - noble
         - jammy
     - name: Windows

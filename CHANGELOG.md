@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.12.0] - 2026-05-30
+
+### Role - install
+
+- Added support for Fedora 44.
+- Added support for Fedora 43.
+- Added support for Ubuntu 26.04.
+
+### Role - signed_certificate
+
+- Added support for Fedora 44.
+- Added support for Fedora 43.
+- Added support for Ubuntu 26.04.
+
+### Role - testing
+
+- Added support for Ubuntu 26.04.
+
+### Role - testing_ca
+
+- Added support for Ubuntu 26.04.
+
 ## [1.11.0] - 2025-10-07
 
 ### Role - install

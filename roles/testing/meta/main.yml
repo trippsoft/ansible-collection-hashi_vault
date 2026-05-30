@@ -15,10 +15,12 @@ galaxy_info:
         - bookworm
     - name: EL
       versions:
+        - '10'
         - '9'
         - '8'
     - name: Ubuntu
       versions:
+        - resolute
         - noble
         - jammy
 
