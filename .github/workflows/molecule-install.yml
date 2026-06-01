@@ -28,7 +28,7 @@ defaults:
     working-directory: 'trippsc2.hashi_vault'
 jobs:
   molecule_raft_standalone:
-    name: Run Molecule tests - install - Raft standalone
+    name: Run Molecule tests - Raft standalone
     runs-on:
       - self-hosted
       - linux
@@ -65,7 +65,7 @@ jobs:
           PY_COLORS: '1'
           MOLECULE_BOX: ${{ matrix.box }}
   molecule_raft_cluster:
-    name: Run Molecule tests - install - Raft cluster
+    name: Run Molecule tests - Raft cluster
     runs-on:
       - self-hosted
       - linux
