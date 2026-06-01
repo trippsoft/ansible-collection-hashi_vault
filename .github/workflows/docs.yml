@@ -31,34 +31,110 @@ jobs:
     name: Generate install role documentation
     permissions:
       contents: write
-    uses: trippsoft/github-actions/.github/workflows/role-docs.yml@main
-    with:
-      working_directory: 'trippsc2.hashi_vault'
-      role_name: 'install'
+    runs-on:
+      - self-hosted
+      - linux
+      - ansible
+      - x64
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          path: trippsc2.hashi_vault
+          ref: main
+      - name: Generate install role documentation
+        working-directory: 'trippsc2.hashi_vault'
+        run: |
+          source ~/venv/ansible-2.16/bin/activate
+          cd ./roles/install
+          aar-doc . markdown
+          git config user.name "GitHub Actions"
+          git config user.email "github-actions@github.com"
+          git add README.md || /bin/true
+          git commit -m "Update install role documentation." || /bin/true
+          git push origin main
+          deactivate
   docs_signed_certificate:
     name: Generate signed_certificate role documentation
+    needs: docs_install
     permissions:
       contents: write
-    needs: docs_install
-    uses: trippsoft/github-actions/.github/workflows/role-docs.yml@main
-    with:
-      working_directory: 'trippsc2.hashi_vault'
-      role_name: 'signed_certificate'
+    runs-on:
+      - self-hosted
+      - linux
+      - ansible
+      - x64
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          path: trippsc2.hashi_vault
+          ref: main
+      - name: Generate signed_certificate role documentation
+        working-directory: 'trippsc2.hashi_vault'
+        run: |
+          source ~/venv/ansible-2.16/bin/activate
+          cd ./roles/signed_certificate
+          aar-doc . markdown
+          git config user.name "GitHub Actions"
+          git config user.email "github-actions@github.com"
+          git add README.md || /bin/true
+          git commit -m "Update signed_certificate role documentation." || /bin/true
+          git push origin main
+          deactivate
   docs_testing:
     name: Generate testing role documentation
+    needs: docs_signed_certificate
     permissions:
       contents: write
-    needs: docs_signed_certificate
-    uses: trippsoft/github-actions/.github/workflows/role-docs.yml@main
-    with:
-      working_directory: 'trippsc2.hashi_vault'
-      role_name: 'testing'
+    runs-on:
+      - self-hosted
+      - linux
+      - ansible
+      - x64
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          path: trippsc2.hashi_vault
+          ref: main
+      - name: Generate testing role documentation
+        working-directory: 'trippsc2.hashi_vault'
+        run: |
+          source ~/venv/ansible-2.16/bin/activate
+          cd ./roles/testing
+          aar-doc . markdown
+          git config user.name "GitHub Actions"
+          git config user.email "github-actions@github.com"
+          git add README.md || /bin/true
+          git commit -m "Update testing role documentation." || /bin/true
+          git push origin main
+          deactivate
   docs_testing_ca:
     name: Generate testing_ca role documentation
+    needs: docs_testing
     permissions:
       contents: write
-    needs: docs_testing
-    uses: trippsoft/github-actions/.github/workflows/role-docs.yml@main
-    with:
-      working_directory: 'trippsc2.hashi_vault'
-      role_name: 'testing_ca'
+    runs-on:
+      - self-hosted
+      - linux
+      - ansible
+      - x64
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          path: trippsc2.hashi_vault
+          ref: main
+      - name: Generate testing_ca role documentation
+        working-directory: 'trippsc2.hashi_vault'
+        run: |
+          source ~/venv/ansible-2.16/bin/activate
+          cd ./roles/testing_ca
+          aar-doc . markdown
+          git config user.name "GitHub Actions"
+          git config user.email "github-actions@github.com"
+          git add README.md || /bin/true
+          git commit -m "Update testing_ca role documentation." || /bin/true
+          git push origin main
+          deactivate

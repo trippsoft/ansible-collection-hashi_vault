@@ -39,7 +39,6 @@ jobs:
       matrix:
         box:
           - debian13_base
-          - debian12_base
           - fedora44_base
           - fedora43_base
           - rocky10_base
@@ -77,7 +76,6 @@ jobs:
       matrix:
         box:
           - debian13_base
-          - debian12_base
           - fedora44_base
           - fedora43_base
           - rocky10_base

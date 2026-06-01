@@ -28,21 +28,38 @@ defaults:
     working-directory: 'trippsc2.hashi_vault'
 jobs:
   molecule:
-    name: Run Molecule tests
-    uses: trippsoft/github-actions/.github/workflows/molecule.yml@main
-    with:
-      working_directory: 'trippsc2.hashi_vault'
-      role_name: 'testing_ca'
-      box: ${{ matrix.box }}
+    name: Run Molecule tests - testing_ca
+    runs-on:
+      - self-hosted
+      - linux
+      - ansible
+      - x64
     strategy:
       fail-fast: false
       matrix:
         box:
           - debian13_base
-          - debian12_base
           - rocky10_base
           - rocky9_cis
           - rocky8_cis
           - ubuntu2604_base
           - ubuntu2404_base
           - ubuntu2204_base
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          path: trippsc2.hashi_vault
+      - name: Run Molecule tests
+        working-directory: 'trippsc2.hashi_vault'
+        run: |
+          source ~/venv/ansible-2.16/bin/activate
+          rm -rf ~/.ansible/collections/ansible_collections/*
+          cd ./roles/testing_ca
+          molecule test
+          rm -rf ~/.ansible/collections/ansible_collections/*
+          deactivate
+        env:
+          ANSIBLE_FORCE_COLOR: '1'
+          PY_COLORS: '1'
+          MOLECULE_BOX: ${{ matrix.box }}

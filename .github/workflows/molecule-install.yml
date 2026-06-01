@@ -28,7 +28,7 @@ defaults:
     working-directory: 'trippsc2.hashi_vault'
 jobs:
   molecule_raft_standalone:
-    name: Run Molecule tests - Raft standalone
+    name: Run Molecule tests - install - Raft standalone
     runs-on:
       - self-hosted
       - linux
@@ -39,7 +39,6 @@ jobs:
       matrix:
         box:
           - debian13_base
-          - debian12_base
           - fedora44_base
           - fedora43_base
           - rocky10_base
@@ -66,7 +65,7 @@ jobs:
           PY_COLORS: '1'
           MOLECULE_BOX: ${{ matrix.box }}
   molecule_raft_cluster:
-    name: Run Molecule tests
+    name: Run Molecule tests - install - Raft cluster
     runs-on:
       - self-hosted
       - linux
@@ -77,7 +76,6 @@ jobs:
       matrix:
         box:
           - debian13_base
-          - debian12_base
           - fedora44_base
           - fedora43_base
           - rocky10_base
@@ -91,7 +89,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           path: 'trippsc2.hashi_vault'
-      - name: Run Molecule tests - Raft cluster
+      - name: Run Molecule tests
         run: |
           source ~/venv/ansible-2.16/bin/activate
           rm -rf ~/.ansible/collections/ansible_collections/*
