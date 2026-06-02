@@ -9,7 +9,7 @@ This role configures Hashicorp Vault in development mode for use in Molecule tes
 
 | Platform | Versions |
 | -------- | -------- |
-| Debian | <ul><li>trixie</li><li>bookworm</li></ul> |
+| Debian | <ul><li>trixie</li></ul> |
 | EL | <ul><li>10</li><li>9</li><li>8</li></ul> |
 | Ubuntu | <ul><li>resolute</li><li>noble</li><li>jammy</li></ul> |
 
