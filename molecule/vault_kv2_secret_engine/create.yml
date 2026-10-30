@@ -1,0 +1,56 @@
+---
+- name: Create
+  hosts:
+    - localhost
+  connection: local
+  gather_facts: false
+  no_log: "{{ molecule_no_log }}"
+  vars:
+    molecule_labels:
+      owner: molecule
+  tags:
+    - always
+  tasks:
+    - name: Create molecule instance(s)
+      loop: "{{ molecule_yml.platforms }}"
+      loop_control:
+        label: "{{ item.name }}"
+      community.docker.docker_container:
+        name: "{{ item.prefix | default('') }}{{ item.name }}"
+        image: "{{ item.image }}"
+        detach: true
+        auto_remove: false
+        command: "{{ item.command | default(omit) }}"
+        capabilities: "{{ item.capabilities | default(omit) }}"
+        exposed_ports: "{{ item.exposed_ports | default(omit) }}"
+        published_ports: "{{ item.published_ports | default(omit) }}"
+        env: "{{ item.env | default(omit) }}"
+        shm_size: "{{ item.shm_size | default(omit) }}"
+        labels: "{{ molecule_labels }}"
+        state: started
+
+    - name: Wait for Vault API to respond
+      ansible.builtin.wait_for:
+        host: 127.0.0.1
+        port: 8200
+        timeout: 30
+
+    - name: Add container to inventory
+      loop: "{{ molecule_yml.platforms }}"
+      loop_control:
+        label: "{{ item.name }}"
+      vars:
+        inventory_partial_yaml: |
+          all:
+            hosts:
+              {{ item.name }}:
+                ansible_connection: local
+      ansible.builtin.set_fact:
+        molecule_inventory: >-
+          {{ molecule_inventory | default({}) | combine(inventory_partial_yaml | from_yaml, recursive=true) }}
+
+    - name: Dump molecule inventory
+      ansible.builtin.copy:
+        content: "{{ molecule_inventory | to_nice_yaml }}"
+        dest: "{{ molecule_ephemeral_directory }}/inventory/molecule_inventory.yml"
+        mode: '0600'

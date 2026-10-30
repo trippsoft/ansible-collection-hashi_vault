@@ -3,8 +3,6 @@ dependency:
   name: galaxy
   options:
     requirements-file: ${MOLECULE_SCENARIO_DIRECTORY}/requirements-${MOLECULE_ANSIBLE_VERSION:-2.16}.yml
-driver:
-  name: containers
 platforms:
   - name: vault
     image: docker.io/hashicorp/vault:latest
@@ -22,3 +20,4 @@ platforms:
       - 0.0.0.0:8300:8300/tcp
       - 0.0.0.0:8300:8300/udp
     command: server -dev -dev-root-token-id=47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
+    prefix: hashi_vault_vault_kv2_secret_engine_
