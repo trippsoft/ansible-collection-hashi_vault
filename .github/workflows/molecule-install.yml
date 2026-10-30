@@ -1,7 +1,6 @@
 ---
 name: Molecule - install role
 'on':
-  workflow_call: {}
   workflow_dispatch: {}
   pull_request:
     branches:
@@ -39,14 +38,20 @@ jobs:
       matrix:
         box:
           - debian13_base
-          - fedora44_base
           - fedora43_base
-          - rocky10_base
-          - rocky9_cis
+          - fedora44_base
           - rocky8_cis
-          - ubuntu2604_base
-          - ubuntu2404_base
+          - rocky9_cis
+          - rocky10_base
           - ubuntu2204_base
+          - ubuntu2404_base
+          - ubuntu2604_base
+        ansible:
+          - '2.16'
+          - '2.21'
+        exclude:
+          - box: rocky8_cis
+            ansible: '2.21'
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -54,7 +59,7 @@ jobs:
           path: 'trippsc2.hashi_vault'
       - name: Run Molecule tests
         run: |
-          source ~/venv/ansible-2.16/bin/activate
+          source ~/venv/ansible-${{ matrix.ansible }}/bin/activate
           rm -rf ~/.ansible/collections/ansible_collections/*
           cd ./roles/install
           molecule test -s raft_standalone
@@ -64,6 +69,7 @@ jobs:
           ANSIBLE_FORCE_COLOR: '1'
           PY_COLORS: '1'
           MOLECULE_BOX: ${{ matrix.box }}
+          MOLECULE_ANSIBLE_VERSION: ${{ matrix.ansible }}
   molecule_raft_cluster:
     name: Run Molecule tests - Raft cluster
     runs-on:
@@ -76,14 +82,20 @@ jobs:
       matrix:
         box:
           - debian13_base
-          - fedora44_base
           - fedora43_base
-          - rocky10_base
-          - rocky9_cis
+          - fedora44_base
           - rocky8_cis
-          - ubuntu2604_base
-          - ubuntu2404_base
+          - rocky9_cis
+          - rocky10_base
           - ubuntu2204_base
+          - ubuntu2404_base
+          - ubuntu2604_base
+        ansible:
+          - '2.16'
+          - '2.21'
+        exclude:
+          - box: rocky8_cis
+            ansible: '2.21'
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -91,7 +103,7 @@ jobs:
           path: 'trippsc2.hashi_vault'
       - name: Run Molecule tests
         run: |
-          source ~/venv/ansible-2.16/bin/activate
+          source ~/venv/ansible-${{ matrix.ansible }}/bin/activate
           rm -rf ~/.ansible/collections/ansible_collections/*
           cd ./roles/install
           molecule test -s raft_cluster
@@ -101,3 +113,4 @@ jobs:
           ANSIBLE_FORCE_COLOR: '1'
           PY_COLORS: '1'
           MOLECULE_BOX: ${{ matrix.box }}
+          MOLECULE_ANSIBLE_VERSION: ${{ matrix.ansible }}

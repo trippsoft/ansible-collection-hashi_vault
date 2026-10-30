@@ -2,7 +2,7 @@
 - name: Update CA trust (Debian-based)
   listen: _cert_update_ca_trust
   when:
-    - ansible_os_family == 'Debian'
+    - ansible_facts.os_family == 'Debian'
     - cert_update_ca_trust
   become: true
   ansible.builtin.command: update-ca-certificates
@@ -11,7 +11,7 @@
 - name: Update CA trust (EL)
   listen: _cert_update_ca_trust
   when:
-    - ansible_os_family == 'RedHat'
+    - ansible_facts.os_family == 'RedHat'
     - cert_update_ca_trust
   become: true
   ansible.builtin.command: update-ca-trust

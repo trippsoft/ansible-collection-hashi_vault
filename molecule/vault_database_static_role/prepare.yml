@@ -58,7 +58,7 @@
         engine_mount_point: database
         connection_name: postgres
         plugin_name: postgresql-database-plugin
-        connection_url: "postgresql://{{ '{{username}}' }}:{{ '{{password}}' }}@{{ hostvars['postgres'].ansible_default_ipv4.address }}:5432/postgres?sslmode=disable"
+        connection_url: "postgresql://{{ '{{username}}' }}:{{ '{{password}}' }}@{{ hostvars['postgres'].ansible_facts.default_ipv4.address }}:5432/postgres?sslmode=disable"
         allowed_roles:
           - '*'
         connection_username: vault

@@ -3,7 +3,7 @@
   ansible.builtin.import_tasks: validate.yml
 
 - name: Include OS variables
-  ansible.builtin.include_vars: "{{ ansible_os_family }}.yml"
+  ansible.builtin.include_vars: "{{ ansible_facts.os_family }}.yml"
 
 - name: Install Hashicorp Vault
   become: true

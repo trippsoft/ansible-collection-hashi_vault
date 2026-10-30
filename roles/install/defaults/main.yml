@@ -42,11 +42,11 @@ vault_post_unseal_trace_enabled: false
 vault_clustering_enabled: false
 
 vault_api_protocol: https
-vault_apt_host: "{{ ansible_default_ipv4.address }}"
+vault_apt_host: "{{ ansible_facts.default_ipv4.address }}"
 vault_api_port: 8200
 
 vault_cluster_protocol: https
-vault_cluster_host: "{{ ansible_default_ipv4.address }}"
+vault_cluster_host: "{{ ansible_facts.default_ipv4.address }}"
 vault_cluster_port: 8201
 
 vault_cache_enabled: true

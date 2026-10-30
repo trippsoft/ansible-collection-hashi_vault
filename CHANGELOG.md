@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.12.1] - 2026-10-30
+
+### Role - install
+
+- Changed fact gathering to use `ansible_facts` instead of direct variables.
+
+### Role - signed_certificate
+
+- Changed fact gathering to use `ansible_facts` instead of direct variables.
+
+### Role - testing
+
+- Changed fact gathering to use `ansible_facts` instead of direct variables.
+
+### Role - testing_ca
+
+- Changed fact gathering to use `ansible_facts` instead of direct variables.
+
 ## [1.12.0] - 2026-05-30
 
 ### Role - install

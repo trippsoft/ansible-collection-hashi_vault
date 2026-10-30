@@ -1,6 +1,8 @@
 ---
 dependency:
   name: galaxy
+  options:
+    requirements-file: ${MOLECULE_SCENARIO_DIRECTORY}/requirements-${MOLECULE_ANSIBLE_VERSION:-2.16}.yml
 driver:
   name: vagrant
   provider:
@@ -9,13 +11,13 @@ driver:
   parallel: true
 platforms:
   - name: ca
-    box: jtarpley/rocky9_cis
+    box: trippsc2/rocky9_cis
     memory: 2048
     cpus: 2
     provider_options:
       default_prefix: hashi_vault_install_raft_cluster_
   - name: vault1
-    box: jtarpley/${MOLECULE_BOX:-rocky9_cis}
+    box: trippsc2/${MOLECULE_BOX:-rocky9_cis}
     memory: 2048
     cpus: 2
     provider_options:
@@ -23,7 +25,7 @@ platforms:
     groups:
       - subjects
   - name: vault2
-    box: jtarpley/${MOLECULE_BOX:-rocky9_cis}
+    box: trippsc2/${MOLECULE_BOX:-rocky9_cis}
     memory: 2048
     cpus: 2
     provider_options:
@@ -31,7 +33,7 @@ platforms:
     groups:
       - subjects
   - name: vault3
-    box: jtarpley/${MOLECULE_BOX:-rocky9_cis}
+    box: trippsc2/${MOLECULE_BOX:-rocky9_cis}
     memory: 2048
     cpus: 2
     provider_options:
@@ -46,11 +48,11 @@ provisioner:
         _ca_vault_url: "http://{{ hostvars['ca'].ansible_host }}:8200"
         _ca_vault_token: 47542cbc-6bf8-4fba-8eda-02e0a0d29a0a
         _vault_ca_certificate_path: >-
-          {{ '/etc/pki/tls/certs/ca.crt' if ansible_os_family == 'RedHat' else '/etc/ssl/certs/ca.crt' }}
+          {{ '/etc/pki/tls/certs/ca.crt' if ansible_facts.os_family == 'RedHat' else '/etc/ssl/certs/ca.crt' }}
         _vault_private_key_path: >-
-          {{ '/etc/pki/tls/private/vault.key' if ansible_os_family == 'RedHat' else '/etc/ssl/private/vault.key' }}
+          {{ '/etc/pki/tls/private/vault.key' if ansible_facts.os_family == 'RedHat' else '/etc/ssl/private/vault.key' }}
         _vault_certificate_path: >-
-          {{ '/etc/pki/tls/certs/vault.crt' if ansible_os_family == 'RedHat' else '/etc/ssl/certs/vault.crt' }}
+          {{ '/etc/pki/tls/certs/vault.crt' if ansible_facts.os_family == 'RedHat' else '/etc/ssl/certs/vault.crt' }}
         vault_cluster_name: cluster1
         vault_api_host: "{{ ansible_host }}"
         vault_cluster_host: "{{ ansible_host }}"

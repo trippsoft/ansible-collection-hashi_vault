@@ -1,4 +1,8 @@
 ---
+dependency:
+  name: galaxy
+  options:
+    requirements-file: ${MOLECULE_SCENARIO_DIRECTORY}/requirements-${MOLECULE_ANSIBLE_VERSION:-2.16}.yml
 driver:
   name: containers
 platforms:

@@ -276,7 +276,7 @@ argument_specs:
       vault_api_host:
         type: str
         required: false
-        default: "{{ ansible_default_ipv4.address }}"
+        default: "{{ ansible_facts.default_ipv4.address }}"
         description:
           - The IP address or FQDN the Vault API will advertise to the cluster.
           - 'Reference: https://developer.hashicorp.com/vault/docs/configuration#api_addr'
@@ -300,7 +300,7 @@ argument_specs:
       vault_cluster_host:
         type: str
         required: false
-        default: "{{ ansible_default_ipv4.address }}"
+        default: "{{ ansible_facts.default_ipv4.address }}"
         description:
           - The IP address or FQDN over which the Vault cluster will communicate.
           - 'Reference: https://developer.hashicorp.com/vault/docs/configuration#cluster_addr'

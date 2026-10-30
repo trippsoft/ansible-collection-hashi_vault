@@ -1,7 +1,6 @@
 ---
 name: Molecule - testing_ca role
 'on':
-  workflow_call: {}
   workflow_dispatch: {}
   pull_request:
     branches:
@@ -39,12 +38,18 @@ jobs:
       matrix:
         box:
           - debian13_base
-          - rocky10_base
-          - rocky9_cis
           - rocky8_cis
-          - ubuntu2604_base
-          - ubuntu2404_base
+          - rocky9_cis
+          - rocky10_base
           - ubuntu2204_base
+          - ubuntu2404_base
+          - ubuntu2604_base
+        ansible:
+          - '2.16'
+          - '2.21'
+        exclude:
+          - box: rocky8_cis
+            ansible: '2.21'
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -53,7 +58,7 @@ jobs:
       - name: Run Molecule tests
         working-directory: 'trippsc2.hashi_vault'
         run: |
-          source ~/venv/ansible-2.16/bin/activate
+          source ~/venv/ansible-${{ matrix.ansible }}/bin/activate
           rm -rf ~/.ansible/collections/ansible_collections/*
           cd ./roles/testing_ca
           molecule test
@@ -63,3 +68,4 @@ jobs:
           ANSIBLE_FORCE_COLOR: '1'
           PY_COLORS: '1'
           MOLECULE_BOX: ${{ matrix.box }}
+          MOLECULE_ANSIBLE_VERSION: ${{ matrix.ansible }}

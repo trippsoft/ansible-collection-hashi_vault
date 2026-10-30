@@ -1,8 +1,8 @@
 ---
 - name: Gathering Facts
   when:
-    - ansible_distribution is not defined or
-      ansible_os_family is not defined
+    - ansible_facts.distribution is not defined or
+      ansible_facts.os_family is not defined
   ansible.builtin.setup:
     gather_subset:
       - '!all'
@@ -13,13 +13,13 @@
 - name: Validate OS Family is defined
   ansible.builtin.assert:
     that:
-      - ansible_os_family is defined
+      - ansible_facts.os_family is defined
     fail_msg: OS Family is not defined.
-    success_msg: "OS Family is defined as {{ ansible_os_family }}."
+    success_msg: "OS Family is defined as {{ ansible_facts.os_family }}."
 
 - name: Validate OS Family is supported
   ansible.builtin.assert:
     that:
-      - ansible_os_family in _cert_supported_os_families
-    fail_msg: "OS Family '{{ ansible_os_family }}' is not supported."
-    success_msg: "OS Family '{{ ansible_os_family }}' is supported."
+      - ansible_facts.os_family in _cert_supported_os_families
+    fail_msg: "OS Family '{{ ansible_facts.os_family }}' is not supported."
+    success_msg: "OS Family '{{ ansible_facts.os_family }}' is supported."
